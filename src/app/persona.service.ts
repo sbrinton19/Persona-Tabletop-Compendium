@@ -13,7 +13,7 @@ export class PersonaService {
   getPersonaeList(): Observable<Persona[]> {
     return of(personaeList);
   }
-  
+
   getPersonaeMap(): Observable<Map<string, Persona>> {
     return of(personaeMap);
   }

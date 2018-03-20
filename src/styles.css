@@ -61,19 +61,25 @@ tr:hover td:last-child {
     border-left: .125em solid rgba(34,36,38,.1) !important;
 }
 
+@media only screen and (max-width: 800px) {
+    .mobile-hidden-3 {
+        display: none;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     .mobile-hidden-2 {
         display: none;
     }
 }
 
-@media only screen and (max-width: 989px) {
+@media only screen and (max-width: 990px) {
     .mobile-hidden-1 {
         display: none;
     }
 }
 
-@media only screen and (min-width: 990px) {
+@media only screen and (min-width: 991px) {
     .desktop-hidden {
         display: none;
     }

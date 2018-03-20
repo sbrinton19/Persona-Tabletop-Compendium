@@ -14,8 +14,6 @@ export class PersonaeComponent implements OnInit {
   statList = Persona.STATNAMES;
   elemList = Persona.ELEMNAMES;
   sortOrder = false;
-  sortField = 'level';
-  sortIndex = 0;
 
   constructor(private personaService: PersonaService) { }
 
@@ -39,7 +37,7 @@ export class PersonaeComponent implements OnInit {
        this.displayList = this.fullPersonaeList;
     }
     const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.displayList, filter);
+    this.displayList = pipe.transform(this.fullPersonaeList, filter);
   }
 
 }

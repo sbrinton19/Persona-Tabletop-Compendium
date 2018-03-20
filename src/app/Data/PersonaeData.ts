@@ -93,7 +93,7 @@ export const personaeList: Persona[] =
                 skillCardList.find(s => s.skillName === NameData.DIA && s.cardType === SkillCardType.Ally)
             ],
             [
-               
+
             ],
             [],
             false,

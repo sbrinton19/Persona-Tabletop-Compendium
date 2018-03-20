@@ -90,28 +90,39 @@ export enum SkillCardType {
 
 export class Item {
     private static idSource = 0;
-    readonly itemId: number;
+    readonly id: number;
     readonly name: string;
     readonly schedule: number;
-    readonly origin: number;
-    readonly transmute: string;
+    readonly origins: OriginType[];
     readonly description: string;
     readonly special: string;
     readonly type: ItemType;
-    personaSources: string[] = [];
+    transmute: string = '';
+    personaSources: Set<string> = new Set();
+
+    static getOriginName(origin: OriginType) {
+        return OriginType[origin];
+    }
+
+
 
     constructor(name: string, schedule: number, origin: OriginType[],
-        transmute: string, description: string, special: string, type: ItemType) {
-        this.itemId = Item.idSource++;
+        description: string, special: string, type: ItemType) {
+        this.id = Item.idSource++;
         this.name = name;
         this.schedule = schedule;
-        let sum = 0;
-        origin.forEach(o => sum += o);
-        this.origin = sum;
-        this.transmute = transmute;
+        this.origins = origin;
         this.description = description;
         this.special = special;
         this.type = type;
+    }
+
+    getTypeName(): string {
+        return ItemType[this.type];
+    }
+
+    getOriginName(origin: OriginType) {
+        return Item.getOriginName(origin);
     }
 }
 
@@ -122,9 +133,9 @@ export class Weapon extends Item {
     readonly range: string;
     readonly failValue: number;
 
-    constructor(name: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string,
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
     baseDamage: number, maxDamageDice: number, damageDie: number, range: string, failValue: number) {
-        super(name, schedule, origin, transmute, description, special, ItemType.Weapon);
+        super(name, schedule, origin, description, special, ItemType.Weapon);
         this.baseDamage = baseDamage;
         this.maxDamageDice = maxDamageDice;
         this.damageDie = damageDie;
@@ -140,9 +151,9 @@ export class Armor extends Item {
     readonly maxDodgeBonus: number;
     readonly dirtyGearPool: GearPool;
 
-    constructor(name: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string,
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
     armorClass: ArmorClass, damageReduction: number, moveAimPenalty: number, maxDodgeBonus: number, dirtyGearPool: GearPool) {
-        super(name, schedule, origin, transmute, description, special, ItemType.Armor);
+        super(name, schedule, origin, description, special, ItemType.Armor);
         this.armorClass = armorClass;
         this.damageReduction = damageReduction;
         this.moveAimPenalty = moveAimPenalty;
@@ -152,17 +163,17 @@ export class Armor extends Item {
 }
 
 export class Accessory extends Item {
-    constructor(name: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string) {
-        super(name, schedule, origin, transmute, description, special, ItemType.Accessory);
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string) {
+        super(name, schedule, origin, description, special, ItemType.Accessory);
     }
 }
 
 export class Recovery extends Item {
     readonly recoveryType: RecoveryType;
 
-    constructor(name: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string,
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
     recoveryType: RecoveryType) {
-        super(name, schedule, origin, transmute, description, special, ItemType.Recovery);
+        super(name, schedule, origin, description, special, ItemType.Recovery);
         this.recoveryType = recoveryType;
     }
 }
@@ -171,22 +182,22 @@ export class SkillCard extends Item {
     readonly skillName: string;
     readonly cardType: SkillCardType;
 
-    constructor(skillName: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string,
+    constructor(skillName: string, schedule: number, origin: OriginType[], description: string, special: string,
         cardType: SkillCardType) {
         const name = `${skillName} ${SkillCardType[cardType]}`;
-        super(name, schedule, origin, transmute, description, special, ItemType.SkillCard);
+        super(name, schedule, origin, description, special, ItemType.SkillCard);
         this.skillName = skillName;
         this.cardType = cardType;
     }
 }
 
 export class Loot extends Item {
-    readonly arcanaSource: Arcana[];
+    readonly arcanaSources: Arcana[];
 
-    constructor(name: string, schedule: number, origin: OriginType[], transmute: string, description: string, special: string,
-        arcanaSource: Arcana[]) {
-        super(name, schedule, origin, transmute, description, special, ItemType.Loot);
-        this.arcanaSource = arcanaSource;
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
+        arcanaSources: Arcana[]) {
+        super(name, schedule, origin, description, special, ItemType.Loot);
+        this.arcanaSources = arcanaSources;
     }
 }
 

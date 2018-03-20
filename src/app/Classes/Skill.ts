@@ -1,5 +1,3 @@
-import { element } from "protractor";
-
 export enum Element {
     Physical = 1,
     Gun,
@@ -44,7 +42,7 @@ export class Skill {
         if (this.element === Element.Physical || this.element === Element.Gun) {
             return `${this.cost}% HP`;
         } else if (this.element === Element.Passive) {
-            return `-`
+            return `-`;
         } else {
             return `${this.cost} SP`;
         }

@@ -4,12 +4,14 @@ import { arcanaCombos, ArcanaPair, rareCombos } from '../Data/ArcanaComboData';
 import { PersonaService } from '../persona.service';
 const rarePersonae = [];
 const personaService = new PersonaService();
-function getPersonaeList(){
+
+function getPersonaeList() {
     let list: Persona[];
     personaService.getPersonaeList().subscribe(personae => list = personae);
     return list;
 }
-function getPersonaeMap(){
+
+function getPersonaeMap() {
     let list: Persona[];
     personaService.getPersonaeList().subscribe(personae => list = personae);
     return list;

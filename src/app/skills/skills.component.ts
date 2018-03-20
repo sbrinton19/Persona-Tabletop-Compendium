@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SkillService } from '../skill.service';
 import { Skill } from '../Classes/Skill';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
+import { FilterPipe } from '../Pipes/filter-pipe';
 
 @Component({
   selector: 'app-skills',
@@ -27,6 +28,15 @@ export class SkillsComponent implements OnInit {
   orderBy(field: string, idx = 0): void {
     const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.skillList, field, this.sortOrder, idx)
+    this.displayList = pipe.transform(this.skillList, field, this.sortOrder, idx);
   }
+
+  filterStr(filter): void {
+    if (filter === '' && this.displayList.length !== this.skillList.length) {
+      this.displayList = this.skillList;
+    }
+    const pipe = new FilterPipe();
+    this.displayList = pipe.transform(this.skillList, filter);
+  }
+
 }

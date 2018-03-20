@@ -55,7 +55,7 @@ export class Persona {
     dlc: boolean;
     rare: boolean;
 
-    static getShortElem(elem: ElemResist): string {
+    static getElemShort(elem: ElemResist): string {
         switch (elem) {
             case ElemResist.Weak:
                 return 'wk';
@@ -72,7 +72,7 @@ export class Persona {
         }
     }
 
-    static getFullElem(elem: ElemResist): string {
+    static getElemFull(elem: ElemResist): string {
         switch (elem) {
             case ElemResist.Neutral:
                 return '-';
@@ -85,7 +85,7 @@ export class Persona {
         }
     }
 
-    static getNameArcana(arcana: Arcana): string {
+    static getArcanaName(arcana: Arcana): string {
         switch (arcana) {
             case Arcana.Fool:
             case Arcana.Magician:
@@ -138,46 +138,53 @@ export class Persona {
             this.note = note;
             this.processDrops();
             this.processNegotiates();
+            this.processTransumtes();
     }
 
     private processDrops(): void {
         if (this.drops.length === 1) {
             this.drops[0].rollWinDisplay = 'All';
-            if (this.drops[0].item.itemId !== 0) {
-                this.drops[0].item.personaSources.push(`${this.name}-${this.id}`);
+            if (this.drops[0].item.id !== 0) {
+                this.drops[0].item.personaSources.add(`${this.name}|${this.id}`);
             }
             return;
         }
         this.drops.forEach(drop => {
             drop.rollWinDisplay = `${drop.low}-${drop.high}`;
-            drop.item.personaSources.push(`${this.name}-${this.id}`);
+            drop.item.personaSources.add(`${this.name}|${this.id}`);
          });
     }
 
     private processNegotiates(): void {
         if (this.negotiates.length === 1) {
             this.negotiates[0].rollWinDisplay = 'All';
-            if (this.negotiates[0].item.itemId !== 0) {
-                this.negotiates[0].item.personaSources.push(`${this.name}-${this.id}`);
+            if (this.negotiates[0].item.id !== 0) {
+                this.negotiates[0].item.personaSources.add(`${this.name}|${this.id}`);
             }
             return;
         }
         this.negotiates.forEach(negot => {
            negot.rollWinDisplay = `${negot.low}-${negot.high}`;
-           negot.item.personaSources.push(`${this.name}-${this.id}`);
+           negot.item.personaSources.add(`${this.name}|${this.id}`);
+        });
+    }
+
+    private processTransumtes(): void {
+        this.transmutes.forEach(transmute => {
+            transmute.transmute = `${this.name}|${this.id}`;
         });
     }
 
     getElemShort(elem: ElemResist): string {
-        return Persona.getShortElem(elem);
+        return Persona.getElemShort(elem);
     }
 
     getElemFull(elem: ElemResist): string {
-        return Persona.getFullElem(elem);
+        return Persona.getElemFull(elem);
     }
 
     getArcanaName(): string {
-        return Persona.getNameArcana(this.arcana);
+        return Persona.getArcanaName(this.arcana);
     }
 
 }

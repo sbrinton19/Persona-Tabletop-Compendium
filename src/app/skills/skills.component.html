@@ -1,10 +1,10 @@
-<p>
-  <div class="ui mini input">
-      <label>Filter: <input type="text" size="30" ng-model="filterStr"></label>
-      &nbsp;
-      <button ng:click="filterStr = ''" class="ui mini button">Clear</button>
-  </div>
-</p>
+<div class="ui mini input">
+    <label class="ui-mini-label">
+        Filter: 
+        <input type="text" size="30" ng-model="filterStr">
+    </label>
+    <button ng:click="filterStr = ''" class="ui mini button">Clear</button>
+</div>
 
 <table id="skillList" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
@@ -19,6 +19,7 @@
   </tr>
   </thead>
   <tbody>
+    <!--
   <tr ng:repeat="skill in skillList | orderBy:sortBy:sortReverse | filter:filterStr">
       <td class="mobile-hidden">{{skill.elemDisplay}}</td>
       <td class="left-border" id="{{skill.name}}">{{skill.name}}</td>
@@ -28,5 +29,6 @@
       <td class="mobile-hidden left-border" ng-bind-html="skill.talkDisplay"></td>
       <td class="mobile-hidden left-border" ng-bind-html="skill.fuseDisplay"></td>
   </tr>
+    -->
   </tbody>
 </table>

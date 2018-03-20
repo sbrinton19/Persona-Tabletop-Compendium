@@ -32,4 +32,15 @@ export class ItemService {
   getLootList(): Observable<Item[]> {
     return of(lootList);
   }
+
+  getItemList(): Observable<Item[]> {
+    let compile: Item[] = [];
+    compile = compile.concat(weaponList as Item[]);
+    compile = compile.concat(armorList as Item[]);
+    compile = compile.concat(accessoryList as Item[]);
+    compile = compile.concat(recoveryList as Item[]);
+    compile = compile.concat(skillCardList as Item[]);
+    compile = compile.concat(lootList as Item[]);
+    return of(compile);
+  }
 }

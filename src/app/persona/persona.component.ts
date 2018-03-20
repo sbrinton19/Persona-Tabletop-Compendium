@@ -43,7 +43,7 @@ export class PersonaComponent implements OnInit {
        this.fusionsToDisplay = this.fusionsTo;
     }
     const pipe = new FilterPipe();
-    this.fusionsToDisplay = pipe.transformRecipe(this.fusionsTo, filter, this.persona.name);
+    this.fusionsToDisplay = pipe.transform(this.fusionsTo, filter, this.persona.name);
   }
 
   filterFromStr(filter): void {
@@ -51,6 +51,6 @@ export class PersonaComponent implements OnInit {
        this.fusionsFromDisplay = this.fusionsFrom;
     }
     const pipe = new FilterPipe();
-    this.fusionsFromDisplay = pipe.transformRecipe(this.fusionsFrom, filter, this.persona.name);
+    this.fusionsFromDisplay = pipe.transform(this.fusionsFrom, filter, this.persona.name);
   }
 }

@@ -13,12 +13,13 @@ export class OrderByPipe implements PipeTransform {
       let ae = a[ orderField ];
       let be = b[ orderField ];
       if (orderField === 'arcana') {
-        ae = Persona.getNameArcana(ae);
-        be = Persona.getNameArcana(be);
+        ae = Persona.getArcanaName(ae);
+        be = Persona.getArcanaName(be);
       }
       if (orderField === 'stats'
       || orderField === 'elems'
-      || orderField === 'personaSources') {
+      || orderField === 'personaSources'
+      || orderField === 'arcanaSources') {
         ae = ae[idx];
         be = be[idx];
       }

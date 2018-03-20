@@ -7,7 +7,7 @@ import { Persona, Recipe } from '../Classes/Persona';
 
 export class FilterPipe implements PipeTransform {
   transform(array: Array<any>, filter: string, personaName?: string): Array<any> {
-    if (array.length == 0) {
+    if (array.length === 0) {
       return array;
     }
     if (array[0] instanceof Persona) {
