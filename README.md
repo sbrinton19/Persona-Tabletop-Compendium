@@ -1,4 +1,6 @@
-# PersonaTabletopCompendium
+# Persona Tabletop Compendium
+
+A tool to help DM a persona inspired tabletop campaign. 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.3.
 
@@ -25,3 +27,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+#Credits
+Uses https://github.com/chinhodado/persona5_calculator as a basis for design and data source which in turns credits
+ - https://github.com/arantius/persona-fusion-calculator
+ - https://github.com/Heimdall409/persona4-fusion-calculator
+ - https://github.com/aqiu384/aqiu384.github.io/tree/master/p5-tool
+ so big thanks to them all.
