@@ -12,7 +12,7 @@
       <th><a (click)="orderBy('name')">Name</a></th>
       <th><a (click)="orderBy('type')">Item Type</a></th>
       <th><a (click)="orderBy('schedule')">Schedule</a></th>
-      <th><a>Origins</a></th>
+      <th class="mobile-hidden-2"><a>Origins</a></th>
       <th><a (click)="orderBy('transmute')">Transmute from</a></th>
       <th><a>Drops from</a></th>
       <th class="mobile-hidden-3"><a (click)="orderBy('special')">Special</a></th>
@@ -23,7 +23,7 @@
     <td class="left-border"><a href='#/item/{{item.id}}'>{{item.name}}</a></td>
     <td class="left-border">{{item.getTypeName()}}</td>
     <td class="left-border">{{item.schedule}}</td>
-    <td class="left-border">
+    <td class="left-border mobile-hidden-2">
       <label *ngFor="let origin of item.origins; last as isLast">{{item.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
     </td>
     <td class="left-border">
