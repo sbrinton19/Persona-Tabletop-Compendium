@@ -1,0 +1,11 @@
+a {
+    text-align: center;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+#pageHeader {
+    display: inline-block;
+}
+#routeList {
+    padding-bottom: .5em;
+}

@@ -1,0 +1,32 @@
+<div class="ui mini input">
+    <label class="ui-mini-label">
+      Filter:
+      <input #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
+    </label>
+    <button (click)="filterStr('')" class="ui mini button">Clear</button>
+</div>
+
+<table id="personaTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
+  <thead>
+  <tr>
+      <th><a (click)="orderBy('level')">Level</a></th>
+      <th><a (click)="orderBy('name')">Name</a></th>
+      <th><a (click)="orderBy('arcana')">Arcana</a></th>
+      <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2">
+        <a (click)="orderBy('stats',i)">{{stat}}</a>
+      </th>
+      <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-1">
+        <a (click)="orderBy('elems',i)">{{elem}}</a>
+      </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let persona of displayList">
+    <td>{{persona.level}}</td>
+    <td class="left-border"><a href='/persona/{{persona.id}}'>{{persona.name}}</a></td>
+    <td class="left-border">{{persona.getArcanaName()}}</td>
+    <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
+    <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-1 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
+  </tr>
+  </tbody>
+</table>

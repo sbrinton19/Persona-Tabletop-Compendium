@@ -1,0 +1,15 @@
+#personaTable {
+    margin: 1em;
+    text-align: center;
+}
+#personaTable th{
+    padding: .5em;
+}
+
+#personaTable td{
+    border-width: 0;
+}
+
+#personaTable tr:hover td {
+    background: rgba(97, 143, 182, 0.13);
+}
