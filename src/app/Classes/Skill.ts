@@ -1,3 +1,6 @@
+import { skillCardList } from "../Data/ItemData";
+import { SkillCard, OriginType, SkillCardType } from "./Item";
+
 export enum Element {
     Physical = 1,
     Gun,
@@ -26,12 +29,25 @@ export class Skill {
     readonly description: string;
     personaSources: string[] = [];
 
-    constructor(name: string, cost: number, element: Element, description: string) {
+    constructor(name: string, cost: number, element: Element, description: string, createSkillCards = true) {
         this.id = Skill.idSource++;
         this.name = name;
         this.cost = cost;
         this.element = element;
         this.description = description;
+        if (createSkillCards) {
+            this.createSkillCards();
+        }
+    }
+
+    createSkillCards() {
+        skillCardList.push(
+            new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
+            `Grants 1 ${SkillCardType[SkillCardType.Ally]} Persona the ${this.name} skill`, SkillCardType.Ally));
+            
+            skillCardList.push(
+                new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
+                `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main));
     }
 
     getSkillElement() {
@@ -53,7 +69,7 @@ export class PersonaSkill extends Skill {
     readonly level: number;
 
     constructor(skill: Skill, level: number) {
-        super(skill.name, skill.cost, skill.element, skill.description);
+        super(skill.name, skill.cost, skill.element, skill.description, false);
         this.level = level;
     }
 }

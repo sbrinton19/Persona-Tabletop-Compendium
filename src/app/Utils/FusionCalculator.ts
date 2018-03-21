@@ -128,6 +128,9 @@ function getArcanaRecipes(persona: Persona): Recipe[] {
 export function getFusionsFrom(persona: Persona): Recipe[] {
     const recipes = [];
     personaeList.forEach(persona2 => {
+        if (persona2 === persona) {
+            return;
+        }
         const result = fuse(persona, persona2);
         if (result !== null) {
             recipes.push(new Recipe([persona, persona2], result));

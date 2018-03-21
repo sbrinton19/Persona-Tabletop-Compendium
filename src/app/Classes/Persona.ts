@@ -150,7 +150,11 @@ export class Persona {
             return;
         }
         this.drops.forEach(drop => {
-            drop.rollWinDisplay = `${drop.low}-${drop.high}`;
+            if (drop.low === drop.high) {
+                drop.rollWinDisplay = `${drop.high}`;
+            } else {
+                drop.rollWinDisplay = `${drop.low}-${drop.high}`;
+            }
             drop.item.personaSources.add(`${this.name}|${this.id}`);
          });
     }
@@ -164,7 +168,11 @@ export class Persona {
             return;
         }
         this.negotiates.forEach(negot => {
-           negot.rollWinDisplay = `${negot.low}-${negot.high}`;
+            if (negot.low === negot.high) {
+                negot.rollWinDisplay = `${negot.high}`;
+            } else {
+                negot.rollWinDisplay = `${negot.low}-${negot.high}`;
+            }
            negot.item.personaSources.add(`${this.name}|${this.id}`);
         });
     }

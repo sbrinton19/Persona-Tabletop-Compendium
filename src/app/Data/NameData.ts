@@ -113,4 +113,12 @@ export class NameData {
     public static get BAISUDI(): string { return 'Baisudi'; }
     public static get RAKUKAJA(): string { return 'Rakukaja'; }
     public static get DODGEELECTRIC(): string { return 'Dodge Electric'; }
+    public static get TARUNDA(): string { return 'Tarunda'; }
+    public static get GARU(): string { return 'Garu'; }
+    public static get ICEWALL(): string { return 'Ice Wall'; }
+    public static get APTPUPIL(): string { return 'Apt Pupil'; }
+    public static get SUKUKAJA(): string { return 'Sukukaja'; }
+    public static get FIREWALL(): string { return 'Fire Wall'; }
+    public static get FIREBREAK(): string { return 'Fire Break'; }
+    public static get ICEBREAK(): string { return 'Ice Break'; }
 }
