@@ -126,7 +126,7 @@ export class Persona {
             this.elems = elems;
             this.skills = skills;
             this.skills.forEach(skill => {
-                skill.personaSources.push(`${this.name}-${this.id}`);
+                skill.skill.personaSources.push(`${this.name}-${this.id}`);
             });
             this.transmutes = transmutes;
             this.negotiates = negotiates;

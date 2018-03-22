@@ -20,7 +20,7 @@ export enum Element {
 }
 
 export class Skill {
-    private static idSource: number;
+    private static idSource: number = 0;
 
     readonly id: number;
     readonly name: string;
@@ -65,11 +65,11 @@ export class Skill {
     }
 }
 
-export class PersonaSkill extends Skill {
+export class PersonaSkill {
     readonly level: number;
-
+    readonly skill: Skill;
     constructor(skill: Skill, level: number) {
-        super(skill.name, skill.cost, skill.element, skill.description, false);
+        this.skill = skill;
         this.level = level;
     }
 }

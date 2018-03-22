@@ -144,6 +144,18 @@ export class Weapon extends Item {
     }
 }
 
+export class RangedWeapon extends Weapon {
+    readonly magSize: number;
+    readonly magCount: number;
+    constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
+    baseDamage: number, maxDamageDice: number, damageDie: number, range: string, failValue: number, 
+    magSize: number, magCount: number) {
+        super(name, schedule, origin, description, special, baseDamage, maxDamageDice, damageDie, range, failValue)
+        this.magSize = magSize;
+        this.magCount = magCount;
+    }
+}
+
 export class Armor extends Item {
     readonly armorClass: ArmorClass;
     readonly damageReduction: number;
@@ -208,6 +220,9 @@ export class Drop {
     readonly name: string;
     rollWinDisplay: string;
     constructor(item: Item, low: number, high: number) {
+        if(!item.origins.includes(OriginType.Drop) && item.name != '-') {
+            console.warn(`${item.name} is available as a drop, but does not have the drop OriginType`);
+        }
         this.item = item;
         this.name = item.name;
         this.low = low;

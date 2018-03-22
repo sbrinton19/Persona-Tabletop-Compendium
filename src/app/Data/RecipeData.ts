@@ -1,5 +1,5 @@
 import { Recipe } from '../Classes/Persona';
-import { NameData } from './NameData';
+import { PersonaeNameData } from './NameData';
 import { personaeMap } from './PersonaeData';
 
 export const specialCombos: Recipe[] = [

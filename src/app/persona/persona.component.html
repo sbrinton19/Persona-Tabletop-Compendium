@@ -79,10 +79,10 @@
         <tbody>
         <tr *ngFor="let skill of persona.skills">
             <td>{{skill.level}}</td>
-            <td>{{skill.getSkillElement()}}</td>
-            <td><a href="#/skill/{{skill.id}}">{{skill.name}}</a></td>
-            <td>{{skill.description}}</td>
-            <td>{{skill.formatCost()}}</td>
+            <td>{{skill.skill.getSkillElement()}}</td>
+            <td><a href="#/skill/{{skill.skill.id}}">{{skill.skill.name}}</a></td>
+            <td>{{skill.skill.description}}</td>
+            <td>{{skill.skill.formatCost()}}</td>
         </tr>
         </tbody>
     </table>
