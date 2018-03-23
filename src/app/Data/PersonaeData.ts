@@ -869,10 +869,10 @@ export const personaeList: Persona[] =
             [
                 personaSkill(SkillNameData.DAZZLER, 0),
                 personaSkill(SkillNameData.DIA, 0),
-                personaSkill(SkillNameData.HAMA, 11),
-                personaSkill(SkillNameData.KOUHA, 12),
-                personaSkill(SkillNameData.DODGECURSE, 13),
-                personaSkill(SkillNameData.DEKUNDA, 14)
+                personaSkill(SkillNameData.HAMA, 13),
+                personaSkill(SkillNameData.KOUHA, 14),
+                personaSkill(SkillNameData.DODGECURSE, 15),
+                personaSkill(SkillNameData.DEKUNDA, 17)
             ], // skills
             [
                 weaponList.find(w => w.name === ItemNameData.HEAVENSMESSENGER),
@@ -897,7 +897,44 @@ export const personaeList: Persona[] =
             false,
             ''
         ),
-
+        new Persona(
+            PersonaeNameData.ONMORAKI,
+            Arcana.Moon,
+            12,
+            [0, 0, 22.5, 30, 17.5, 25, 12.5],
+            [ElemResist.Neutral, ElemResist.Weak, ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.ICEWALL, 0),
+                personaSkill(SkillNameData.MUDO, 0),
+                personaSkill(SkillNameData.AGI, 13),
+                personaSkill(SkillNameData.PULINPA, 14),
+                personaSkill(SkillNameData.CONFUSEBOOST, 15),
+                personaSkill(SkillNameData.RESISTFEAR, 17)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.MINDCARVER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.CONFUSEBOOST && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(recoveryList, ItemNameData.HIRANYA, 1, 6),
+                drop(weaponList, ItemNameData.ICEPICK, 7, 11),
+                drop(skillCardList, 'Confuse Boost Ally', 12, 12),
+                drop(weaponList, ItemNameData.MINDCARVER, 13, 13)
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 7, 16),
+                drop(recoveryList, ItemNameData.HIRANYA, 17, 18),
+                drop(weaponList, ItemNameData.ICEPICK, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
 
 
 

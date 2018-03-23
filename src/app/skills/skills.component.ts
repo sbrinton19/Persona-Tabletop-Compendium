@@ -39,4 +39,10 @@ export class SkillsComponent implements OnInit {
     this.displayList = pipe.transform(this.skillList, filter);
   }
 
+  getSourceHtml(source: string) {
+    const split = source.split('|');
+    return `<a href='/persona/${split[1]}'>${split[0]}</a><br>`;
+  }
+
+
 }

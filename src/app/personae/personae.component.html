@@ -8,13 +8,13 @@
 
 <table id="personaTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
-  <tr>
-      <th (click)="orderBy('level')">Level</th>
-      <th (click)="orderBy('name')">Name</th>
-      <th (click)="orderBy('arcana')">Arcana</th>
-      <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats',i)">{{stat}}</th>
-      <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-1 " (click)="orderBy('elems',i)">{{elem}}</th>
-  </tr>
+    <tr>
+        <th (click)="orderBy('level')">Level</th>
+        <th (click)="orderBy('name')">Name</th>
+        <th (click)="orderBy('arcana')">Arcana</th>
+        <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats',i)">{{stat}}</th>
+        <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-1 " (click)="orderBy('elems',i)">{{elem}}</th>
+    </tr>
   </thead>
   <tbody>
   <tr *ngFor="let persona of displayList">
