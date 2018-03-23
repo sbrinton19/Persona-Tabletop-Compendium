@@ -1,3 +1,7 @@
+#personaPage {
+    margin-bottom: 1em;
+}
+
 #statsTable {
     margin: auto;
     width: 95%;
@@ -40,10 +44,6 @@
     background: rgba(64, 46, 24, 0.1);
 }
 
-.ui {
-    margin-bottom: 1em;
-}
-
 #negotiationTable, #dropTable {
     margin: auto;
     width: 95%;
@@ -54,6 +54,10 @@
     margin: auto;
     width: 95%;
     text-align: center;
+}
+
+app-pagination {
+    margin: 1em;
 }
 
 .recipe-table {
@@ -69,8 +73,4 @@
 
 .recipe-table tr:hover td {
     background: rgba(97, 143, 182, 0.13);
-}
-
-#footer {
-    height: 1em;
 }

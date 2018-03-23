@@ -36,8 +36,14 @@ export class OrderByPipe implements PipeTransform {
       if ( ae === be ) {
         return 0;
       }
-      return orderType ? (ae.toString().toLowerCase() > be.toString().toLowerCase() ? -1 : 1) :
-       (be.toString().toLowerCase() > ae.toString().toLowerCase() ? -1 : 1);
+      try {
+        ae = ae as number;
+        be = be as number;
+        return orderType ? (ae > be ? -1 : 1) : (be > ae ? -1 : 1);
+      } catch (exception) {
+        return orderType ? (ae.toString().toLowerCase() > be.toString().toLowerCase() ? -1 : 1) :
+        (be.toString().toLowerCase() > ae.toString().toLowerCase() ? -1 : 1);
+      }
     });
     return array;
   }

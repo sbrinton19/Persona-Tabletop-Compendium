@@ -13,6 +13,10 @@ import { FilterPipe } from './Pipes/filter-pipe';
 import { SkillsComponent } from './skills/skills.component';
 import { SkillService } from './skill.service';
 import { ItemsComponent } from './items/items.component';
+import { WeaponsComponent } from './weapons/weapons.component';
+import { ArmorsComponent } from './armors/armors.component';
+import { AccessoriesComponent } from './accessories/accessories.component';
+import { PaginationComponent } from './pagination/pagination.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { ItemsComponent } from './items/items.component';
     FilterPipe,
     PersonaComponent,
     SkillsComponent,
-    ItemsComponent
+    ItemsComponent,
+    WeaponsComponent,
+    ArmorsComponent,
+    AccessoriesComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

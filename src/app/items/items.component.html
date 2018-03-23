@@ -9,26 +9,28 @@
 <table id="itemTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
   <tr>
-      <th><a (click)="orderBy('name')">Name</a></th>
-      <th><a (click)="orderBy('type')">Item Type</a></th>
-      <th><a (click)="orderBy('schedule')">Schedule</a></th>
-      <th class="mobile-hidden-2"><a (click)="orderBy('origins')">Origins</a></th>
-      <th><a (click)="orderBy('transmute')">Transmute from</a></th>
-      <th><a>Drops from</a></th>
-      <th class="mobile-hidden-3"><a (click)="orderBy('special')">Special</a></th>
+      <th (click)="orderBy('id')">ID</th>
+      <th (click)="orderBy('name')">Name</th>
+      <th (click)="orderBy('type')">Item Type</th>
+      <th (click)="orderBy('schedule')">Schedule</th>
+      <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
+      <th (click)="orderBy('transmute')">Transmute from</th>
+      <th>Drops from</th>
+      <th class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let item of displayList">
+    <td class="left-border">{{item.id}}</td>
     <td class="left-border"><a href='#/item/{{item.id}}'>{{item.name}}</a></td>
     <td class="left-border">{{item.getTypeName()}}</td>
     <td class="left-border">{{item.schedule}}</td>
     <td class="left-border mobile-hidden-2">
-      <label *ngFor="let origin of item.origins; last as isLast">{{item.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
+      <label *ngFor="let origin of item.origins; last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
     <td class="left-border">
-      <label *ngIf="item.transmute!=''" [innerHTML]="getSourceHtml(item.transmute)"></label>
-      <label *ngIf="item.transmute==''">-</label>
+      <label *ngIf="item.transmute!=''; else emptyBlock" [innerHTML]="getSourceHtml(item.transmute)"></label>
+      <ng-template #emptyBlock>-</ng-template>
     </td>
     <td class="left-border">
         <label *ngIf="!item.personaSources.size">-</label>

@@ -1,6 +1,16 @@
+<ul class="top-nav">
+    <li><a routerLink="/personae">Personae</a></li>
+    <li><a routerLink="/skills">Skills</a></li>
+    <li id="childNav" [ngStyle]="{'background': color}" (click)="openCloseSubNav()"><a>Items</a></li>
+</ul>
+<ul class="sub-nav" *ngIf="opened">
+    <li><a routerLink="/weapons">Weapons</a></li>
+    <li><a routerLink="/armors">Armors</a></li>
+    <li><a routerLink="/accessories">Accessories</a></li>
+    <li><a routerLink="/items">Miscellaneous Items</a></li>
+</ul>
 <div id="pageHeader">
     <h2 id="title"><a href="index.html">{{title}}</a></h2>
-    <p id="routeList"><a routerLink="/personae">Personae</a> - <a href="/skills">Skills</a> - <a href="/items">Items</a> - <a href="#/setting/">Settings</a></p>
 </div>
 <div id="routedItem">
     <router-outlet></router-outlet>

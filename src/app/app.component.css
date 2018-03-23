@@ -5,7 +5,50 @@ a {
 }
 #pageHeader {
     display: inline-block;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 #routeList {
     padding-bottom: .5em;
 }
+
+.top-nav {
+    background-color: rgb(182, 0, 0);
+}
+
+.sub-nav {
+    background-color: rgb(0, 0, 0);
+}
+
+@media screen and (max-width: 600px){
+    .top-nav li {float: none;}
+    .sub-nav li {float: none;}
+}
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+
+
+

@@ -7,4 +7,14 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Persona Tabletop Compendium';
+  opened = false;
+  color = '';
+  openCloseSubNav() {
+    this.opened = !this.opened;
+    if (this.opened) {
+      this.color = '#111';
+    } else {
+      this.color = '';
+    }
+  }
 }

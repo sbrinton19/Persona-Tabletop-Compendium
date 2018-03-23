@@ -1,0 +1,19 @@
+<h3>{{headerPart[0]}}{{activeData.length}}{{headerPart[1]}}</h3>
+<div class="caption">
+    <div class="pagination" *ngIf="maxPage > 1">
+        <span (click)="getFirstPage()">&#x25c4;<span style="position: relative; left: -0.4em;">&#x25c4;</span></span>
+        <span (click)="getPrevPage()">&#x25c4;</span>
+        Page {{currPage}} / {{maxPage}}
+        <span (click)="getNextPage()">&#x25ba;</span>
+        <span (click)="getLastPage()"><span style="position: relative; right: -0.4em;">&#x25ba;</span>&#x25ba;</span>
+    </div>
+</div>
+
+<div class="ui mini input">
+    <label class="ui-mini-label">
+      Filter:
+      <input #toFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="getFiltered(toFilter.value)">
+    </label>
+    <button (click)="getFiltered('')" class="ui mini button">Clear</button>
+</div>
+<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{$implicit: displayData, currentPage: currPage, pageSize: perPage}"></ng-template>

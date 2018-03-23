@@ -1,0 +1,7 @@
+.ui {
+    margin-bottom: 1em;
+}
+
+.pagination span {
+    cursor: pointer;
+}

@@ -97,7 +97,7 @@ export class Item {
     readonly description: string;
     readonly special: string;
     readonly type: ItemType;
-    transmute: string = '';
+    transmute = '';
     personaSources: Set<string> = new Set();
 
     static getOriginName(origin: OriginType) {
@@ -148,9 +148,9 @@ export class RangedWeapon extends Weapon {
     readonly magSize: number;
     readonly magCount: number;
     constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
-    baseDamage: number, maxDamageDice: number, damageDie: number, range: string, failValue: number, 
+    baseDamage: number, maxDamageDice: number, damageDie: number, range: string, failValue: number,
     magSize: number, magCount: number) {
-        super(name, schedule, origin, description, special, baseDamage, maxDamageDice, damageDie, range, failValue)
+        super(name, schedule, origin, description, special, baseDamage, maxDamageDice, damageDie, range, failValue);
         this.magSize = magSize;
         this.magCount = magCount;
     }
@@ -172,6 +172,14 @@ export class Armor extends Item {
         this.maxDodgeBonus = maxDodgeBonus;
         this.dirtyGearPool = dirtyGearPool;
     }
+
+    getArmorClassName(): string {
+        return ArmorClass[this.armorClass];
+    }
+
+    getGearPoolName(): string {
+        return getGearPoolName(this.dirtyGearPool);
+    }
 }
 
 export class Accessory extends Item {
@@ -191,13 +199,15 @@ export class Recovery extends Item {
 }
 
 export class SkillCard extends Item {
+    readonly skillId: number;
     readonly skillName: string;
     readonly cardType: SkillCardType;
 
-    constructor(skillName: string, schedule: number, origin: OriginType[], description: string, special: string,
+    constructor(skillId: number, skillName: string, schedule: number, origin: OriginType[], description: string, special: string,
         cardType: SkillCardType) {
         const name = `${skillName} ${SkillCardType[cardType]}`;
         super(name, schedule, origin, description, special, ItemType.SkillCard);
+        this.skillId = skillId;
         this.skillName = skillName;
         this.cardType = cardType;
     }
@@ -220,7 +230,7 @@ export class Drop {
     readonly name: string;
     rollWinDisplay: string;
     constructor(item: Item, low: number, high: number) {
-        if(!item.origins.includes(OriginType.Drop) && item.name != '-') {
+        if (!item.origins.includes(OriginType.Drop) && item.name !== '-') {
             console.warn(`${item.name} is available as a drop, but does not have the drop OriginType`);
         }
         this.item = item;

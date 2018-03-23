@@ -1,5 +1,5 @@
-import { skillCardList } from "../Data/ItemData";
-import { SkillCard, OriginType, SkillCardType } from "./Item";
+import { skillCardList } from '../Data/ItemData';
+import { SkillCard, OriginType, SkillCardType } from './Item';
 
 export enum Element {
     Physical = 1,
@@ -20,7 +20,7 @@ export enum Element {
 }
 
 export class Skill {
-    private static idSource: number = 0;
+    private static idSource = 0;
 
     readonly id: number;
     readonly name: string;
@@ -42,12 +42,11 @@ export class Skill {
 
     createSkillCards() {
         skillCardList.push(
-            new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
+            new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
             `Grants 1 ${SkillCardType[SkillCardType.Ally]} Persona the ${this.name} skill`, SkillCardType.Ally));
-            
-            skillCardList.push(
-                new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
-                `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main));
+        skillCardList.push(
+            new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
+            `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main));
     }
 
     getSkillElement() {

@@ -9,15 +9,11 @@
 <table id="personaTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
   <tr>
-      <th><a (click)="orderBy('level')">Level</a></th>
-      <th><a (click)="orderBy('name')">Name</a></th>
-      <th><a (click)="orderBy('arcana')">Arcana</a></th>
-      <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2">
-        <a (click)="orderBy('stats',i)">{{stat}}</a>
-      </th>
-      <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-1">
-        <a (click)="orderBy('elems',i)">{{elem}}</a>
-      </th>
+      <th (click)="orderBy('level')">Level</th>
+      <th (click)="orderBy('name')">Name</th>
+      <th (click)="orderBy('arcana')">Arcana</th>
+      <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats',i)">{{stat}}</th>
+      <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-1 " (click)="orderBy('elems',i)">{{elem}}</th>
   </tr>
   </thead>
   <tbody>

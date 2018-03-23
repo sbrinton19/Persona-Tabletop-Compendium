@@ -32,10 +32,6 @@ tr:hover td:last-child {
     margin-bottom: 1.25em;
 }
 
-.pagination span {
-    cursor: pointer;
-}
-
 @media screen and (min-width: 1080px) {
     #skillList {
         width: 80%;
