@@ -28,7 +28,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-#Credits
+##Credits
+
 Uses https://github.com/chinhodado/persona5_calculator as a basis for design and data source which in turns credits
  - https://github.com/arantius/persona-fusion-calculator
  - https://github.com/Heimdall409/persona4-fusion-calculator
