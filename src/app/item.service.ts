@@ -37,6 +37,7 @@ export class ItemService {
     let compile: Item[] = [];
     compile = compile.concat(recoveryList as Item[]);
     compile = compile.concat(lootList as Item[]);
+    compile = compile.concat(skillCardList as Item[]);
     return of(compile);
   }
 }

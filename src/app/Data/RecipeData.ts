@@ -3,161 +3,163 @@ import { PersonaeNameData } from './NameData';
 import { personaeMap } from './PersonaeData';
 
 export const specialCombos: Recipe[] = [
+    new Recipe([
+        personaeMap[PersonaeNameData.BERITH],
+        personaeMap[PersonaeNameData.ANDRAS],
+        personaeMap[PersonaeNameData.ELIGOR]
+        ],
+    personaeMap[PersonaeNameData.FLAUROS]),
     /*new Recipe([
-            personaeMap[NameData.BISHAMONTEN],
-            personaeMap[NameData.KOUMOKUTEN],
-            personaeMap[NameData.JIKOKUTEN],
-            personaeMap[NameData.ZOUCHOUTEN]
-            ],
-        personaeMap[NameData.ASURA]),
+        personaeMap[PersonaeNameData.KODAMA],
+        personaeMap[PersonaeNameData.SUDAMA],
+        personaeMap[PersonaeNameData.ANZU],
+        ],
+    personaeMap[PersonaeNameData.NEKOSHOGUN]),
+    /*
     new Recipe([
-            personaeMap[NameData.JACKOLANTERN],
-            personaeMap[NameData.JACKFROST],
-            personaeMap[NameData.KINGFROST]
+            personaeMap[PersonaeNameData.BISHAMONTEN],
+            personaeMap[PersonaeNameData.KOUMOKUTEN],
+            personaeMap[PersonaeNameData.JIKOKUTEN],
+            personaeMap[PersonaeNameData.ZOUCHOUTEN]
             ],
-        personaeMap[NameData.BLACKFROST]),
+        personaeMap[PersonaeNameData.ASURA]),
     new Recipe([
-            personaeMap[NameData.PIXIE],
-            personaeMap[NameData.PISACA],
-            personaeMap[NameData.HARITI]
+            personaeMap[PersonaeNameData.JACKOLANTERN],
+            personaeMap[PersonaeNameData.JACKFROST],
+            personaeMap[PersonaeNameData.KINGFROST]
             ],
-        personaeMap[NameData.BUGS]),
+        personaeMap[PersonaeNameData.BLACKFROST]),
     new Recipe([
-            personaeMap[NameData.HECATONCHEIRES],
-            personaeMap[NameData.WHITERIDER],
-            personaeMap[NameData.THOR],
-            personaeMap[NameData.YOSHITSUNE],
-            personaeMap[NameData.CUCHULAINN]
+            personaeMap[PersonaeNameData.PIXIE],
+            personaeMap[PersonaeNameData.PISACA],
+            personaeMap[PersonaeNameData.HARITI]
             ],
-        personaeMap[NameData.CHIYOU]),
+        personaeMap[PersonaeNameData.BUGS]),
     new Recipe([
-            personaeMap[NameData.BERITH],
-            personaeMap[NameData.ANDRAS],
-            personaeMap[NameData.ELIGOR]
+            personaeMap[PersonaeNameData.HECATONCHEIRES],
+            personaeMap[PersonaeNameData.WHITERIDER],
+            personaeMap[PersonaeNameData.THOR],
+            personaeMap[PersonaeNameData.YOSHITSUNE],
+            personaeMap[PersonaeNameData.CUCHULAINN]
             ],
-        personaeMap[NameData.FLAUROS]),
+        personaeMap[PersonaeNameData.CHIYOU]),
     new Recipe([
-            personaeMap[NameData.GENBU],
-            personaeMap[NameData.SEIRYU],
-            personaeMap[NameData.SUZAKU],
-            personaeMap[NameData.BYAKKO]
+            personaeMap[PersonaeNameData.GENBU],
+            personaeMap[PersonaeNameData.SEIRYU],
+            personaeMap[PersonaeNameData.SUZAKU],
+            personaeMap[PersonaeNameData.BYAKKO]
             ],
-        personaeMap[NameData.KOHRYU]),
+        personaeMap[PersonaeNameData.KOHRYU]),
     new Recipe([
-            personaeMap[NameData.ANUBIS],
-            personaeMap[NameData.ANANTA],
-            personaeMap[NameData.TRUMPETER],
-            personaeMap[NameData.MICHAEL],
-            personaeMap[NameData.METATRON],
-            personaeMap[NameData.SATAN]
+            personaeMap[PersonaeNameData.ANUBIS],
+            personaeMap[PersonaeNameData.ANANTA],
+            personaeMap[PersonaeNameData.TRUMPETER],
+            personaeMap[PersonaeNameData.MICHAEL],
+            personaeMap[PersonaeNameData.METATRON],
+            personaeMap[PersonaeNameData.SATAN]
             ],
-        personaeMap[NameData.LUCIFER]),
+        personaeMap[PersonaeNameData.LUCIFER]),
     new Recipe([
-            personaeMap[NameData.PRINCIPALITY],
-            personaeMap[NameData.POWER],
-            personaeMap[NameData.DOMINION],
-            personaeMap[NameData.MELCHIZDEK],
-            personaeMap[NameData.SANDALPHON],
-            personaeMap[NameData.MICHAEL]
+            personaeMap[PersonaeNameData.PRINCIPALITY],
+            personaeMap[PersonaeNameData.POWER],
+            personaeMap[PersonaeNameData.DOMINION],
+            personaeMap[PersonaeNameData.MELCHIZDEK],
+            personaeMap[PersonaeNameData.SANDALPHON],
+            personaeMap[PersonaeNameData.MICHAEL]
             ],
-        personaeMap[NameData.METATRON]),
+        personaeMap[PersonaeNameData.METATRON]),
     new Recipe([
-            personaeMap[NameData.RAPHAEL],
-            personaeMap[NameData.GABRIEL],
-            personaeMap[NameData.URIEL],
+            personaeMap[PersonaeNameData.RAPHAEL],
+            personaeMap[PersonaeNameData.GABRIEL],
+            personaeMap[PersonaeNameData.URIEL],
             ],
-        personaeMap[NameData.MICHAEL]),
+        personaeMap[PersonaeNameData.MICHAEL]),
+
     new Recipe([
-            personaeMap[NameData.KODAMA],
-            personaeMap[NameData.SUDAMA],
-            personaeMap[NameData.ANZU],
+            personaeMap[PersonaeNameData.KINKI],
+            personaeMap[PersonaeNameData.SUIKI],
+            personaeMap[PersonaeNameData.FUUKI],
             ],
-        personaeMap[NameData.NEKOSHOGUN]),
+        personaeMap[PersonaeNameData.ONGYOKI]),
     new Recipe([
-            personaeMap[NameData.KINKI],
-            personaeMap[NameData.SUIKI],
-            personaeMap[NameData.FUUKI],
+            personaeMap[PersonaeNameData.ARSENE],
+            personaeMap[PersonaeNameData.ANZU],
+            personaeMap[PersonaeNameData.ISHTAR],
+            personaeMap[PersonaeNameData.SATAN],
+            personaeMap[PersonaeNameData.LUCIFER],
+            personaeMap[PersonaeNameData.MICHAEL]
             ],
-        personaeMap[NameData.ONGYOKI]),
+        personaeMap[PersonaeNameData.SATANAEL]),
     new Recipe([
-            personaeMap[NameData.ARSENE],
-            personaeMap[NameData.ANZU],
-            personaeMap[NameData.ISHTAR],
-            personaeMap[NameData.SATAN],
-            personaeMap[NameData.LUCIFER],
-            personaeMap[NameData.MICHAEL]
+            personaeMap[PersonaeNameData.ISIS],
+            personaeMap[PersonaeNameData.THOTH],
+            personaeMap[PersonaeNameData.ANUBIS],
+            personaeMap[PersonaeNameData.HORUS]
             ],
-        personaeMap[NameData.SATANAEL]),
+        personaeMap[PersonaeNameData.SETH]),
     new Recipe([
-            personaeMap[NameData.ISIS],
-            personaeMap[NameData.THOTH],
-            personaeMap[NameData.ANUBIS],
-            personaeMap[NameData.HORUS]
+            personaeMap[PersonaeNameData.MITHRA],
+            personaeMap[PersonaeNameData.MITHRAS],
+            personaeMap[PersonaeNameData.MELCHIZDEK],
+            personaeMap[PersonaeNameData.LILITH],
+            personaeMap[PersonaeNameData.GABRIEL]
             ],
-        personaeMap[NameData.SETH]),
+        personaeMap[PersonaeNameData.SRAOSHA]),
     new Recipe([
-            personaeMap[NameData.MITHRA],
-            personaeMap[NameData.MITHRAS],
-            personaeMap[NameData.MELCHIZDEK],
-            personaeMap[NameData.LILITH],
-            personaeMap[NameData.GABRIEL]
+            personaeMap[PersonaeNameData.POWER],
+            personaeMap[PersonaeNameData.MELCHIZDEK],
+            personaeMap[PersonaeNameData.DOMINION],
             ],
-        personaeMap[NameData.SRAOSHA]),
+        personaeMap[PersonaeNameData.THRONE]),
     new Recipe([
-            personaeMap[NameData.POWER],
-            personaeMap[NameData.MELCHIZDEK],
-            personaeMap[NameData.DOMINION],
+            personaeMap[PersonaeNameData.WHITERIDER],
+            personaeMap[PersonaeNameData.REDRIDER],
+            personaeMap[PersonaeNameData.BLACKRIDER],
+            personaeMap[PersonaeNameData.PALERIDER]
             ],
-        personaeMap[NameData.THRONE]),
+        personaeMap[PersonaeNameData.TRUMPETER]),
     new Recipe([
-            personaeMap[NameData.WHITERIDER],
-            personaeMap[NameData.REDRIDER],
-            personaeMap[NameData.BLACKRIDER],
-            personaeMap[NameData.PALERIDER]
+            personaeMap[PersonaeNameData.NAGA],
+            personaeMap[PersonaeNameData.RAJANAGA],
+            personaeMap[PersonaeNameData.ANANTA],
             ],
-        personaeMap[NameData.TRUMPETER]),
+        personaeMap[PersonaeNameData.VASUKI]),
     new Recipe([
-            personaeMap[NameData.NAGA],
-            personaeMap[NameData.RAJANAGA],
-            personaeMap[NameData.ANANTA],
+            personaeMap[PersonaeNameData.OKUNINUSHI],
+            personaeMap[PersonaeNameData.SHIKIOUJI],
+            personaeMap[PersonaeNameData.ARAHABAKI],
+            personaeMap[PersonaeNameData.YATAGARASU],
+            personaeMap[PersonaeNameData.FUTSUNUSHI]
             ],
-        personaeMap[NameData.TRUMPETER]),
+        personaeMap[PersonaeNameData.YOSHITSUNE]),
     new Recipe([
-            personaeMap[NameData.OKUNINUSHI],
-            personaeMap[NameData.SHIKIOUJI],
-            personaeMap[NameData.ARAHABAKI],
-            personaeMap[NameData.YATAGARASU],
-            personaeMap[NameData.FUTSUNUSHI]
+            personaeMap[PersonaeNameData.NEBIROS],
+            personaeMap[PersonaeNameData.BELIAL]
             ],
-        personaeMap[NameData.YOSHITSUNE]),
+        personaeMap[PersonaeNameData.ALICE]),
     new Recipe([
-            personaeMap[NameData.NEBIROS],
-            personaeMap[NameData.BELIAL]
+            personaeMap[PersonaeNameData.TITANIA],
+            personaeMap[PersonaeNameData.OBERON]
             ],
-        personaeMap[NameData.ALICE]),
+        personaeMap[PersonaeNameData.MERLIN]),
     new Recipe([
-            personaeMap[NameData.TITANIA],
-            personaeMap[NameData.OBERON]
+            personaeMap[PersonaeNameData.PARVATI],
+            personaeMap[PersonaeNameData.SHIVA]
             ],
-        personaeMap[NameData.MERLIN]),
+        personaeMap[PersonaeNameData.ARDHA]),
     new Recipe([
-            personaeMap[NameData.PARVATI],
-            personaeMap[NameData.SHIVA]
+            personaeMap[PersonaeNameData.RANGDA],
+            personaeMap[PersonaeNameData.BARONG]
             ],
-        personaeMap[NameData.ARDHA]),
+        personaeMap[PersonaeNameData.SHIVA]),
     new Recipe([
-            personaeMap[NameData.RANGDA],
-            personaeMap[NameData.BARONG]
+            personaeMap[PersonaeNameData.QUEENMAB],
+            personaeMap[PersonaeNameData.OBERON]
             ],
-        personaeMap[NameData.SHIVA]),
+        personaeMap[PersonaeNameData.MORDRED]),
     new Recipe([
-            personaeMap[NameData.QUEENMAB],
-            personaeMap[NameData.OBERON]
+            personaeMap[PersonaeNameData.MERLIN],
+            personaeMap[PersonaeNameData.MORDRED]
             ],
-        personaeMap[NameData.MORDRED]),
-    new Recipe([
-            personaeMap[NameData.MERLIN],
-            personaeMap[NameData.MORDRED]
-            ],
-        personaeMap[NameData.ARTHUR])*/
+        personaeMap[PersonaeNameData.ARTHUR])*/
 ];
