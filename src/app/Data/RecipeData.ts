@@ -9,12 +9,18 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.ELIGOR]
         ],
     personaeMap[PersonaeNameData.FLAUROS]),
-    /*new Recipe([
+    new Recipe([
         personaeMap[PersonaeNameData.KODAMA],
         personaeMap[PersonaeNameData.SUDAMA],
         personaeMap[PersonaeNameData.ANZU],
         ],
     personaeMap[PersonaeNameData.NEKOSHOGUN]),
+    /*new Recipe([
+        personaeMap[PersonaeNameData.PIXIE],
+        personaeMap[PersonaeNameData.PISACA],
+        personaeMap[PersonaeNameData.HARITI]
+        ],
+    personaeMap[PersonaeNameData.BUGS]),
     /*
     new Recipe([
             personaeMap[PersonaeNameData.BISHAMONTEN],
@@ -29,12 +35,7 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.KINGFROST]
             ],
         personaeMap[PersonaeNameData.BLACKFROST]),
-    new Recipe([
-            personaeMap[PersonaeNameData.PIXIE],
-            personaeMap[PersonaeNameData.PISACA],
-            personaeMap[PersonaeNameData.HARITI]
-            ],
-        personaeMap[PersonaeNameData.BUGS]),
+
     new Recipe([
             personaeMap[PersonaeNameData.HECATONCHEIRES],
             personaeMap[PersonaeNameData.WHITERIDER],
