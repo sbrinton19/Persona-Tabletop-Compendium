@@ -15,12 +15,19 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.ANZU],
         ],
     personaeMap[PersonaeNameData.NEKOSHOGUN]),
-    /*new Recipe([
+    new Recipe([
         personaeMap[PersonaeNameData.PIXIE],
         personaeMap[PersonaeNameData.PISACA],
         personaeMap[PersonaeNameData.HARITI]
         ],
     personaeMap[PersonaeNameData.BUGS]),
+    /* new Recipe([
+            personaeMap[PersonaeNameData.WHITERIDER],
+            personaeMap[PersonaeNameData.REDRIDER],
+            personaeMap[PersonaeNameData.BLACKRIDER],
+            personaeMap[PersonaeNameData.PALERIDER]
+            ],
+        personaeMap[PersonaeNameData.TRUMPETER]),
     /*
     new Recipe([
             personaeMap[PersonaeNameData.BISHAMONTEN],
@@ -112,13 +119,7 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.DOMINION],
             ],
         personaeMap[PersonaeNameData.THRONE]),
-    new Recipe([
-            personaeMap[PersonaeNameData.WHITERIDER],
-            personaeMap[PersonaeNameData.REDRIDER],
-            personaeMap[PersonaeNameData.BLACKRIDER],
-            personaeMap[PersonaeNameData.PALERIDER]
-            ],
-        personaeMap[PersonaeNameData.TRUMPETER]),
+
     new Recipe([
             personaeMap[PersonaeNameData.NAGA],
             personaeMap[PersonaeNameData.RAJANAGA],
@@ -155,7 +156,7 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.SHIVA]),
     new Recipe([
             personaeMap[PersonaeNameData.QUEENMAB],
-            personaeMap[PersonaeNameData.OBERON]
+            personaeMap[PersonaeNameData.CUCHULAINN]
             ],
         personaeMap[PersonaeNameData.MORDRED]),
     new Recipe([

@@ -214,83 +214,117 @@ export class SkillNameData {
     public static get LUNGE(): string { return 'Lunge'; }
     public static get CLEAVE(): string { return 'Cleave'; }
     // TIER1
+    public static get DREAMNEEDLE(): string { return 'Dream Needle'; }
+    public static get SNAP(): string { return 'Snap'; }
+    public static get SKULLCRACKER(): string { return 'Skull Cracker'; }
     public static get LUCKYPUNCH(): string { return 'Lucky Punch'; }
     public static get TERRORCLAW(): string { return 'Terror Claw'; }
-    public static get DREAMNEEDLE(): string { return 'Dream Needle'; }
-    public static get GIANTSLICE(): string { return 'Giant Slice'; }
-    public static get HYSTERICALSLAP(): string { return 'Hysterical Slap'; }
-    public static get CORNEREDFANG(): string { return 'Cornered Fang'; }
     public static get DOUBLEFANGS(): string { return 'Double Fangs'; }
-    public static get MEMORYBLOW(): string { return 'Memory Blow'; }
-    // TIER2
-    public static get SNAP(): string { return 'Snap'; }
-    public static get HEADBUTT(): string { return 'Headbutt'; }
-    public static get BRAINSHAKE(): string { return 'Brain Shake'; }
-    public static get SKULLCRACKER(): string { return 'Skull Cracker'; }
     public static get SLEDGEHAMMER(): string { return 'Sledgehammer'; }
+    // TIER2
+    public static get GIANTSLICE(): string { return 'Giant Slice'; }
+    public static get HEADBUTT(): string { return 'Headbutt'; }
+    public static get HYSTERICALSLAP(): string { return 'Hysterical Slap'; }
+    public static get BRAINSHAKE(): string { return 'Brain Shake'; }
     public static get RAMPAGE(): string { return 'Rampage'; }
     public static get ASSAULTDIVE(): string { return 'Assault Dive'; }
+    public static get MEMORYBLOW(): string { return 'Memory Blow'; }
     public static get VAJRABLAST(): string { return 'Vajra Blast'; }
-    public static get TEMPESTSLASH(): string { return 'Tempest Slash'; }
     public static get VICIOUSSTRIKE(): string { return 'Vicious Strike'; }
     public static get ONIKAGURA(): string { return 'Oni Kagura'; }
+    public static get CORNEREDFANG(): string { return 'Cornered Fang'; }
     public static get DORMINRUSH(): string { return 'Dormin Rush'; }
     // TIER3
-    public static get MIRACLEPUNCH(): string { return 'Miracle Punch'; }
-    public static get NEGATIVEPILE(): string { return 'Negative Pile'; }
-    public static get RISINGSLASH(): string { return 'Rising Slash'; }
-    public static get TRIPLEDOWN(): string { return 'Triple Down'; }
-    public static get MEGATONRAID(): string { return 'Megaton Raid'; }
-    public static get SWIFTSTRIKE(): string { return 'Swift Strike'; }
-    public static get FLASHBOMB(): string { return 'Flash Bomb'; }
     public static get MINDSLICE(): string { return 'Mind Slice'; }
-    public static get MYRIADSLASHES(): string { return 'Myriad Slashes'; }
+    public static get MIRACLEPUNCH(): string { return 'Miracle Punch'; }
+    public static get BADBEAT(): string { return 'Bad Beat'; }
+    public static get RISINGSLASH(): string { return 'Rising Slash'; }
+    public static get FLASHBOMB(): string { return 'Flash Bomb'; }
+    public static get SWIFTSTRIKE(): string { return 'Swift Strike'; }
+    public static get NEGATIVEPILE(): string { return 'Negative Pile'; }
+    
+    // TIER4
+    public static get TRIPLEDOWN(): string { return 'Triple Down'; }
+    public static get TEMPESTSLASH(): string { return 'Tempest Slash'; }
+    public static get BLOODBATH(): string { return 'Bloodbath'; }
     public static get HEATWAVE(): string { return 'Heat Wave'; }
+    public static get MYRIADSLASHES(): string { return 'Myriad Slashes'; }
+    
+    public static get MEGATONRAID(): string { return 'Megaton Raid'; }
+    
+    
+    
+    
+    
+    
+    public static get DEATHBOUND(): string { return 'Deathbound'; }
+
+    
+    
+    public static get DEADLYFURY(): string { return 'Deadly Fury'; }
     // Fire
     public static get AGI(): string { return 'Agi'; }
     public static get MARAGI(): string { return 'Maragi'; }
     public static get AGILAO(): string { return 'Agilao'; }
     public static get MARAGION(): string { return 'Maragion'; }
+    public static get AGIDYNE(): string { return 'Agidyne'; }
+    public static get MARAGIDYNE(): string { return 'Maragidyne'; }
     // Ice
     public static get BUFU(): string { return 'Bufu'; }
     public static get MABUFU(): string { return 'Mabufu'; }
     public static get BUFULA(): string { return 'Bufula'; }
     public static get MABUFULA(): string { return 'Mabufula'; }
+    public static get BUFUDYNE(): string { return 'Bufudyne'; }
+    public static get MABUFUDYNE(): string { return 'Mabufudyne'; }
     // Elec
     public static get ZIO(): string { return 'Zio'; }
     public static get MAZIO(): string { return 'Mazio'; }
     public static get ZIONGA(): string { return 'Zionga'; }
     public static get MAZIONGA(): string { return 'Mazionga'; }
+    public static get ZIODYNE(): string { return 'Ziodyne'; }
+    public static get MAZIODYNE(): string { return 'Maziodyne'; }
     // Wind
     public static get GARU(): string { return 'Garu'; }
     public static get MAGARU(): string { return 'Magaru'; }
     public static get GARULA(): string { return 'Garula'; }
     public static get MAGARULA(): string { return 'Magarula'; }
+    public static get GARUDYNE(): string { return 'Garudyne'; }
+    public static get MAGARUDYNE(): string { return 'Magarudyne'; }
     // Psy
     public static get PSI(): string { return 'Psi'; }
     public static get MAPSI(): string { return 'Mapsi'; }
     public static get PSIO(): string { return 'Psio'; }
     public static get MAPSIO(): string { return 'Mapsio'; }
+    public static get PSIODYNE(): string { return 'Psiodyne'; }
+    public static get MAPSIODYNE(): string { return 'Mapsiodyne'; }
     // Nuke
     public static get FREI(): string { return 'Frei'; }
     public static get MAFREI(): string { return 'Mafrei'; }
     public static get FREILA(): string { return 'Freila'; }
     public static get MAFREILA(): string { return 'Mafreila'; }
+    public static get FREIDYNE(): string { return 'Freidyne'; }
+    public static get MAFREIDYNE(): string { return 'Mafreidyne'; }
     // Bless
     public static get KOUHA(): string { return 'Kouha'; }
     public static get MAKOUHA(): string { return 'Makouha'; }
     public static get KOUGA(): string { return 'Kouga'; }
     public static get MAKOUGA(): string { return 'Makouga'; }
+    public static get KOUGAON(): string { return 'Kougaon'; }
+    public static get MAKOUGAON(): string { return 'Makougaon'; }
 
     public static get HAMA(): string { return 'Hama'; }
     public static get MAHAMA(): string { return 'Mahama'; }
     public static get HAMAON(): string { return 'Hamaon'; }
     public static get MAHAMAON(): string { return 'Mahamaon'; }
+    public static get TOUCHOFTHEDIVINE(): string { return 'Touch of the Divine'; }
+    public static get SAMSARA(): string { return 'Samsara'; }
     // Curse
     public static get EIHA(): string { return 'Eiha'; }
     public static get MAEIHA(): string { return 'Maeiha'; }
     public static get EIGA(): string { return 'Eiga'; }
     public static get MAEIGA(): string { return 'Maeiga'; }
+    public static get EIGAON(): string { return 'Eigaon'; }
+    public static get MAEIGAON(): string { return 'Maeigaon'; }
 
     public static get MUDO(): string { return 'Mudo'; }
     public static get MAMUDO(): string { return 'Mamudo'; }
@@ -298,6 +332,7 @@ export class SkillNameData {
     public static get MAMUDOON(): string { return 'Mamudoon'; }
     // Almighty
     public static get MEGIDO(): string { return 'Megido'; }
+    public static get MEGIDOLA(): string { return 'Megidola'; }
     public static get LIFEDRAIN(): string { return 'Life Drain'; }
     public static get SPIRITDRAIN(): string { return 'Spirit Drain'; }
     public static get STAGNANTAIR(): string { return 'Stagnant Air'; }
@@ -505,7 +540,25 @@ export class SkillNameData {
     public static get COUNTERSTRIKE(): string { return 'Counterstrike'; }
     public static get HIGHCOUNTER(): string { return 'High Counter'; }
     // Repel Skills
+    public static get REPELPHYS(): string { return 'Repel Phys'; }
+    public static get REPELFIRE(): string { return 'Repel Fire'; }
+    public static get REPELICE(): string { return 'Repel Ice'; }
+    public static get REPELELEC(): string { return 'Repel Elec'; }
+    public static get REPELWIND(): string { return 'Repel Wind'; }
+    public static get REPELPSY(): string { return 'Repel Psy'; }
+    public static get REPELNUKE(): string { return 'Repel Nuke'; }
+    public static get REPELBLESS(): string { return 'Repel Bless'; }
+    public static get REPELCURSE(): string { return 'Repel Curse'; }
     // Absorb Skills
+    public static get ABSORBPHYS(): string { return 'Absorb Phys'; }
+    public static get ABSORBFIRE(): string { return 'Absorb Fire'; }
+    public static get ABSORBICE(): string { return 'Absorb Ice'; }
+    public static get ABSORBELEC(): string { return 'Absorb Elec'; }
+    public static get ABSORBWIND(): string { return 'Absorb Wind'; }
+    public static get ABSORBPSY(): string { return 'Absorb Psy'; }
+    public static get ABSORBNUKE(): string { return 'Absorb Nuke'; }
+    public static get ABSORBBLESS(): string { return 'Absorb Bless'; }
+    public static get ABSORBCURSE(): string { return 'Absorb Curse'; }
     // Endurance Skills
     public static get ENDURE(): string { return 'Endure'; }
     public static get SURVIVALTRICK(): string { return 'Survival Trick'; }
@@ -520,15 +573,30 @@ export class SkillNameData {
     public static get INVIGORATE3(): string { return 'Invigorate 3'; }
     public static get HEATUP(): string { return 'Heat Up'; }
     public static get HEALINGFACTOR(): string { return 'Healing Factor'; }
+    public static get FASTHEAL(): string { return 'Fast Heal'; }
+    public static get INSTAHEAL(): string { return 'Insta-heal'; }
     // Master Skills
     public static get ATTACKMASTER(): string { return 'Attack Master'; }
     public static get DEFENSEMASTER(): string { return 'Defense Master'; }
     public static get SPEEDMASTER(): string { return 'Speed Master'; }
+    public static get ARMSMASTER(): string { return 'Arms Master'; }
+    public static get SPELLMASTER(): string { return 'Spell Master'; }
+    public static get GODOFWAR(): string { return 'God of War'; }
+    public static get GODOFTHEHEARTH(): string { return 'God Of the Hearth'; }
+    public static get MESSENGERGOD(): string { return 'Messenger God'; }
+    public static get GODOFTHEFORGE(): string { return 'God of the Forge'; }
+    public static get GODOFMAGIC(): string { return 'God of Magic'; }
     // Kill Skills
     // Growth Skills
     public static get GROWTH1(): string { return 'Growth 1'; }
     public static get GROWTH2(): string { return 'Growth 2'; }
     // Irregulars
+    public static get LIFECHAIN(): string { return 'Life Chain'; }
+    public static get SOULCHAIN(): string { return 'Soul Chain'; }
+    public static get POWERUP(): string { return 'Power Up'; }
+    public static get HUNKERDOWN(): string { return 'Hunker Down'; }
+    public static get TOUCHNGO(): string { return 'Touch N\' Go'; }
+    public static get LASTSTAND(): string { return 'Last Stand'; }
     public static get SHARPSTUDENT(): string { return 'Sharp Student'; }
 
 }
@@ -545,6 +613,9 @@ export class ItemNameData {
     public static get ZWEIHANDER(): string { return 'Zweihander'; }
     public static get GREATSWORD(): string { return 'Great Sword'; }
     public static get MEASURINGBLADE(): string { return 'Measuring Blade'; }
+    public static get GRANDFALCHION(): string { return 'Grand Falchion'; }
+    public static get VORPALSWORD(): string { return 'Vorpal Sword'; }
+    public static get WARBLADE(): string { return 'War Blade'; }
     // Grenade & Rocket Launchers
     public static get GRENADERIFLE(): string { return 'Grenade Rifle'; }
     public static get BAZOOKA(): string { return 'Bazooka'; }
@@ -555,6 +626,9 @@ export class ItemNameData {
     public static get M67(): string { return 'M67 Recoilless Rifle'; }
     public static get MILKORMGL(): string { return 'Milkor MGL'; }
     public static get HELLBARAGE(): string { return 'Hell Barage'; }
+    public static get M2GUSTAF(): string { return 'M2 Gustaf Recoilless Rifle'; }
+    public static get M32A1(): string { return 'M32 A1'; }
+    public static get SERPENTCANNON(): string { return 'Serpent Cannon'; }
     // One-handed Swords
     public static get SHORTSWORD(): string { return 'Short Sword'; }
     public static get STONEBLADE(): string { return 'Stone Blade'; }
@@ -565,6 +639,9 @@ export class ItemNameData {
     public static get SABRE(): string { return 'Sabre'; }
     public static get XIPHOS(): string { return 'Xiphos'; }
     public static get DAWNBLADE(): string { return 'Dawn Blade'; }
+    public static get OBSIDIANBLADE(): string { return 'Obsidian Blade'; }
+    public static get DAMASCUSBLADE(): string { return 'Damascus Blade'; }
+    public static get SCISSORBLADE(): string { return 'Scissor Blade'; }
     // Pistols
     public static get M1903(): string { return 'M1903'; }
     public static get WEBLEY(): string { return 'Webley'; }
@@ -575,6 +652,9 @@ export class ItemNameData {
     public static get BHP(): string { return 'Browning Hi Power'; }
     public static get AUTOMAGII(): string { return 'Automag II'; }
     public static get BEGUILINGNIGHT(): string { return 'Beguiling Night'; }
+    public static get BERETTAM9(): string { return 'Beretta M9'; }
+    public static get FIVESEVEN(): string { return 'Five-seveN'; }
+    public static get BINDINGPISTOL(): string { return 'Binding Pistol'; }
     // Fist Weapons
     public static get LEATHERKNUCKLEDUSTER(): string { return 'Leather Knuckleduster'; }
     public static get STUDDEDKNUCKLEDUSTER(): string { return 'Studded Knuckleduster'; }
@@ -585,6 +665,9 @@ export class ItemNameData {
     public static get BLADEDKNUCKLES(): string { return 'Bladed Knuckles'; }
     public static get GAUNTLETS(): string { return 'Gauntlets'; }
     public static get SCEPTERFIST(): string { return 'Scepter Fist'; }
+    public static get IRONFIST(): string { return 'Iron Fist'; }
+    public static get HELLKNUCKLES(): string { return 'Hell Knuckles'; }
+    public static get BEARGLOVES(): string { return 'Bear Gloves'; }
     // Revolvers
     public static get COLT(): string { return 'Colt'; }
     public static get COLTARMY(): string { return 'Colt Army'; }
@@ -595,6 +678,9 @@ export class ItemNameData {
     public static get COLTBUNTLINE(): string { return 'Colt Buntline'; }
     public static get COLTANACONDA(): string { return 'Colt Anaconda'; }
     public static get YELLOWKING(): string { return 'Yellow King'; }
+    public static get SWM500(): string { return 'S&W M500'; }
+    public static get SAA(): string { return 'Single Action Army'; }
+    public static get MIRRIRMINA(): string { return 'Mirrirmina'; }
     // Convex Blades
     public static get SICKLE(): string { return 'Sickle'; }
     public static get KOPIS(): string { return 'Kopis'; }
@@ -605,6 +691,9 @@ export class ItemNameData {
     public static get SHOTEL(): string { return 'Shotel'; }
     public static get KHOPESH(): string { return 'Khopesh'; }
     public static get DEMONMAW(): string { return 'Demon Maw'; }
+    public static get KUSARIGAMA(): string { return 'Kusarigama'; }
+    public static get SCYTHE(): string { return 'Scythe'; }
+    public static get PRONGHORN(): string { return 'Pronghorn'; }
     // Crossbows
     public static get CROSSBOLT(): string { return 'Crossbolt'; }
     public static get BOWGUN(): string { return 'Bowgun'; }
@@ -615,6 +704,9 @@ export class ItemNameData {
     public static get RECURVECROSSBOW(): string { return 'Recurve Crossbow'; }
     public static get HUNTINGCROSSBOW(): string { return 'Hunting Crossbow'; }
     public static get SAMSARA(): string { return 'Samsara'; }
+    public static get HEAVYCROSSBOW(): string { return 'Heavy Crossbow'; }
+    public static get PENETRATORCROSSBOW(): string { return 'Penetrator Crossbow'; }
+    public static get CONQUERINGCROSSBOW(): string { return 'Conquering Crossbow'; }
     // Polearms
     public static get CROSSPOLE(): string { return 'Crosspole'; }
     public static get SPEAR(): string { return 'Spear'; }
@@ -625,6 +717,9 @@ export class ItemNameData {
     public static get GUISARME(): string { return 'Guisarme'; }
     public static get BARDICHE(): string { return 'Bardiche'; }
     public static get HOUNDOFCULAINN(): string { return 'Hound of Culainn'; }
+    public static get FAUCHARD(): string { return 'Fauchard'; }
+    public static get NAGINATA(): string { return 'Naginata'; }
+    public static get UNICORNHORN(): string { return 'Unicorn Horn'; }
     // Rifles
     public static get OLDRIFLE(): string { return 'Old Rifle'; }
     public static get M1GARAND(): string { return 'M1 Garand'; }
@@ -635,6 +730,9 @@ export class ItemNameData {
     public static get WA2000(): string { return 'WA 2000'; }
     public static get BARRETTM82(): string { return 'Barrett M82'; }
     public static get PENETRATOR(): string { return 'Penetrator'; }
+    public static get M24(): string { return 'M24'; }
+    public static get BARRETTM95(): string { return 'Barrett M95'; }
+    public static get ANGELICSPEAR(): string { return 'Angelic Spear'; }
     // Whips
     public static get WHIP(): string { return 'Whip'; }
     public static get KANGAROOWHIP(): string { return 'Kangaroo Whip'; }
@@ -645,6 +743,9 @@ export class ItemNameData {
     public static get FUNDOKUSARI(): string { return 'Fundo Kusari'; }
     public static get SKINRIPPER(): string { return 'Skin Ripper'; }
     public static get BEASTANTENNA(): string { return 'Beast Antenna'; }
+    public static get BLADEDWHIP(): string { return 'Bladed Whip'; }
+    public static get SCOURGE(): string { return 'Scourge'; }
+    public static get MASQUERADERIBBON(): string { return 'Masquerade Ribbon'; }
     // SMGs
     public static get MACHINEPISTOL(): string { return 'Machine Pistol'; }
     public static get STEN(): string { return 'Sten'; }
@@ -655,6 +756,9 @@ export class ItemNameData {
     public static get MP40(): string { return 'MP40'; }
     public static get TEC9(): string { return 'Tec-9'; }
     public static get RAGINGSTORM(): string { return 'Raging Storm'; }
+    public static get MAC10(): string { return 'Mac-10'; }
+    public static get MP7(): string { return 'MP-7'; }
+    public static get ELPRESIDENTE(): string { return 'El Presidente'; }
     // Daggers
     public static get SHIV(): string { return 'Shiv'; }
     public static get ICEPICK(): string { return 'Ice Pick'; }
@@ -665,6 +769,9 @@ export class ItemNameData {
     public static get DAGGER(): string { return 'Dagger'; }
     public static get MAGEMASHER(): string { return 'Mage Masher'; }
     public static get RULEBREAKER(): string { return 'Rule Breaker'; }
+    public static get CHOPPER(): string { return 'Chopper'; }
+    public static get PROGKNIFE(): string { return 'Prog Knife'; }
+    public static get TAUROCTONY(): string { return 'Tauroctony'; }
     public static get MAINGAUCHE(): string { return 'Main Gauche'; }
     // Slingshots
     public static get SLINGSHOT(): string { return 'Slingshot'; }
@@ -676,6 +783,9 @@ export class ItemNameData {
     public static get MOUNTLIANG(): string { return 'Mount Liang'; }
     public static get UPSILON(): string { return 'Upsilon'; }
     public static get CATNAP(): string { return 'Cat Nap'; }
+    public static get NORTHERNLIGHTS(): string { return 'Northern Lights'; }
+    public static get METEORSHOWER(): string { return 'Meteor Shower'; }
+    public static get SHADOWSLING(): string { return 'Shadow Sling'; }
     // ARMOR
     // Mystic
     public static get SILKENSHIRT(): string { return 'Silken Shirt'; }
@@ -689,7 +799,7 @@ export class ItemNameData {
     public static get BLACKGARB(): string { return 'Black Garb'; }
     public static get CARMAGNOLE(): string { return 'Carmagnole'; }
     public static get MADUINGEAR(): string { return 'Maduin Gear'; }
-    public static get JADEGOWN(): string { return 'Jade Gown'; }
+    public static get BUDDHAROBE(): string { return 'Buddha Robe'; }
     public static get GAIAGEAR(): string { return 'Gaia Gear'; }
     public static get CLERICSROBES(): string { return 'Cleric\'s Robes'; }
     public static get LORDLYROBES(): string { return 'Lordly Robes'; }
@@ -713,9 +823,9 @@ export class ItemNameData {
     public static get ADAMANTVEST(): string { return 'Adamant Vest'; }
     public static get BARRELCOAT(): string { return 'Barrel Coat'; }
     public static get POWERVEST(): string { return 'Power Vest'; }
-    public static get GIGASPLATE(): string { return 'Gigas Plate'; }
+    public static get CURSEDGUARD(): string { return 'Cursed Guard'; }
     public static get MINERVABUSTIER(): string { return 'Minerva Bustier'; }
-    public static get RUBBERSUIT(): string { return 'Rubber Suit'; }
+    public static get GIGASPLATE(): string { return 'Gigas Plate'; }
     public static get MIRAGEVEST(): string { return 'Mirage Vest'; }
     public static get BRAVESUIT(): string { return 'Brave Suit'; }
     public static get BABREBAYAN(): string { return 'Babr-e Bayan'; }
@@ -729,11 +839,11 @@ export class ItemNameData {
     public static get GOLDENARMOR(): string { return 'Golden Armor'; }
     public static get STEELARMOR(): string { return 'Steel Armor'; }
     public static get DEMONMAIL(): string { return 'Demon Mail'; }
-    public static get BONEMAIL(): string { return 'Bone Mail'; }
-    public static get LUCIFERGUARD(): string { return 'Lucifer Guard'; }
+    public static get PLATEARMOR(): string { return 'Plate Armor'; }
+    public static get CARABINEERMAIL(): string { return 'Carabineer Mail'; }
     public static get MIRRORMAIL(): string { return 'Mirror Mail'; }
     public static get PLATINUMARMOR(): string { return 'Platinum Armor'; }
-    public static get CARABINEERMAIL(): string { return 'Carabineer Mail'; }
+    public static get BONEMAIL(): string { return 'Bone Mail'; }
     public static get DRAGONMAIL(): string { return 'Dragon Mail'; }
     public static get GRANDARMOR(): string { return 'Grand Armor'; }
     public static get MAXIMILLIAN(): string { return 'Maximillian'; }
@@ -751,8 +861,8 @@ export class ItemNameData {
     public static get FLAMESHIELD(): string { return 'Flame Shield'; }
     public static get DIAMONDSHIELD(): string { return 'Diamond Shield'; }
     public static get PLATINUMSHIELD(): string { return 'Platinum Shield'; }
-    public static get DRAGONSHIELD(): string { return 'Dragon Shield'; }
     public static get CRYSTALSHIELD(): string { return 'Crystal Shield'; }
+    public static get DRAGONSHIELD(): string { return 'Dragon Shield'; }
     public static get KAISERSHIELD(): string { return 'Kaiser Shield '; }
     public static get DEMONSHIELD(): string { return 'Demon Shield'; }
     public static get VENETIANSHIELD(): string { return 'Venetian Shield'; }
@@ -824,6 +934,7 @@ export class ItemNameData {
     public static get PHEASANTNETSUKE(): string { return 'Pheasant Netsuke'; }
     public static get REVENGEMIRROR(): string { return 'Revenge Mirror'; }
     public static get SHOCKBAND(): string { return 'Shock Band'; }
+    public static get LEGIONSJAIL(): string { return 'Legion\'s Jail'; }
     public static get WHOPPERBADGE(): string { return 'Whopper Badge'; }
     public static get MINDCHOKER(): string { return 'Mind Choker'; }
     public static get MUSCLEANKLET(): string { return 'Muscle Anklet'; }
@@ -832,25 +943,28 @@ export class ItemNameData {
     public static get SWIFTSOCKS(): string { return 'Swift Socks'; }
     public static get FENGSHUICHARM(): string { return 'Feng Shui Charm'; }
     public static get KNIGHTCREST(): string { return 'Knight Crest'; }
-
-    public static get HUAKHON(): string { return 'Hua Khon'; }
-
     public static get HERMESSANDALS(): string { return 'Hermes Sandals'; }
     public static get BALANCEBELT(): string { return 'Balance Belt'; }
     public static get GUNCHARM(): string { return 'Gun Charm'; }
     public static get FIGHTERSCHARM(): string { return 'Fighter\'s Charm'; }
     public static get TURTLESHELLCHOKER(): string { return 'Turtleshell Choker'; }
+    public static get PETRAGENETRIX(): string { return 'Petra Genetrix'; }
+    public static get HUAKHON(): string { return 'Hua Khon'; }
+    public static get DAFFODILS(): string { return 'Daffodils'; }
     public static get HEALINGADHESIVE1(): string { return 'Healing Adhesive 1'; }
     public static get INVIGORATINGPATCH1(): string { return 'Invigorating Patch 1'; }
+    public static get BUFFANKLET(): string { return 'Buff Anklet'; }
     public static get RUNEAMULET(): string { return 'Rune Amulet'; }
     public static get ARMADABELT(): string { return 'Armada Belt'; }
-
     public static get CHEETAHSOCKS(): string { return 'Cheetah Socks'; }
-    public static get MUNEHUNEIDOL(): string { return 'Munehune Idol'; }
+    public static get FORTUNECHARM(): string { return 'Fortune Charm'; }
+    public static get PALADINCREST(): string { return 'Paladin Crest'; }
+    public static get MENEHUNEIDOL(): string { return 'Menehune Idol'; }
     public static get TIKIKEYCHAIN(): string { return 'Tiki Keychain'; }
     public static get HAWAIIANRING(): string { return 'Hawaiian Ring'; }
     public static get HONUCHARM(): string { return 'Honu Charm'; }
-    public static get HACHIMANBELT(): string { return 'Hachiman Belt'; }
+    public static get RESISTBELT(): string { return 'Resist Belt'; }
+    public static get DIAMONDRING(): string { return 'Diamond Ring'; }
     public static get IGNISRING(): string { return 'Ignis Ring'; }
     public static get ICERING(): string { return 'Ice Ring'; }
     public static get BLITZRING(): string { return 'Blitz Ring'; }
@@ -859,37 +973,42 @@ export class ItemNameData {
     public static get PSYCHRING(): string { return 'Psych Ring'; }
     public static get HEAVENRING(): string { return 'Heaven Ring'; }
     public static get MIDNIGHTRING(): string { return 'Midnight Ring'; }
-    public static get DIAMONDRING(): string { return 'Diamond Ring'; }
     public static get HEROEYEPATCH(): string { return 'Hero Eyepatch'; }
+    public static get OPALRING(): string { return 'Opal Ring'; }
+    public static get HEALINGADHESIVE2(): string { return 'Healing Adhesive 2'; }
+    public static get INVIGORATINGPATCH2(): string { return 'Invigorating Patch 2'; }
+
+    
     public static get SHIELDHELMET(): string { return 'Shield Helmet'; }
     public static get ATTACHMENTPEARL(): string { return 'Attachment Pearl'; }
     public static get HUNGERCHARM(): string { return 'Hunger Charm'; }
     public static get CAFEHOUSECHARM(): string { return 'Cafe House Charm'; }
     public static get REFLECTIONGEM(): string { return 'Reflection Gem'; }
-
-    public static get LEGIONSJAIL(): string { return 'Legion\'s Jail'; }
-    public static get DAFFODILS(): string { return 'Daffodils'; }
     public static get NIGHTSTALKER(): string { return 'Nightstalker'; }
-    public static get PETRAGENETRIX(): string { return 'Petra Genetrix'; }
     public static get FATEDFLAME(): string { return 'Fated Flame'; }
-    public static get THUNDERBAND(): string { return 'Thunder Band'; }
-    public static get OPALRING(): string { return 'Opal Ring'; }
-    public static get HEALINGADHESIVE2(): string { return 'Healing Adhesive 2'; }
-    public static get INVIGORATINGPATCH2(): string { return 'Invigorating Patch 2'; }
+
+
     public static get VIGORSASH(): string { return 'Vigor Sash'; }
     public static get LEVIATHANBADGE(): string { return 'Leviathan Badge'; }
     public static get SPIRITCHOKER(): string { return 'Spirit Choker'; }
-    public static get HERCULESANKLET(): string { return 'Hercules Anklet'; }
+    public static get GIANTSANKLET(): string { return 'Giant\'s Anklet'; }
     public static get SORCERERAMULET(): string { return 'Sorcerer Amulet'; }
     public static get TOUGHBELT(): string { return 'Tough Belt'; }
     public static get GIGASBELT(): string { return 'Gigas Belt'; }
     public static get SONICSOCKS(): string { return 'Sonic Socks'; }
-    public static get TYCHECHARM(): string { return 'Tyche Charm'; }
-    public static get ROLANDMEDAL(): string { return 'Roland Medal'; }
-    public static get DISPELRING(): string { return 'Dispel Ring'; }
+    public static get KARMACHARM(): string { return 'Karma Charm'; }
+    public static get HEROSMEDAL(): string { return 'Hero\'s Medal'; }
+    
+    
+    public static get HERCULEANANKLET(): string { return 'Herculean Anklet'; }
+    public static get ODINSAMULET(): string { return 'Odin\'s Amulet'; }
     public static get GAIABELT(): string { return 'Gaia Belt'; }
     public static get SKANDASOCKS(): string { return 'Skanda Socks'; }
+    public static get TYCHECHARM(): string { return 'Tyche Charm'; }
+    public static get ROLANDMEDAL(): string { return 'Roland Medal'; }
     public static get KHAMRAITAO(): string { return 'Khamrai Tao'; }
+    public static get HACHIMANBELT(): string { return 'Hachiman Belt'; }
+    public static get DISPELRING(): string { return 'Dispel Ring'; }
     public static get RINGOFRENEWAL(): string { return 'Ring of Renewal'; }
     public static get SOULFONT(): string { return 'Soul Font'; }
     public static get SAGESRING(): string { return 'Sage\'s Ring'; }
@@ -1013,6 +1132,7 @@ export class ItemNameData {
     public static get IRONSAND(): string { return 'Iron Sand'; }
     public static get MERCURYVIAL(): string { return 'Mercury Vial'; }
     public static get REDPHOSPHORUS(): string { return 'Red Phosphorus'; }
+    public static get ALUMINUMSHEETS(): string { return 'Aluminum Sheets'; }
     public static get BLACKKOGATANA(): string { return 'Black Kogatana'; }
     public static get BLACKROBE(): string { return 'Black Robe'; }
     public static get BLACKROCK(): string { return 'Black Rock'; }

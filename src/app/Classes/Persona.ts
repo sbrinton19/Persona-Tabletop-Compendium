@@ -1,5 +1,5 @@
 import { PersonaSkill } from './Skill';
-import { Drop, Item } from './Item';
+import { Drop, Item, Loot } from './Item';
 
 export enum ElemResist {
     Weak = 0,
@@ -127,6 +127,13 @@ export class Persona {
             this.skills = skills;
             this.skills.forEach(skill => {
                 skill.skill.personaSources.push(`${this.name}|${this.id}`);
+                const temp = skill.level === 0 ? this.level : skill.level;
+                if (skill.skill.minLevel > temp) {
+                    console.warn(`The persona ${this.name} learns the skill ${skill.skill.name} before its recommended minimum level`);
+                }
+                if (skill.skill.minLevel + 20 < temp && skill.skill.minLevel !== 0) {
+                    console.warn(`The persona ${this.name} learns the skill ${skill.skill.name} after its recommended maximum level`);
+                }
             });
             this.transmutes = transmutes;
             this.negotiates = negotiates;
@@ -150,6 +157,11 @@ export class Persona {
             return;
         }
         this.drops.forEach(drop => {
+            if (drop.item instanceof Loot) {
+                if (!drop.item.arcanaSources.includes(this.arcana)) {
+                    console.warn(`${drop.name} was assigned to ${this.name} which is the wrong drop for this Arcana`);
+                }
+            }
             if (drop.low === drop.high) {
                 drop.rollWinDisplay = `${drop.high}`;
             } else {

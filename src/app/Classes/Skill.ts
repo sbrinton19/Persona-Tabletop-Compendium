@@ -26,14 +26,16 @@ export class Skill {
     readonly name: string;
     readonly cost: number;
     readonly element: Element;
+    readonly minLevel: number;
     readonly description: string;
     personaSources: string[] = [];
 
-    constructor(name: string, cost: number, element: Element, description: string, createSkillCards = true) {
+    constructor(name: string, cost: number, element: Element, description: string, minLevel = 0, createSkillCards = true) {
         this.id = Skill.idSource++;
         this.name = name;
         this.cost = cost;
         this.element = element;
+        this.minLevel = minLevel
         this.description = description;
         if (createSkillCards) {
             this.createSkillCards();
@@ -61,6 +63,17 @@ export class Skill {
         } else {
             return `${this.cost} SP`;
         }
+    }
+}
+
+export class PhysGunSkill extends Skill {
+    readonly magSize: number;
+    readonly magCount: number;
+    constructor(name: string, cost: number, element: Element, minLevel: number, description: string, createSkillCards = true) {
+        if (!(element === Element.Physical || element === Element.Gun)) {
+            console.warn(`A physical/gun skill object was made from a different element skill: ${name}`);
+        }
+        super(name, cost, element, description, minLevel, createSkillCards);
     }
 }
 

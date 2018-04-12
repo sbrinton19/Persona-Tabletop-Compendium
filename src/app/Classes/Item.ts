@@ -4,13 +4,13 @@ export enum ItemType {
     Weapon = 1,
     Armor,
     Accessory,
-    Recovery,
+    Consumable,
     SkillCard,
     Loot,
     None
 }
 
-export enum RecoveryType {
+export enum ConsumableType {
     Battle = 1,
     Roam,
     Both,
@@ -188,13 +188,13 @@ export class Accessory extends Item {
     }
 }
 
-export class Recovery extends Item {
-    readonly recoveryType: RecoveryType;
+export class Consumable extends Item {
+    readonly consumableType: ConsumableType;
 
     constructor(name: string, schedule: number, origin: OriginType[], description: string, special: string,
-    recoveryType: RecoveryType) {
-        super(name, schedule, origin, description, special, ItemType.Recovery);
-        this.recoveryType = recoveryType;
+    consumableType: ConsumableType) {
+        super(name, schedule, origin, description, special, ItemType.Consumable);
+        this.consumableType = consumableType;
     }
 }
 
