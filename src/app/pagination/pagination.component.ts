@@ -81,6 +81,9 @@ export class PaginationComponent<T> implements OnInit {
 
   getMaxPage(): void {
     this.maxPage = Math.ceil(this.activeData.length / this.perPage);
+    if (this.maxPage === 0) {
+      this.maxPage = 1;
+    }
     if (this.currPage > this.maxPage) {
       this.currPage = this.maxPage;
     }
