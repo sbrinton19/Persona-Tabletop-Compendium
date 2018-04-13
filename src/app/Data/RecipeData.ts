@@ -21,13 +21,20 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.HARITI]
         ],
     personaeMap[PersonaeNameData.BUGS]),
-    /* new Recipe([
-            personaeMap[PersonaeNameData.WHITERIDER],
-            personaeMap[PersonaeNameData.REDRIDER],
-            personaeMap[PersonaeNameData.BLACKRIDER],
-            personaeMap[PersonaeNameData.PALERIDER]
-            ],
-        personaeMap[PersonaeNameData.TRUMPETER]),
+    new Recipe([
+        personaeMap[PersonaeNameData.ISIS],
+        personaeMap[PersonaeNameData.THOTH],
+        personaeMap[PersonaeNameData.ANUBIS],
+        personaeMap[PersonaeNameData.HORUS]
+        ],
+    personaeMap[PersonaeNameData.SET]),
+    new Recipe([
+        personaeMap[PersonaeNameData.WHITERIDER],
+        personaeMap[PersonaeNameData.REDRIDER],
+        personaeMap[PersonaeNameData.BLACKRIDER],
+        personaeMap[PersonaeNameData.PALERIDER]
+        ],
+    personaeMap[PersonaeNameData.TRUMPETER]),
     /*
     new Recipe([
             personaeMap[PersonaeNameData.BISHAMONTEN],
@@ -45,7 +52,7 @@ export const specialCombos: Recipe[] = [
 
     new Recipe([
             personaeMap[PersonaeNameData.HECATONCHEIRES],
-            personaeMap[PersonaeNameData.WHITERIDER],
+            // personaeMap[PersonaeNameData.WHITERIDER], provisionally removing this component
             personaeMap[PersonaeNameData.THOR],
             personaeMap[PersonaeNameData.YOSHITSUNE],
             personaeMap[PersonaeNameData.CUCHULAINN]
@@ -99,13 +106,6 @@ export const specialCombos: Recipe[] = [
             ],
         personaeMap[PersonaeNameData.SATANAEL]),
     new Recipe([
-            personaeMap[PersonaeNameData.ISIS],
-            personaeMap[PersonaeNameData.THOTH],
-            personaeMap[PersonaeNameData.ANUBIS],
-            personaeMap[PersonaeNameData.HORUS]
-            ],
-        personaeMap[PersonaeNameData.SETH]),
-    new Recipe([
             personaeMap[PersonaeNameData.MITHRA],
             personaeMap[PersonaeNameData.MITHRAS],
             personaeMap[PersonaeNameData.MELCHIZDEK],
@@ -154,11 +154,6 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.BARONG]
             ],
         personaeMap[PersonaeNameData.SHIVA]),
-    new Recipe([
-            personaeMap[PersonaeNameData.QUEENMAB],
-            personaeMap[PersonaeNameData.CUCHULAINN]
-            ],
-        personaeMap[PersonaeNameData.MORDRED]),
     new Recipe([
             personaeMap[PersonaeNameData.MERLIN],
             personaeMap[PersonaeNameData.MORDRED]

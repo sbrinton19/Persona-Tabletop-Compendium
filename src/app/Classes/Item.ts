@@ -22,7 +22,8 @@ export enum OriginType {
     Store = 2,
     Chest = 4,
     Drop = 8,
-    Error = 16,
+    Confidant = 16,
+    Error = 32,
     None = 0
 }
 
