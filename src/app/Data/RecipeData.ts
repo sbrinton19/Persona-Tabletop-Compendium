@@ -35,6 +35,12 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.PALERIDER]
         ],
     personaeMap[PersonaeNameData.TRUMPETER]),
+    new Recipe([
+        personaeMap[PersonaeNameData.JACKOLANTERN],
+        personaeMap[PersonaeNameData.JACKFROST],
+        personaeMap[PersonaeNameData.KINGFROST]
+        ],
+    personaeMap[PersonaeNameData.BLACKFROST]),
     /*
     new Recipe([
             personaeMap[PersonaeNameData.BISHAMONTEN],
@@ -43,12 +49,7 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.ZOUCHOUTEN]
             ],
         personaeMap[PersonaeNameData.ASURA]),
-    new Recipe([
-            personaeMap[PersonaeNameData.JACKOLANTERN],
-            personaeMap[PersonaeNameData.JACKFROST],
-            personaeMap[PersonaeNameData.KINGFROST]
-            ],
-        personaeMap[PersonaeNameData.BLACKFROST]),
+
 
     new Recipe([
             personaeMap[PersonaeNameData.HECATONCHEIRES],

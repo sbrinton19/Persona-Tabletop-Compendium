@@ -51,11 +51,11 @@ export class Skill {
             `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main));
     }
 
-    getSkillElement() {
+    getSkillElement() : string {
         return Element[this.element];
     }
 
-    formatCost() {
+    formatCost() : string {
         if (this.element === Element.Physical || this.element === Element.Gun) {
             return `${this.cost}% HP`;
         } else if (this.element === Element.Passive) {

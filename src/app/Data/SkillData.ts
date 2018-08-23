@@ -91,10 +91,12 @@ export const skillList: Skill[] =
     'Deals 2((STR BONUS)d6 + PAB + 15); Max 11d6; Brainwash FV=16; AoE'),
     new PhysGunSkill(SkillNameData.VORPALBLADE, 23, Element.Physical, 62,
     'Deals 3((STR BONUS)d6 + PAB + 8); Max 12d6'),
-
     // TIER6
     new PhysGunSkill(SkillNameData.GODSHAND, 21, Element.Physical, 67,
     'Deals 4((STR BONUS)d6 + PAB + 6); Max 13d6'),
+    new PhysGunSkill(SkillNameData.BRAVEBLADE, 24, Element.Physical, 72,
+    'Deals 4((STR BONUS)d6 + PAB + 15); Max 14d6'),
+    
 
     // Fire
     new Skill(SkillNameData.AGI, 4, Element.Fire,
@@ -130,6 +132,10 @@ export const skillList: Skill[] =
     'Deals 3*((MAG BONUS)d6 + 10 + (MAG BONUS)); Max 20d6; Freeze FV=18'),
     new Skill(SkillNameData.MABUFURA, 44, Element.Ice,
     'Deals 3*((MAG BONUS)d6 + 10 + (MAG BONUS)); Max 20d6; Freeze FV=18; AoE=2'),
+    new Skill(SkillNameData.DIAMONDDUST, 48, Element.Ice,
+    'Deals 4*((MAG BONUS)d6 + 10 + (MAG BONUS)); Max 20d6; Freeze FV=18'),
+    new Skill(SkillNameData.ICEAGE, 54, Element.Ice,
+    'Deals 4*((MAG BONUS)d6 + 10 + (MAG BONUS)); Max 20d6; Freeze FV=18; AoE=2'),
     // Elec
     new Skill(SkillNameData.ZIO, 4, Element.Elec,
     'Deals 1/2((MAG BONUS)d6 + 10 + (MAG BONUS)); Max 20d6; Shock FV=18'),
@@ -258,6 +264,8 @@ export const skillList: Skill[] =
     'Instakill FV=15'),
     new Skill(SkillNameData.MAMUDOON, 34, Element.Curse,
     'Instakill FV=15; AoE=1'),
+    new Skill(SkillNameData.DEATHSTOUCH, 30, Element.Curse,
+    'Instakill FV=12'),
     // Almighty
     new Skill(SkillNameData.MEGIDO, 15, Element.Almighty,
     'Deals (MAG BONUS)d6 + 2(MAG BONUS); Max 20d6; AoE=2'),
