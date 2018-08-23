@@ -41,6 +41,34 @@ export const specialCombos: Recipe[] = [
         personaeMap[PersonaeNameData.KINGFROST]
         ],
     personaeMap[PersonaeNameData.BLACKFROST]),
+    new Recipe([
+        personaeMap[PersonaeNameData.NAGA],
+        personaeMap[PersonaeNameData.RAJANAGA],
+        personaeMap[PersonaeNameData.ANANTA]
+        ],
+    personaeMap[PersonaeNameData.VASUKI]),
+    new Recipe([
+        personaeMap[PersonaeNameData.CHARLEMAGNE],
+        personaeMap[PersonaeNameData.SIEGFRIED]
+        ],
+    personaeMap[PersonaeNameData.OGIER]),
+    new Recipe([
+        personaeMap[PersonaeNameData.TITANIA],
+        personaeMap[PersonaeNameData.OBERON]
+        ],
+    personaeMap[PersonaeNameData.MERLIN]),
+    new Recipe([
+        personaeMap[PersonaeNameData.POWER],
+        personaeMap[PersonaeNameData.MELCHIZEDEK],
+        personaeMap[PersonaeNameData.DOMINION],
+        ],
+    personaeMap[PersonaeNameData.THRONE]),
+    new Recipe([
+        personaeMap[PersonaeNameData.KINKI],
+        personaeMap[PersonaeNameData.SUIKI],
+        personaeMap[PersonaeNameData.FUUKI],
+        ],
+    personaeMap[PersonaeNameData.ONGYOKI]),
     /*
     new Recipe([
             personaeMap[PersonaeNameData.BISHAMONTEN],
@@ -90,13 +118,6 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.URIEL],
             ],
         personaeMap[PersonaeNameData.MICHAEL]),
-
-    new Recipe([
-            personaeMap[PersonaeNameData.KINKI],
-            personaeMap[PersonaeNameData.SUIKI],
-            personaeMap[PersonaeNameData.FUUKI],
-            ],
-        personaeMap[PersonaeNameData.ONGYOKI]),
     new Recipe([
             personaeMap[PersonaeNameData.ARSENE],
             personaeMap[PersonaeNameData.ANZU],
@@ -115,19 +136,6 @@ export const specialCombos: Recipe[] = [
             ],
         personaeMap[PersonaeNameData.SRAOSHA]),
     new Recipe([
-            personaeMap[PersonaeNameData.POWER],
-            personaeMap[PersonaeNameData.MELCHIZDEK],
-            personaeMap[PersonaeNameData.DOMINION],
-            ],
-        personaeMap[PersonaeNameData.THRONE]),
-
-    new Recipe([
-            personaeMap[PersonaeNameData.NAGA],
-            personaeMap[PersonaeNameData.RAJANAGA],
-            personaeMap[PersonaeNameData.ANANTA],
-            ],
-        personaeMap[PersonaeNameData.VASUKI]),
-    new Recipe([
             personaeMap[PersonaeNameData.OKUNINUSHI],
             personaeMap[PersonaeNameData.SHIKIOUJI],
             personaeMap[PersonaeNameData.ARAHABAKI],
@@ -140,11 +148,6 @@ export const specialCombos: Recipe[] = [
             personaeMap[PersonaeNameData.BELIAL]
             ],
         personaeMap[PersonaeNameData.ALICE]),
-    new Recipe([
-            personaeMap[PersonaeNameData.TITANIA],
-            personaeMap[PersonaeNameData.OBERON]
-            ],
-        personaeMap[PersonaeNameData.MERLIN]),
     new Recipe([
             personaeMap[PersonaeNameData.PARVATI],
             personaeMap[PersonaeNameData.SHIVA]

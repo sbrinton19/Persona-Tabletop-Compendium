@@ -12,9 +12,9 @@ function getPersonaeList() {
 }
 
 function getPersonaeMap() {
-    let list: Persona[];
-    personaService.getPersonaeList().subscribe(personae => list = personae);
-    return list;
+    let map: Map<string, Persona>;
+    personaService.getPersonaeMap().subscribe(personae => map = personae);
+    return map;
 }
 const personaeList = getPersonaeList();
 const personaeMap = getPersonaeMap();

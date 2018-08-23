@@ -5,6 +5,11 @@ export class PersonaeNameData {
     public static CHARLEMAGNE = "Charlemagne";
     public static ENKIDU = 'Enkidu';
     public static PERSEUS = 'Perseus';
+    public static KUBERA = 'Kubera';
+    public static OGIER = 'Ogier';
+    public static ANGRAMAINYU = 'Angra Mainyu';
+    public static ROLAND = 'Roland';
+    public static OGMIOS = 'Ogmios';
     public static ARTHUR = 'Arthur';
     
     public static ARSENE = 'Arsene';
@@ -260,9 +265,13 @@ export class SkillNameData {
     public static DEADLYFURY = 'Deadly Fury';
     public static BRAINBUSTER = 'Brain Buster';
     public static VORPALBLADE = 'Vorpal Blade';
-    public static BRAVEBLADE = 'Brave Blade';
     // TIER6
     public static GODSHAND = 'God\'s Hand';
+    public static BRAVEBLADE = 'Brave Blade';
+    public static SWORDDANCE ='Sword Dance';
+    public static GIGANTOMACHIA = 'Gigantomachia';
+    public static AYAMUR = 'Ayamur';
+    public static AGNEYASTRA = 'Agneyastra';
 
     // Fire
     public static AGI = 'Agi';
@@ -273,6 +282,8 @@ export class SkillNameData {
     public static MARAGIDYNE = 'Maragidyne';
     public static AGIRA = 'Agira';
     public static MARAGIRA = 'Maragira';
+    public static INFERNO = 'Inferno';
+    public static BLAZINGHELL = 'Blazing Hell';
     // Ice
     public static BUFU = 'Bufu';
     public static MABUFU = 'Mabufu';
@@ -313,6 +324,8 @@ export class SkillNameData {
     public static MAPSIODYNE = 'Mapsiodyne';
     public static PSIONRA = 'Psionra';
     public static MAPSIONRA = 'Mapsionra';
+    public static PSYCHOFORCE = 'Psycho Force';
+    public static PSYCHOBLAST = 'Psycho Blast';
     // Nuke
     public static FREI = 'Frei';
     public static MAFREI = 'Mafrei';
@@ -347,12 +360,14 @@ export class SkillNameData {
     public static MAEIGAON = 'Maeigaon';
     public static EIGAONA = 'Eigaona';
     public static MAEIGAONA = 'Maeigaona';
-
+    public static DEMONICSHADE = 'Demonic Shade';
+    public static DEVILSWINGS = 'Devil\'s Wings';
     public static MUDO = 'Mudo';
     public static MAMUDO = 'Mamudo';
     public static MUDOON = 'Mudoon';
     public static MAMUDOON = 'Mamudoon';
     public static DEATHSTOUCH = 'Death\'s Touch';
+    public static DIEFORME = 'Die for Me!'
     // Almighty
     public static MEGIDO = 'Megido';
     public static MEGIDOLA = 'Megidola';
@@ -673,7 +688,7 @@ export class ItemNameData {
     public static ELEPHANTTRUNK = 'Elephant Trunk';
     public static STINGER = 'Stinger';
     public static JAVELIN = 'Javelin';
-    public static COMMANDO = 'Commando';
+    public static YAGRUSH = 'Yagrush';
     public static MERCILESS = 'Merciless';
     public static PUFFTHEMAGICDRAGON = 'Puff the Magic Dragon';
     // One-handed Swords
@@ -755,6 +770,9 @@ export class ItemNameData {
     public static PEACEMAKER = 'Peacemaker';
     public static JUDGE = 'Judge';
     public static FATE = 'Fate';
+    public static PEACEMAKERHP = 'Peacemaker HP';
+    public static SILVERBULLET = 'Silver Bullet';
+    public static HOLYSHACKLE = 'Holy Shackle';
     // Convex Blades
     public static SICKLE = 'Sickle';
     public static KOPIS = 'Kopis';
@@ -790,6 +808,9 @@ export class ItemNameData {
     public static GASTROPHETES = 'Gastrophetes';
     public static TULA = 'Tula';
     public static SUCCUBUSCROSSBOW = 'Succubus\' Crossbow';
+    public static ARASH = 'Arash';
+    public static EURYTUS = 'Eurytus';
+    public static DHANUSHA = 'Dhanusha';
     // Polearms
     public static CROSSPOLE = 'Crosspole';
     public static SPEAR = 'Spear';
@@ -864,6 +885,9 @@ export class ItemNameData {
     public static M16A2 = 'M16A2';
     public static DRUMTHOMPSON = 'Drum Thompson';
     public static THREEHEADED = 'Three Headed';
+    public static MICROUZI = 'Microuzi';
+    public static HONEYBADGER = 'Honey Badger';
+    public static HELLWALKER = 'Hell Walker';
     // Daggers
     public static SHIV = 'Shiv';
     public static ICEPICK = 'Ice Pick';
@@ -899,6 +923,9 @@ export class ItemNameData {
     public static INTERCEPTOR = 'Inteceptor';
     public static LIGHTNINGTHROWER = 'Lightning Thrower';
     public static ASTRA = 'Astra';
+    public static SAGITTA = 'Sagitta';
+    public static STARKILLER = 'Star Killer';
+    public static SUDARSHANA = 'Sudarshana';
     // ARMOR
     // Mystic
     public static SILKENSHIRT = 'Silken Shirt';
