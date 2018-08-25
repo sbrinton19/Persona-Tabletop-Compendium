@@ -156,7 +156,7 @@ export const weaponList: Weapon[] =
     new RangedWeapon(ItemNameData.ZHURONG, 6, [OriginType.Drop, OriginType.Store],
     'A strange pistol made to honor a possible fire goddess', 'Burn FV=12', 3, 2, 6, '4', 1, 8, 5),
     new RangedWeapon(ItemNameData.CASULL, 6, [OriginType.Chest],
-    'A magnificent handgun with bull and sacrifice iconography engraved across it', 'Killing an enemy heals 5% of max HP', 17, 3, 6, '7', 1, 7, 3),
+    'A Brutal handgun once wielded by a dangerous hunter', '', 18, 3, 6, '7', 1, 7, 3),
     // Fist Weapons
     new Weapon(ItemNameData.LEATHERKNUCKLEDUSTER, 1, [OriginType.Drop, OriginType.Store],
     'A simple leather knuckleduster', 'x2 STR BONUS', 1, 1, 4, '1', 1),
