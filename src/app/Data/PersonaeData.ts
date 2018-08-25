@@ -1,5 +1,5 @@
 import { Persona, Arcana, ElemResist } from '../Classes/Persona';
-import { Drop, SkillCardType, Item } from '../Classes/Item';
+import { Drop, SkillCardType, Item, ConsumableType } from '../Classes/Item';
 import { emptyItem, weaponList, armorList, lootList, consumableList, accessoryList, skillCardList } from './ItemData';
 import { PersonaeNameData, SkillNameData, ItemNameData } from './NameData';
 import { skillList } from './SkillData';
@@ -5700,7 +5700,6 @@ export const personaeList: Persona[] =
             false,
             ''
         ),
-// DATA Checked Line
         new Persona(
             PersonaeNameData.HANUMAN,
             Arcana.Star,
@@ -6625,7 +6624,7 @@ export const personaeList: Persona[] =
             [
                 drop(consumableList, ItemNameData.BEAD, 1, 4),
                 drop(consumableList, ItemNameData.BEADCHAIN, 5, 9),
-                drop(skillCardList, 'Power Up Ally', 10, 12),
+                drop(skillCardList, 'Power Up Main', 10, 12),
                 drop(weaponList, ItemNameData.DURENDAL, 13, 13),
             ], // negot
             [
@@ -6768,7 +6767,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.MAKAJAMAON, 0),
                 personaSkill(SkillNameData.PRESSINGSTANCE, 0),
                 personaSkill(SkillNameData.DEADLYFURY, 0),
-                personaSkill(SkillNameData.ARMSMASTER, 77),
+                personaSkill(SkillNameData.GODOFTHEFORGE, 77),
                 personaSkill(SkillNameData.REGENERATE3, 78),
                 personaSkill(SkillNameData.FIRMSTANCE, 79),
                 personaSkill(SkillNameData.AGNEYASTRA, 81)
@@ -6836,40 +6835,78 @@ export const personaeList: Persona[] =
             false,
             ''
         ),
-
         new Persona(
-            PersonaeNameData.KINKI,
-            Arcana.Death,
-            70,
-            [0, 0, 110, 115, 102.5, 105, 87.5],
-            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
-            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral],
+            PersonaeNameData.ASURA,
+            Arcana.Sun,
+            76,
+            [0, 0, 130, 120, 127.5, 122.5, 87.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Weak, ElemResist.Repel, ElemResist.Neutral, ElemResist.Neutral],
             [
-                personaSkill(SkillNameData.MAKOUGAONA, 0),
-                personaSkill(SkillNameData.MEDIARAHAN, 0),
-                personaSkill(SkillNameData.SAMARECARM, 0),
-                personaSkill(SkillNameData.BLESSAMP, 74),
-                personaSkill(SkillNameData.GODOFTHEHEARTH, 76),
-                personaSkill(SkillNameData.ABSORBBLESS, 77),
-                personaSkill(SkillNameData.SALVATION, 79)
+                personaSkill(SkillNameData.ATOMICFLARE, 0),
+                personaSkill(SkillNameData.MAHAMAON, 0),
+                personaSkill(SkillNameData.MARAKUKAJA, 0),
+                personaSkill(SkillNameData.GODOFWAR, 78),
+                personaSkill(SkillNameData.COSMICFLARE, 79),
+                personaSkill(SkillNameData.HIGHCOUNTER, 80),
+                personaSkill(SkillNameData.UNSHAKENWILL, 81)
             ], // skills
             [
-                weaponList.find(w => w.name === ItemNameData.LONGSWORD),
-                armorList.find(a => a.name === ItemNameData.SCALEARMOR),
-                accessoryList.find(a => a.name === ItemNameData.DIAMONDARMLET),
-                skillCardList.find(s => s.skillName === SkillNameData.BUFU && s.cardType === SkillCardType.Ally)
+                weaponList.find(w => w.name === ItemNameData.ASURASWRATH),
+                armorList.find(a => a.name === ItemNameData.BRAVESUIT),
+                emptyItem,
+                emptyItem
             ], // transmu
             [
-                drop(consumableList, ItemNameData.DEVILFRUIT, 1, 4),
-                drop(consumableList, ItemNameData.RANCIDGRAVY, 5, 9),
-                drop(weaponList, ItemNameData.BOWGUN, 10, 12),
-                drop(weaponList, ItemNameData.STONECROSSBOW, 13, 13),
+                drop(consumableList, ItemNameData.KONGOUOFUDA, 1, 4),
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 5, 9),
+                drop(consumableList, ItemNameData.BEADCHAIN, 10, 13)
             ], // negot
             [
-                drop(lootList, ItemNameData.TANNEDLEATHER, 2, 11),
-                drop(lootList, ItemNameData.MERCURYVIAL, 12, 16),
-                drop(consumableList, ItemNameData.BEAD, 17, 18),
-                drop(accessoryList, ItemNameData.RESISTBELT, 19, 20)
+                drop(lootList, ItemNameData.IRONSAND, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 17, 18),
+                drop(consumableList, ItemNameData.KONGOUOFUDA, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.FUTSUNUSHI,
+            Arcana.Magician,
+            76,
+            [0, 0, 135, 120, 117.5, 122.5, 92.5],
+            [ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.ALIDANCE, 0),
+                personaSkill(SkillNameData.MATARUKAJA, 0),
+                personaSkill(SkillNameData.VORPALBLADE, 0),
+                personaSkill(SkillNameData.CHARGE, 78),
+                personaSkill(SkillNameData.REGENERATE3, 79),
+                personaSkill(SkillNameData.APTPUPIL, 80),
+                personaSkill(SkillNameData.FIRMSTANCE, 81),
+                personaSkill(SkillNameData.SWORDDANCE, 82) // Intentionally Changed
+            ], // skills
+            [
+                emptyItem,
+                armorList.find(a => a.name === ItemNameData.HAGOROMO),
+                accessoryList.find(a => a.name === ItemNameData.RINGOFRENEWAL),
+                skillCardList.find(s => s.skillName === SkillNameData.CHARGE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 1, 4),
+                drop(consumableList, ItemNameData.BEADCHAIN, 5, 9),
+                drop(skillCardList, 'Charge Main', 10, 12),
+                drop(accessoryList, ItemNameData.RINGOFRENEWAL, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CORKWOOD, 2, 11),
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.KONGOUOFUDA, 17, 20)
             ], // drops
             false,
             false,
@@ -6877,6 +6914,1476 @@ export const personaeList: Persona[] =
             false,
             ''
         ),
+        new Persona(
+            PersonaeNameData.GABRIEL,
+            Arcana.Temperance,
+            77,
+            [0, 0, 107.5, 127.5, 120, 135, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.MABUFURA, 0),
+                personaSkill(SkillNameData.MAZIONRA, 0),
+                personaSkill(SkillNameData.DIVINEJUDGEMENT, 78),
+                personaSkill(SkillNameData.ALIDANCE, 79),
+                personaSkill(SkillNameData.EVADECURSE, 80),
+                personaSkill(SkillNameData.TOUCHNGO, 81),
+                personaSkill(SkillNameData.ICEAMP, 82),
+                personaSkill(SkillNameData.SALVATION, 83)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.SAGESRING),
+                skillCardList.find(s => s.skillName === SkillNameData.DIVINEJUDGEMENT && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Divine Judgement Ally', 10, 12),
+                drop(accessoryList, ItemNameData.SAGESRING, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TINCLASP, 2, 11),
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.DRINKINGSOUL, 17, 18),
+                drop(consumableList, ItemNameData.BEAD, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.GILGAMESH,
+            Arcana.Emperor,
+            77,
+            [0, 0, 140, 117.5, 122.5, 130, 80],
+            [ElemResist.Neutral, ElemResist.Null, ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.MEGIDOLAON, 0),
+                personaSkill(SkillNameData.GODOFTHEFORGE, 0),
+                personaSkill(SkillNameData.LIFECHAIN, 78),
+                personaSkill(SkillNameData.ENDURINGSOUL, 79),
+                personaSkill(SkillNameData.SWORDDANCE, 80),
+                personaSkill(SkillNameData.BLACKWINGS, 82),
+                personaSkill(SkillNameData.ALMIGHTYBOOST, 84)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.EA),
+                armorList.find(a => a.name === ItemNameData.BABREBAYAN),
+                emptyItem,
+                emptyItem
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BALMOFLIFE, 1, 4),
+                drop(consumableList, ItemNameData.BEAD, 5, 9),
+                drop(consumableList, ItemNameData.BEADCHAIN, 10, 12),
+                drop(accessoryList, ItemNameData.ROLANDMEDAL, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.REVIVALBEAD, 17, 18),
+                drop(consumableList, ItemNameData.BALMOFLIFE, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.LAKSHMI,
+            Arcana.Fortune,
+            77,
+            [0, 0, 110, 132.5, 117.5, 125, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Resist, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Resist, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.BUFURA, 0),
+                personaSkill(SkillNameData.DIARAHAN, 0),
+                personaSkill(SkillNameData.LULLABY, 0),
+                personaSkill(SkillNameData.MEDIARAHAN, 78),
+                personaSkill(SkillNameData.CLIMATEDECORUM, 79),
+                personaSkill(SkillNameData.AMRITASHOWER, 80),
+                personaSkill(SkillNameData.LIFEAID, 82)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.LOTUS),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.TYCHECHARM),
+                skillCardList.find(s => s.skillName === SkillNameData.LIFEAID && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOULFOOD, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Life Aid Ally', 10, 12),
+                drop(accessoryList, ItemNameData.TYCHECHARM, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.MERCURYVIAL, 5, 16),
+                drop(consumableList, ItemNameData.DRINKINGSOUL, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.KALI,
+            Arcana.Empress,
+            77,
+            [0, 0, 132.5, 112.5, 115, 132.5, 102.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Neutral, ElemResist.Resist],
+            [
+                personaSkill(SkillNameData.PSIONRA, 0),
+                personaSkill(SkillNameData.TENTARAFOO, 0),
+                personaSkill(SkillNameData.VORPALBLADE, 0),
+                personaSkill(SkillNameData.EVADEICE, 79),
+                personaSkill(SkillNameData.HIGHCOUNTER, 80),
+                personaSkill(SkillNameData.MAPSIONRA, 81),
+                personaSkill(SkillNameData.ABSORBNUKE, 82)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.SKANDASOCKS),
+                skillCardList.find(s => s.skillName === SkillNameData.VORPALBLADE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.REVIVALBEAD, 1, 4),
+                drop(consumableList, ItemNameData.BEAD, 5, 9),
+                drop(accessoryList, ItemNameData.SKANDASOCKS, 8, 11),
+                drop(skillCardList, 'Vorpal Blade Main', 11, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.REVIVALBEAD, 17, 18),
+                drop(consumableList, ItemNameData.BEAD, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.RAPHAEL,
+            Arcana.Lovers,
+            78,
+            [0, 0, 142.5, 112.5, 122.5, 137.5, 87.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.DEKAJA, 0),
+                personaSkill(SkillNameData.CHARGE, 0),
+                personaSkill(SkillNameData.HEATRISER, 80),
+                personaSkill(SkillNameData.GROWTH3, 81),
+                personaSkill(SkillNameData.ADVERSERESOLVE, 82),
+                personaSkill(SkillNameData.GODOFWAR, 83)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.SOULFONT),
+                skillCardList.find(s => s.skillName === SkillNameData.GODOFWAR && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.DRINKINGSOUL, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'God of War Ally', 10, 12),
+                drop(accessoryList, ItemNameData.SOULFONT, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.PLANTBALM, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.DRINKINGSOUL, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.LUGH,
+            Arcana.Moon,
+            78,
+            [0, 0, 135, 115, 120, 112.5, 100],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null,
+            ElemResist.Null, ElemResist.Weak, ElemResist.Repel, ElemResist.Resist, ElemResist.Resist],
+            [
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.MAZIONRA, 0),
+                personaSkill(SkillNameData.GODOFWAR, 0),
+                personaSkill(SkillNameData.SHOCKBOOST, 79),
+                personaSkill(SkillNameData.THUNDERREIGN, 80),
+                personaSkill(SkillNameData.BLOODSUCKER, 81),
+                personaSkill(SkillNameData.REPELPHYS, 83)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.LUGHSCHAIN),
+                armorList.find(a => a.name === ItemNameData.DUBAN),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.THUNDERREIGN && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEAD, 1, 4),
+                drop(consumableList, ItemNameData.BEADCHAIN, 5, 9),
+                drop(skillCardList, 'Thunder Reign Ally', 10, 12),
+                drop(skillCardList, 'Thunder Reign Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.BEADCHAIN, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.YOSHITSUNE,
+            Arcana.Tower,
+            79,
+            [0, 0, 145, 117.5, 112.5, 132.5, 102.5],
+            [ElemResist.Null, ElemResist.Neutral, ElemResist.Resist, ElemResist.Neutral, ElemResist.Repel,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.CHARGE, 0),
+                personaSkill(SkillNameData.ZIONRA, 0),
+                personaSkill(SkillNameData.PRESSINGSTANCE, 81),
+                personaSkill(SkillNameData.FASTHEAL, 82),
+                personaSkill(SkillNameData.ELECAMP, 84),
+                personaSkill(SkillNameData.HASSOUTOBI, 86)
+            ], // skills
+            [
+                emptyItem,
+                armorList.find(a => a.name === ItemNameData.GENJIARMOR),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.ELECAMP && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 1, 4),
+                drop(consumableList, ItemNameData.HIRANYA, 5, 9),
+                drop(skillCardList, 'Elec Amp Ally', 10, 12),
+                drop(skillCardList, 'Elec Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.REDPHOSPHORUS, 5, 16),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 17, 18),
+                drop(consumableList, ItemNameData.HIRANYA, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.MOTHERHARLOT,
+            Arcana.Empress,
+            80,
+            [0, 0, 137.5, 120, 115, 122.5, 122.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.MABUFURA, 0),
+                personaSkill(SkillNameData.MAMUDOON, 0),
+                personaSkill(SkillNameData.MUDOBOOST, 0),
+                personaSkill(SkillNameData.ICEAGE, 81),
+                personaSkill(SkillNameData.ICEAMP, 82),
+                personaSkill(SkillNameData.NULLBLESS, 83),
+                personaSkill(SkillNameData.DEBILITATE, 85)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.JACKAL),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.ICEAGE && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HOLYWATER, 1, 4),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 5, 9),
+                drop(skillCardList, 'Ice Age Ally', 10, 12),
+                drop(skillCardList, 'Ice Age Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.HOLYWATER, 17, 18),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.SRAOSHA,
+            Arcana.Star,
+            80,
+            [0, 0, 117.5, 140, 112.5, 140, 107.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.HAMABOOST, 0),
+                personaSkill(SkillNameData.KOUGAONA, 0),
+                personaSkill(SkillNameData.MAHAMAON, 0),
+                personaSkill(SkillNameData.HOLYFURY, 74),
+                personaSkill(SkillNameData.ANGELICGRACE, 76),
+                personaSkill(SkillNameData.AMRITASHOWER, 77),
+                personaSkill(SkillNameData.DEBILITATE, 79)
+            ], // skills
+            [
+                emptyItem,
+                armorList.find(a => a.name === ItemNameData.VELIFICATIO),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.DEBILITATE && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(consumableList, ItemNameData.SOULFOOD, 5, 9),
+                drop(skillCardList, 'Debilitate Ally', 10, 12),
+                drop(skillCardList, 'Debilitate Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TANNEDLEATHER, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.KRONOS,
+            Arcana.Strength,
+            80,
+            [0, 0, 150, 90, 120, 110, 92.5],
+            [ElemResist.Null, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.ATTACKMASTER, 0),
+                personaSkill(SkillNameData.REGENERATE3, 82),
+                personaSkill(SkillNameData.HUNKERDOWN, 83),
+                personaSkill(SkillNameData.FORTIFYSPIRIT, 84),
+                personaSkill(SkillNameData.PHOENIXASH, 85)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.KRONUS),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.HERCULEANANKLET),
+                skillCardList.find(s => s.skillName === SkillNameData.HUNKERDOWN && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 1, 4),
+                drop(consumableList, ItemNameData.BALMOFLIFE, 5, 9),
+                drop(skillCardList, 'Hunker Down Ally', 10, 12),
+                drop(accessoryList, ItemNameData.HERCULEANANKLET, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.THICKPARCHMENT, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 17, 18),
+                drop(consumableList, ItemNameData.BALMOFLIFE, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ZAOUGONGEN,
+            Arcana.Strength,
+            80,
+            [0, 0, 142.5, 112.5, 125, 140, 97.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Neutral, ElemResist.Weak,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.ABYSMALSURGE, 0),
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.MARAGIRA, 0),
+                personaSkill(SkillNameData.EVADEPHYS, 82),
+                personaSkill(SkillNameData.PHOENIXASH, 83),
+                personaSkill(SkillNameData.CRIPPLE, 84),
+                personaSkill(SkillNameData.BLAZINGHELL, 86)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.HACHIMANBELT),
+                skillCardList.find(s => s.skillName === SkillNameData.CRIPPLE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Cripple Ally', 10, 12),
+                drop(accessoryList, ItemNameData.HACHIMANBELT, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.THICKPARCHMENT, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.MESSIAH,
+            Arcana.Judgement,
+            81,
+            [0, 0, 125, 125, 125, 125, 125],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Resist, ElemResist.Resist, ElemResist.Resist,
+            ElemResist.Resist, ElemResist.Resist, ElemResist.Resist, ElemResist.Repel, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.MEGIDOLAON, 0),
+                personaSkill(SkillNameData.ORATORIO, 0),
+                personaSkill(SkillNameData.REGENERATE3, 82),
+                personaSkill(SkillNameData.PHOENIXASH, 83),
+                personaSkill(SkillNameData.INVIGORATE3, 84),
+                personaSkill(SkillNameData.ABSORBPHYS, 85),
+                personaSkill(SkillNameData.ALMIGHTYAMP, 87)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.DISPELRING),
+                skillCardList.find(s => s.skillName === SkillNameData.ALMIGHTYAMP && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(skillCardList, 'Oratorio Main', 5, 9),
+                drop(accessoryList, ItemNameData.DISPELRING, 10, 12),
+                drop(skillCardList, 'Almighty Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.ALUMINUMSHEETS, 5, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.BEADCHAIN, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.URIEL,
+            Arcana.Justice,
+            81,
+            [0, 0, 125, 135, 122.5, 137.5, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Repel, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.REPELNUKE, 83),
+                personaSkill(SkillNameData.MEGIDOLAON, 84),
+                personaSkill(SkillNameData.ANGELICGRACE, 85),
+                personaSkill(SkillNameData.SPELLMASTER, 86)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.HEAVENRING),
+                skillCardList.find(s => s.skillName === SkillNameData.ANGELICGRACE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(accessoryList, ItemNameData.HEAVENRING, 5, 9),
+                drop(skillCardList, 'Angelic Grace Ally', 10, 12),
+                drop(skillCardList, 'Angelic Grace Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.SILKYARN, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(accessoryList, ItemNameData.HEAVENRING, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ATTIS,
+            Arcana.Hanged,
+            82,
+            [0, 0, 140, 125, 120, 127.5, 120],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Repel, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.MARAGIRA, 0),
+                personaSkill(SkillNameData.SALVATION, 0),
+                personaSkill(SkillNameData.THERMOPYLAE, 0),
+                personaSkill(SkillNameData.PHOENIXASH, 84),
+                personaSkill(SkillNameData.SAMARECARM, 85),
+                personaSkill(SkillNameData.ABSORBCURSE, 86),
+                personaSkill(SkillNameData.BLAZINGHELL, 88)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.THESTAMPEDE),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.THERMOPYLAE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(consumableList, ItemNameData.BALMOFLIFE, 5, 9),
+                drop(skillCardList, 'Thermopylae Ally', 10, 12),
+                drop(skillCardList, 'Thermopylae Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TINCLASP, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.BALMOFLIFE, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ODIN,
+            Arcana.Emperor,
+            82,
+            [0, 0, 132.5, 130, 135, 130, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null,
+            ElemResist.Absorb, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Repel],
+            [
+                personaSkill(SkillNameData.MARAKUKAJA, 0),
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.THUNDERREIGN, 0),
+                personaSkill(SkillNameData.WILDTHUNDER, 84),
+                personaSkill(SkillNameData.CONCENTRATE, 85),
+                personaSkill(SkillNameData.FASTHEAL, 86),
+                personaSkill(SkillNameData.ELECAMP, 87)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.GUNGNIR),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.ODINSAMULET),
+                skillCardList.find(s => s.skillName === SkillNameData.WILDTHUNDER && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(skillCardList, 'Fast Heal Ally', 5, 9),
+                drop(skillCardList, 'Wild Thunder Ally', 10, 12),
+                drop(accessoryList, ItemNameData.ODINSAMULET, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CONDENSERLENS, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.SHIVA,
+            Arcana.Judgement,
+            82,
+            [0, 0, 137.5, 135, 132.5, 132.5, 95],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Repel,
+            ElemResist.Neutral, ElemResist.Absorb, ElemResist.Weak, ElemResist.Null, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.ENDURINGSOUL, 0),
+                personaSkill(SkillNameData.MAZIONRA, 0),
+                personaSkill(SkillNameData.PSYCHOFORCE, 0),
+                personaSkill(SkillNameData.RIOTGUN, 85),
+                personaSkill(SkillNameData.BLACKWINGS, 86),
+                personaSkill(SkillNameData.GODOFWAR, 87),
+                personaSkill(SkillNameData.PSYCHOBLAST, 88)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.CHENTU),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.PSYCHRING),
+                skillCardList.find(s => s.skillName === SkillNameData.PSYCHOBLAST && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOMA, 1, 6),
+                drop(accessoryList, ItemNameData.PSYCHRING, 7, 12),
+                drop(skillCardList, 'Psycho Blast Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.ALUMINUMSHEETS, 5, 16),
+                drop(consumableList, ItemNameData.SOMA, 17, 18),
+                drop(accessoryList, ItemNameData.PSYCHRING, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ALUCARD,
+            Arcana.Death,
+            83,
+            [0, 0, 130, 130, 130, 130, 110],
+            [ElemResist.Null, ElemResist.Null, ElemResist.Weak, ElemResist.Resist, ElemResist.Resist,
+            ElemResist.Null, ElemResist.Absorb, ElemResist.Weak, ElemResist.Weak, ElemResist.Absorb],
+            [
+                personaSkill(SkillNameData.BRAVEBLADE, 0),
+                personaSkill(SkillNameData.RIOTGUN, 0),
+                personaSkill(SkillNameData.SOULVAMPIRE, 0),
+                personaSkill(SkillNameData.DEMONICSHADE, 84),
+                personaSkill(SkillNameData.BLACKWINGS, 86),
+                personaSkill(SkillNameData.CURSEAMP, 87),
+                personaSkill(SkillNameData.DEVILSWINGS, 89)
+            ], // skills
+            [
+                emptyItem,
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.SOULVAMPIRE && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOULFOOD, 1, 4),
+                drop(skillCardList, 'Demonic Shade Ally', 5, 9),
+                drop(skillCardList, 'Demonic Shade Main', 10, 12),
+                drop(skillCardList, 'Soul Vampire Ally', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.CORKWOOD, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            false,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.VISHNU,
+            Arcana.Fool,
+            83,
+            [0, 0, 140, 127.5, 122.5, 142.5, 107.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Absorb, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.ALIDANCE, 0),
+                personaSkill(SkillNameData.MAGARURA, 0),
+                personaSkill(SkillNameData.BLACKWINGS, 0),
+                personaSkill(SkillNameData.VACUUMWAVE, 85),
+                personaSkill(SkillNameData.CHARGE, 86),
+                personaSkill(SkillNameData.REPELFIRE, 87),
+                personaSkill(SkillNameData.WINDAMP, 88),
+                personaSkill(SkillNameData.RIOTGUN, 90)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.GUNSLINGER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.WINDAMP && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Wind Amp Ally', 10, 12),
+                drop(skillCardList, 'Wind Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.THICKPARCHMENT, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ARDHA,
+            Arcana.Temperance,
+            84,
+            [0, 0, 135, 140, 137.5, 135, 100],
+            [ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Null,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.COSMICFLARE, 0),
+                personaSkill(SkillNameData.GODSHAND, 0),
+                personaSkill(SkillNameData.INVIGORATE3, 0),
+                personaSkill(SkillNameData.AGNEYASTRA, 87),
+                personaSkill(SkillNameData.MESSENGERGOD, 88),
+                personaSkill(SkillNameData.FORTIFIEDMOXY, 89),
+                personaSkill(SkillNameData.SALVATION, 90)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.BAKUYA),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.GAIABELT),
+                skillCardList.find(s => s.skillName === SkillNameData.MESSENGERGOD && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Messenger God Ally', 10, 12),
+                drop(accessoryList, ItemNameData.GAIABELT, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TINCLASP, 2, 11),
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.BEADCHAIN, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.BEELZEBUB,
+            Arcana.Devil,
+            84,
+            [0, 0, 137.5, 150, 135, 140, 85],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Repel],
+            [
+                personaSkill(SkillNameData.EVILSMILE, 0),
+                personaSkill(SkillNameData.MAEIGAONA, 0),
+                personaSkill(SkillNameData.MAMUDOON, 0),
+                personaSkill(SkillNameData.CURSEAMP, 85),
+                personaSkill(SkillNameData.CONCENTRATE, 86),
+                personaSkill(SkillNameData.DEMONICDECREE, 87),
+                personaSkill(SkillNameData.REPELICE, 88),
+                personaSkill(SkillNameData.BLACKWINGS, 89)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.MERCILESS),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.DEMONICDECREE && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.MYSTERYMEAT, 1, 4),
+                drop(consumableList, ItemNameData.SOULFOOD, 5, 9),
+                drop(skillCardList, 'Demonic Decree Ally', 10, 12),
+                drop(skillCardList, 'Demonic Decree Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.SILKYARN, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.MYSTERYMEAT, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ISHTAR,
+            Arcana.Lovers,
+            85,
+            [0, 0, 120, 147.5, 122.5, 145, 120],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null,
+            ElemResist.Weak, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.ABSORBWIND, 0),
+                personaSkill(SkillNameData.MEDIARAHAN, 0),
+                personaSkill(SkillNameData.SAMARECARM, 0),
+                personaSkill(SkillNameData.INSTAHEAL, 87),
+                personaSkill(SkillNameData.WILDTHUNDER, 88),
+                personaSkill(SkillNameData.GODOFMAGIC, 89),
+                personaSkill(SkillNameData.SALVATION, 90)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.DEATHSDOMAIN),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.SALVATION && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Salvation Ally', 10, 12),
+                drop(skillCardList, 'Salvation Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.PLANTBALM, 2, 11),
+                drop(lootList, ItemNameData.BLACKCARD, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.BEADCHAIN, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.MADA,
+            Arcana.Tower,
+            85,
+            [0, 0, 130, 127.5, 145, 140, 112.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Weak, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Resist, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.AGIRA, 0),
+                personaSkill(SkillNameData.BURNBOOST, 0),
+                personaSkill(SkillNameData.FIREAMP, 0),
+                personaSkill(SkillNameData.UNSHAKENWILL, 86),
+                personaSkill(SkillNameData.BLAZINGHELL, 87),
+                personaSkill(SkillNameData.AMRITASHOWER, 88),
+                personaSkill(SkillNameData.PHOENIXASH, 90),
+                personaSkill(SkillNameData.GODOFMAGIC, 91)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.GIANTSLAYER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.FIREAMP && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HIRANYA, 1, 4),
+                drop(consumableList, ItemNameData.SOULFOOD, 5, 9),
+                drop(skillCardList, 'Fire Amp Ally', 10, 12),
+                drop(skillCardList, 'Fire Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.REDPHOSPHORUS, 2, 11),
+                drop(lootList, ItemNameData.BLACKKOGATANA, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.DRINKINGSOUL, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ANAT,
+            Arcana.Priestess,
+            86,
+            [0, 0, 137.5, 140, 125, 135, 100],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Weak, ElemResist.Null, ElemResist.Neutral, ElemResist.Resist],
+            [
+                personaSkill(SkillNameData.ATOMICFLARE, 0),
+                personaSkill(SkillNameData.MEDIARAHAN, 0),
+                personaSkill(SkillNameData.MARAKUKAJA, 0),
+                personaSkill(SkillNameData.BRAVEBLADE, 87),
+                personaSkill(SkillNameData.NUKEAMP, 88),
+                personaSkill(SkillNameData.ATOMICFLARE, 89),
+                personaSkill(SkillNameData.EVADEPSY, 90),
+                personaSkill(SkillNameData.LIFEREAPER, 91)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.UMBRA),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.COSMICFLARE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEAD, 1, 4),
+                drop(skillCardList, 'Mediarahan Main', 5, 9),
+                drop(skillCardList, 'Cosmic Flare Ally', 10, 12),
+                drop(skillCardList, 'Cosmic Flare Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.SILKYARN, 2, 11),
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.HIRANYA, 17, 18),
+                drop(consumableList, ItemNameData.BEAD, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.CHIYOU,
+            Arcana.Chariot,
+            86,
+            [0, 0, 135, 140, 132.5, 130, 125],
+            [ElemResist.Resist, ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Null, ElemResist.Weak, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.PSYCHOFORCE, 0),
+                personaSkill(SkillNameData.REPELPHYS, 0),
+                personaSkill(SkillNameData.FORTIFYSPIRIT, 88),
+                personaSkill(SkillNameData.PSYCHOBLAST, 89),
+                personaSkill(SkillNameData.ABSORBPSY, 90),
+                personaSkill(SkillNameData.CONCENTRATE, 92)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.KANSHOU),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.MASTERSRING),
+                emptyItem
+            ], // transmu
+            [
+                drop(skillCardList, 'Concentrate Ally', 1, 4),
+                drop(consumableList, ItemNameData.BEAD, 5, 9),
+                drop(skillCardList, 'Psycho Force Ally', 10, 12),
+                drop(accessoryList, ItemNameData.MASTERSRING, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TINCLASP, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(skillCardList, 'Concentrate Ally', 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.KOHRYUU,
+            Arcana.Hierophant,
+            87,
+            [0, 0, 127.5, 152.5, 140, 150, 110],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel,
+            ElemResist.Neutral, ElemResist.Weak, ElemResist.Null, ElemResist.Null, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.PSYCHOFORCE, 0),
+                personaSkill(SkillNameData.MEDIARAHAN, 0),
+                personaSkill(SkillNameData.PSYCHOBLAST, 0),
+                personaSkill(SkillNameData.LIFEAID, 88),
+                personaSkill(SkillNameData.CONCENTRATE, 89),
+                personaSkill(SkillNameData.PSYAMP, 90),
+                personaSkill(SkillNameData.GODOFMAGIC, 98)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.PUFFTHEMAGICDRAGON),
+                emptyItem,
+                accessoryList.find(a => a.name === ItemNameData.SAGESRING),
+                skillCardList.find(s => s.skillName === SkillNameData.PSYCHOBLAST && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(skillCardList, 'Mediarahan Main', 1, 4),
+                drop(consumableList, ItemNameData.BEADCHAIN, 5, 9),
+                drop(skillCardList, 'Psycho Blast Ally', 10, 12),
+                drop(accessoryList, ItemNameData.SAGESRING, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.TANNEDLEATHER, 2, 11),
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(skillCardList, 'Mediarahan Ally', 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.MICHAEL,
+            Arcana.Judgement,
+            87,
+            [0, 0, 142.5, 135, 137.5, 140, 115],
+            [ElemResist.Neutral, ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.DEBILITATE, 0),
+                personaSkill(SkillNameData.DIVINEJUDGEMENT, 0),
+                personaSkill(SkillNameData.MABUFURA, 0),
+                personaSkill(SkillNameData.SWORDDANCE, 89),
+                personaSkill(SkillNameData.MAHAMAON, 90),
+                personaSkill(SkillNameData.BLACKWINGS, 91),
+                personaSkill(SkillNameData.COSMICFLARE, 92)
+            ], // skills
+            [
+                emptyItem,
+                armorList.find(a => a.name === ItemNameData.VELIFICATIO),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.DEBILITATE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.HOLYWATER, 1, 4),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 5, 9),
+                drop(skillCardList, 'Debilitate Ally', 10, 12),
+                drop(skillCardList, 'Debilitate Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.ALUMINUMSHEETS, 4, 16),
+                drop(consumableList, ItemNameData.HOLYWATER, 17, 18),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 19, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ALICE,
+            Arcana.Death,
+            88,
+            [0, 0, 130, 180, 115, 145, 120],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Resist, ElemResist.Resist, ElemResist.Weak, ElemResist.Repel],
+            [
+                personaSkill(SkillNameData.DEKUNDA, 0),
+                personaSkill(SkillNameData.DEATHSTOUCH, 0),
+                personaSkill(SkillNameData.MUDOBOOST, 0),
+                personaSkill(SkillNameData.DIEFORME, 89),
+                personaSkill(SkillNameData.MORNINGSTAR, 90),
+                personaSkill(SkillNameData.CONCENTRATE, 91),
+                personaSkill(SkillNameData.SURVIVALTRICK, 92)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.REAPER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.MUDOBOOST && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.STRAWDOLL, 1, 4),
+                drop(skillCardList, 'Survival Trick Ally', 5, 9),
+                drop(skillCardList, 'Mudo Boost Ally', 10, 12),
+                drop(skillCardList, 'Mudo Boost Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKKOGATANA, 5, 16),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 17, 18),
+                drop(consumableList, ItemNameData.STRAWDOLL, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.METATRON,
+            Arcana.Justice,
+            89,
+            [0, 0, 135, 152.5, 150, 155, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak,
+            ElemResist.Repel, ElemResist.Absorb, ElemResist.Absorb, ElemResist.Neutral, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.SWORDDANCE, 0),
+                personaSkill(SkillNameData.MAHAMAON, 0),
+                personaSkill(SkillNameData.HOLYFURY, 0),
+                personaSkill(SkillNameData.BLACKWINGS, 91),
+                personaSkill(SkillNameData.HAMABOOST, 92),
+                personaSkill(SkillNameData.CONCENTRATE, 93),
+                personaSkill(SkillNameData.BLESSAMP, 94),
+                personaSkill(SkillNameData.DIVINEJUDGEMENT, 95)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.LANCEOFLONGINUS),
+                armorList.find(a => a.name === ItemNameData.VELIFICATIO),
+                emptyItem,
+                emptyItem
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOULFOOD, 1, 4),
+                drop(skillCardList, 'Divine Judgement Ally', 5, 9),
+                drop(skillCardList, 'Divine Judgement Main', 10, 12),
+                drop(armorList, ItemNameData.VELIFICATIO, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKKOGATANA, 5, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.HEKATE,
+            Arcana.Hermit,
+            89,
+            [0, 0, 120, 160, 140, 125, 105],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Null, ElemResist.Weak, ElemResist.Resist,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.INFERNO, 0),
+                personaSkill(SkillNameData.CONCENTRATE, 0),
+                personaSkill(SkillNameData.SAMARECARM, 0),
+                personaSkill(SkillNameData.FIREAMP, 90),
+                personaSkill(SkillNameData.GODOFMAGIC, 91),
+                personaSkill(SkillNameData.BLAZINGHELL, 92),
+                personaSkill(SkillNameData.EVADEICE, 93),
+                personaSkill(SkillNameData.SOULCHAIN, 95)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.HADESLASH),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.BLAZINGHELL && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(skillCardList, 'Inferno Main', 1, 4),
+                drop(skillCardList, 'Blazing Hell Ally', 5, 9),
+                drop(skillCardList, 'Blazing Hell Main', 10, 12),
+                drop(skillCardList, 'Fire Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKROBE, 12, 16),
+                drop(consumableList, ItemNameData.SOULFOOD, 17, 18),
+                drop(skillCardList, 'Inferno Ally', 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ARTHUR,
+            Arcana.Emperor,
+            90,
+            [0, 0, 170, 100, 150, 135, 125],
+            [ElemResist.Null, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Weak, ElemResist.Neutral, ElemResist.Null, ElemResist.Null],
+            [
+                personaSkill(SkillNameData.SWORDDANCE, 0),
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.CHARGE, 0),
+                personaSkill(SkillNameData.GODOFWAR, 91),
+                personaSkill(SkillNameData.POWERUP, 92),
+                personaSkill(SkillNameData.HUNKERDOWN, 93),
+                personaSkill(SkillNameData.GODOFTHEFORGE, 95)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.EXCALIBUR),
+                armorList.find(a => a.name === ItemNameData.PRYDWEN),
+                accessoryList.find(a => a.name === ItemNameData.MASTERSRING),
+                emptyItem
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEAD, 1, 4),
+                drop(skillCardList, 'God of the Forge Main', 5, 9),
+                drop(accessoryList, ItemNameData.MASTERSRING, 10, 12),
+                drop(armorList, ItemNameData.PRYDWEN, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKCARD, 3, 16),
+                drop(consumableList, ItemNameData.WARDINGTALISMAN, 17, 18),
+                drop(consumableList, ItemNameData.BEAD, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.FAFNIR,
+            Arcana.Strength,
+            90,
+            [0, 0, 200, 100, 140, 117.5, 95],
+            [ElemResist.Resist, ElemResist.Repel, ElemResist.Absorb, ElemResist.Resist, ElemResist.Neutral,
+            ElemResist.Weak, ElemResist.Absorb, ElemResist.Resist, ElemResist.Weak, ElemResist.Absorb],
+            [
+                personaSkill(SkillNameData.DRAGONCLAW, 0),
+                personaSkill(SkillNameData.SURVIVALTRICK, 0),
+                personaSkill(SkillNameData.HEALINGFACTOR, 0),
+                personaSkill(SkillNameData.CHARGE, 91),
+                personaSkill(SkillNameData.DRAGONTHRASH, 92),
+                personaSkill(SkillNameData.HEATRISER, 93),
+                personaSkill(SkillNameData.INSTAHEAL, 95)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.GRAM),
+                armorList.find(a => a.name === ItemNameData.FAFNIRMAIL),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.HEALINGFACTOR && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.MYSTERYMEAT, 1, 4),
+                drop(skillCardList, 'Heat Riser Main', 5, 9),
+                drop(skillCardList, 'Healing Factor Ally', 10, 12),
+                drop(armorList, ItemNameData.FAFNIRMAIL, 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKKOGATANA, 4, 18),
+                drop(consumableList, ItemNameData.MYSTERYMEAT, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.AHURAMAZDA,
+            Arcana.Sun,
+            90,
+            [0, 0, 150, 175, 110, 140, 107.5],
+            [ElemResist.Null, ElemResist.Null, ElemResist.Absorb, ElemResist.Weak, ElemResist.Absorb,
+            ElemResist.Resist, ElemResist.Absorb, ElemResist.Weak, ElemResist.Absorb, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.INFERNO, 0),
+                personaSkill(SkillNameData.SALVATION, 0),
+                personaSkill(SkillNameData.THUNDERREIGN, 0),
+                personaSkill(SkillNameData.PSYCHOFORCE, 91),
+                personaSkill(SkillNameData.DIVINELIGHT, 92),
+                personaSkill(SkillNameData.CONCENTRATE, 93),
+                personaSkill(SkillNameData.MAGICBOOST, 95)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.HANDOFGOD),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.MAGICBOOST && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOMA, 1, 4),
+                drop(skillCardList, 'Divine Light Ally', 5, 9),
+                drop(skillCardList, 'Magic Boost Ally', 10, 12),
+                drop(skillCardList, 'Magic Boost Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.IRONSAND, 2, 11),
+                drop(lootList, ItemNameData.BLACKROCK, 12, 16),
+                drop(consumableList, ItemNameData.SOULFOOD, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.ARTEMIS,
+            Arcana.Moon,
+            90,
+            [0, 0, 165, 140, 125, 160, 105],
+            [ElemResist.Neutral, ElemResist.Absorb, ElemResist.Resist, ElemResist.Absorb, ElemResist.Weak,
+            ElemResist.Absorb, ElemResist.Absorb, ElemResist.Resist, ElemResist.Neutral, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.RIOTGUN, 0),
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.PSYCHOFORCE, 0),
+                personaSkill(SkillNameData.ARTEMISARROW, 91),
+                personaSkill(SkillNameData.GODOFTHEHEARTH, 92),
+                personaSkill(SkillNameData.THERMOPYLAE, 94),
+                personaSkill(SkillNameData.INVIGORATE3, 96)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.ARTEMIS),
+                armorList.find(a => a.name === ItemNameData.BRAVESUIT),
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.THERMOPYLAE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOULFOOD, 1, 4),
+                drop(skillCardList, 'Thermopylae Ally', 5, 9),
+                drop(armorList, ItemNameData.BRAVESUIT, 10, 12),
+                drop(skillCardList, 'Thermopylae Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKROCK, 3, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.SOULFOOD, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.APOLLO,
+            Arcana.Magician,
+            91,
+            [0, 0, 100, 200, 120, 160, 115],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Weak, ElemResist.Absorb,
+            ElemResist.Absorb, ElemResist.Weak, ElemResist.Absorb, ElemResist.Absorb, ElemResist.Weak],
+            [
+                personaSkill(SkillNameData.COSMICFLARE, 0),
+                personaSkill(SkillNameData.VACUUMWAVE, 0),
+                personaSkill(SkillNameData.GODOFMAGIC, 0),
+                personaSkill(SkillNameData.DIVINELIGHT, 92),
+                personaSkill(SkillNameData.CONCENTRATE, 94),
+                personaSkill(SkillNameData.INFERNO, 95),
+                personaSkill(SkillNameData.MAGICAMP, 96)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.APOLLO),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.MAGICAMP && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOMA, 1, 9),
+                drop(skillCardList, 'Magic Amp Ally', 10, 12),
+                drop(skillCardList, 'Magic Amp Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKROBE, 4, 16),
+                drop(consumableList, ItemNameData.BEADCHAIN, 17, 18),
+                drop(consumableList, ItemNameData.SOMA, 19, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.SATAN,
+            Arcana.Judgement,
+            92,
+            [0, 0, 155, 147.5, 137.5, 130, 137.5],
+            [ElemResist.Neutral, ElemResist.Resist, ElemResist.Neutral, ElemResist.Repel, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel],
+            [
+                personaSkill(SkillNameData.DIAMONDDUST, 0),
+                personaSkill(SkillNameData.ICEAGE, 0),
+                personaSkill(SkillNameData.REGENERATE3, 0),
+                personaSkill(SkillNameData.BLACKWINGS, 94),
+                personaSkill(SkillNameData.INVIGORATE3, 95),
+                personaSkill(SkillNameData.FORTIFYSPIRIT, 96),
+                personaSkill(SkillNameData.CONCENTRATE, 97),
+                personaSkill(SkillNameData.ABSORBICE, 98)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.HELLSTYPEWRITER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.ICEAGE && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOULFOOD, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Invigorate 3 Ally', 10, 12),
+                drop(skillCardList, 'Ice Age Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.ALUMINUMSHEETS, 2, 16),
+                drop(consumableList, ItemNameData.SOULFOOD, 17, 20)
+            ], // drops
+            false,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.LUCIFER,
+            Arcana.Star,
+            93,
+            [0, 0, 152.5, 147.5, 147.5, 140, 127.5],
+            [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral,
+            ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Neutral],
+            [
+                personaSkill(SkillNameData.GIGANTOMACHIA, 0),
+                personaSkill(SkillNameData.BLAZINGHELL, 0),
+                personaSkill(SkillNameData.MORNINGSTAR, 94),
+                personaSkill(SkillNameData.GODOFMAGIC, 95),
+                personaSkill(SkillNameData.HEATRISER, 96),
+                personaSkill(SkillNameData.FORTIFIEDMOXY, 97),
+                personaSkill(SkillNameData.INSTAHEAL, 98),
+                personaSkill(SkillNameData.ABSORBPHYS, 99)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.LIGHTBRINGER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.INSTAHEAL && s.cardType === SkillCardType.Main)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.BEADCHAIN, 1, 4),
+                drop(consumableList, ItemNameData.SOMA, 5, 9),
+                drop(skillCardList, 'Insta-heal Ally', 10, 12),
+                drop(skillCardList, 'Insta-heal Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKROCK, 4, 16),
+                drop(consumableList, ItemNameData.BEAD, 17, 18),
+                drop(consumableList, ItemNameData.BEADCHAIN, 19, 20)
+            ], // drops
+            true,
+            true,
+            false,
+            false,
+            ''
+        ),
+        new Persona(
+            PersonaeNameData.SATANAEL,
+            Arcana.Fool,
+            95,
+            [0, 0, 157.5, 150, 142.5, 140, 140],
+            [ElemResist.Resist, ElemResist.Resist, ElemResist.Resist, ElemResist.Resist, ElemResist.Resist,
+            ElemResist.Resist, ElemResist.Resist, ElemResist.Resist, ElemResist.Null, ElemResist.Absorb],
+            [
+                personaSkill(SkillNameData.DEVILSWINGS, 0),
+                personaSkill(SkillNameData.MORNINGSTAR, 0),
+                personaSkill(SkillNameData.RIOTGUN, 0),
+                personaSkill(SkillNameData.SURVIVALTRICK, 0),
+                personaSkill(SkillNameData.COSMICFLARE, 96),
+                personaSkill(SkillNameData.HEATRISER, 97),
+                personaSkill(SkillNameData.UNSHAKENWILL, 98),
+                personaSkill(SkillNameData.VICTORYCRY, 99)
+            ], // skills
+            [
+                weaponList.find(w => w.name === ItemNameData.BOUNTYHUNTER),
+                emptyItem,
+                emptyItem,
+                skillCardList.find(s => s.skillName === SkillNameData.VICTORYCRY && s.cardType === SkillCardType.Ally)
+            ], // transmu
+            [
+                drop(consumableList, ItemNameData.SOMA, 1, 9),
+                drop(skillCardList, 'Morning Star Ally', 10, 12),
+                drop(skillCardList, 'Devil\'s Wings Main', 13, 13),
+            ], // negot
+            [
+                drop(lootList, ItemNameData.BLACKCARD, 1, 10),
+                drop(consumableList, ItemNameData.SOMA, 11, 20)
+            ], // drops
+            true,
+            false,
+            false,
+            false,
+            ''
+        )
     ];
 export const personaeMap = personaeList.reduce(function (map: Map<string, Persona>, persona: Persona) {
     map[persona.name] = persona;
