@@ -1231,9 +1231,9 @@ export const personaeList: Persona[] =
                 // Intentionally Changed
                 personaSkill(SkillNameData.COUNTER, 0),
                 personaSkill(SkillNameData.DIARAMA, 0),
-                personaSkill(SkillNameData.KOUGA, 0),
-                personaSkill(SkillNameData.DIVINEGRACE, 17),
+                personaSkill(SkillNameData.DIVINEGRACE, 0),
                 personaSkill(SkillNameData.AMRITADROP, 18),
+                personaSkill(SkillNameData.KOUGA, 20),
                 personaSkill(SkillNameData.MEDIARAMA, 21),
                 personaSkill(SkillNameData.NULLPHYS, 22),
             ], // skills
@@ -2007,8 +2007,8 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.MABUFU, 0),
                 personaSkill(SkillNameData.NULLNUKE, 26),
                 personaSkill(SkillNameData.WAGEWAR, 27),
-                personaSkill(SkillNameData.MABUFULA, 28),
-                personaSkill(SkillNameData.DODGEFIRE, 29)
+                personaSkill(SkillNameData.DODGEFIRE, 28),
+                personaSkill(SkillNameData.MABUFULA, 29)
             ], // skills
             [
                 emptyItem,
@@ -2158,7 +2158,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.REGENERATE1, 0),
                 personaSkill(SkillNameData.DODGEPSY, 27),
                 personaSkill(SkillNameData.SLEDGEHAMMER, 28),
-                personaSkill(SkillNameData.BADBEAT, 30), 
+                personaSkill(SkillNameData.BADBEAT, 30),
                 personaSkill(SkillNameData.COUNTERSTRIKE, 31)
             ], // skills
             [
@@ -2810,7 +2810,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.GARULA, 0),
                 personaSkill(SkillNameData.MASUKUKAJA, 0),
                 personaSkill(SkillNameData.DODGEPSY, 0), // Swapped with Flashbomb
-                personaSkill(SkillNameData.FLASHBOMB, 33), 
+                personaSkill(SkillNameData.FLASHBOMB, 33),
                 personaSkill(SkillNameData.SNIPE, 35),
                 personaSkill(SkillNameData.CLIMATEDECORUM, 36),
                 personaSkill(SkillNameData.SPEEDMASTER, 38)
@@ -3370,7 +3370,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.MAHAMA, 0),
                 personaSkill(SkillNameData.RECARM, 41), // Intentionally Changed
                 personaSkill(SkillNameData.SWIFTSTRIKE, 42),
-                personaSkill(SkillNameData.KOUGA, 43),
+                personaSkill(SkillNameData.KOUGAON, 43),
                 personaSkill(SkillNameData.HAMAON, 44),
             ], // skills
             [
@@ -3448,9 +3448,9 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.ENERGYSHOWER, 0),
                 personaSkill(SkillNameData.MABAISUDI, 0),
                 personaSkill(SkillNameData.ZIONGA, 0),
-                personaSkill(SkillNameData.RECARM, 41), // Intentionally Changed 
+                personaSkill(SkillNameData.MEDIARAMA, 0),
+                personaSkill(SkillNameData.RECARM, 41), // Intentionally Changed
                 personaSkill(SkillNameData.NOCTURNALFLASH, 42),
-                personaSkill(SkillNameData.MEDIARAMA, 44),
                 personaSkill(SkillNameData.DIZZYBOOST, 45),
                 personaSkill(SkillNameData.SPIRITDRAIN, 46)
             ], // skills
@@ -3529,7 +3529,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.SUKUKAJA, 0),
                 personaSkill(SkillNameData.SWIFTSTRIKE, 42),
                 personaSkill(SkillNameData.MAKOUGA, 43),
-                personaSkill(SkillNameData.DIARAMA, 44),
+                personaSkill(SkillNameData.DIAGA, 44),
                 personaSkill(SkillNameData.MASUKUKAJA, 45),
                 personaSkill(SkillNameData.NULLCURSE, 46)
             ], // skills
@@ -3716,7 +3716,7 @@ export const personaeList: Persona[] =
             ''
         ),
         new Persona(
-            PersonaeNameData.KUSHINADA, 
+            PersonaeNameData.KUSHINADA,
             Arcana.Lovers,
             42,
             [0, 0, 60, 75, 65, 70, 62.5],
@@ -3725,8 +3725,8 @@ export const personaeList: Persona[] =
             [
                 personaSkill(SkillNameData.MIRACLEPUNCH, 0), // Intentionally Changed
                 personaSkill(SkillNameData.MABUFULA, 0),
-                personaSkill(SkillNameData.MEDIARAMA, 0),
-                personaSkill(SkillNameData.MATARUKAJA, 44),
+                personaSkill(SkillNameData.MATARUKAJA, 0),
+                personaSkill(SkillNameData.DIAGA, 44),
                 personaSkill(SkillNameData.NULLSLEEP, 45),
                 personaSkill(SkillNameData.WINDWALL, 46),
                 personaSkill(SkillNameData.AMRITASHOWER, 47)
@@ -4312,7 +4312,7 @@ export const personaeList: Persona[] =
             [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Neutral, ElemResist.Null,
             ElemResist.Neutral, ElemResist.Neutral, ElemResist.Neutral, ElemResist.Repel, ElemResist.Neutral],
             [
-                personaSkill(SkillNameData.DIARAMA, 0),
+                personaSkill(SkillNameData.DIAGA, 0),
                 personaSkill(SkillNameData.KOUGAON, 0),
                 personaSkill(SkillNameData.MEGIDOLA, 0), // Intentionally Changed
                 personaSkill(SkillNameData.TOUCHNGO, 51),
@@ -4435,7 +4435,7 @@ export const personaeList: Persona[] =
             [
                 personaSkill(SkillNameData.NOCTURNALFLASH, 0),
                 personaSkill(SkillNameData.ENERGYDROP, 0),
-                personaSkill(SkillNameData.MAGARULA, 0),
+                personaSkill(SkillNameData.MAGARUDYNE, 0),
                 personaSkill(SkillNameData.GROWTH2, 52), // Intentionally Changed
                 personaSkill(SkillNameData.DIZZYBOOST, 53),
                 personaSkill(SkillNameData.DIAGA, 54), // Intentionally Changed
@@ -4473,12 +4473,12 @@ export const personaeList: Persona[] =
             ElemResist.Neutral, ElemResist.Neutral, ElemResist.Weak, ElemResist.Neutral, ElemResist.Neutral],
             [
                 personaSkill(SkillNameData.MEPATRA, 0),
-                personaSkill(SkillNameData.MEDIARAMA, 0),
+                personaSkill(SkillNameData.DIAGA, 0),
                 personaSkill(SkillNameData.TENTARAFOO, 0),
                 personaSkill(SkillNameData.NULLSLEEP, 51),
                 personaSkill(SkillNameData.DEKAJA, 52),
                 personaSkill(SkillNameData.MATARUNDA, 53),
-                personaSkill(SkillNameData.DIAGA, 54) // Intentionally Changed
+                personaSkill(SkillNameData.MEDIAGA, 54) // Intentionally Changed
             ], // skills
             [
                 emptyItem,
@@ -4738,7 +4738,7 @@ export const personaeList: Persona[] =
         ),
         new Persona(
             // Swapped Black Rider and Pale Rider with some changes to accomodate the reversal
-            PersonaeNameData.BLACKRIDER, 
+            PersonaeNameData.BLACKRIDER,
             Arcana.Tower,
             53,
             [0, 0, 85, 85, 82.5, 97.5, 65],
@@ -4986,7 +4986,7 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.HAMAON, 0),
                 personaSkill(SkillNameData.PSIODYNE, 0),
                 personaSkill(SkillNameData.ENERGYSHOWER, 57),
-                personaSkill(SkillNameData.MEDIAGA, 58), 
+                personaSkill(SkillNameData.MEDIAGA, 58),
                 personaSkill(SkillNameData.MAPSIODYNE, 59),
                 personaSkill(SkillNameData.HAMABOOST, 61)
             ], // skills
@@ -5671,8 +5671,8 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.MAGARURA, 0),
                 personaSkill(SkillNameData.GROWTH3, 65),
                 personaSkill(SkillNameData.REGENERATE3, 66),
-                personaSkill(SkillNameData.PANTARHEI, 67),
-                personaSkill(SkillNameData.WINDAMP, 68)
+                personaSkill(SkillNameData.WINDAMP, 68),
+                personaSkill(SkillNameData.PANTARHEI, 69)
             ], // skills
             [
                 weaponList.find(w => w.name === ItemNameData.TOURNESOL),
@@ -6493,7 +6493,7 @@ export const personaeList: Persona[] =
             [
                 personaSkill(SkillNameData.MATARUKAJA, 0),
                 personaSkill(SkillNameData.MAZIONRA, 0),
-                personaSkill(SkillNameData.MEGIDOLA, 0),
+                personaSkill(SkillNameData.MEGIDOLAON, 0),
                 personaSkill(SkillNameData.CONCENTRATE, 74),
                 personaSkill(SkillNameData.MEGIDOLAON, 76),
                 personaSkill(SkillNameData.REPELELEC, 77)
@@ -7761,7 +7761,7 @@ export const personaeList: Persona[] =
             [ElemResist.Neutral, ElemResist.Neutral, ElemResist.Absorb, ElemResist.Weak, ElemResist.Neutral,
             ElemResist.Neutral, ElemResist.Resist, ElemResist.Null, ElemResist.Neutral, ElemResist.Neutral],
             [
-                personaSkill(SkillNameData.AGIRA, 0),
+                personaSkill(SkillNameData.INFERNO, 0),
                 personaSkill(SkillNameData.BURNBOOST, 0),
                 personaSkill(SkillNameData.FIREAMP, 0),
                 personaSkill(SkillNameData.UNSHAKENWILL, 86),
@@ -7925,7 +7925,7 @@ export const personaeList: Persona[] =
             [
                 personaSkill(SkillNameData.DEBILITATE, 0),
                 personaSkill(SkillNameData.DIVINEJUDGEMENT, 0),
-                personaSkill(SkillNameData.MABUFURA, 0),
+                personaSkill(SkillNameData.DIAMONDDUST, 0),
                 personaSkill(SkillNameData.SWORDDANCE, 89),
                 personaSkill(SkillNameData.MAHAMAON, 90),
                 personaSkill(SkillNameData.BLACKWINGS, 91),
@@ -8241,8 +8241,8 @@ export const personaeList: Persona[] =
                 personaSkill(SkillNameData.VACUUMWAVE, 0),
                 personaSkill(SkillNameData.GODOFMAGIC, 0),
                 personaSkill(SkillNameData.DIVINELIGHT, 92),
+                personaSkill(SkillNameData.INFERNO, 93),
                 personaSkill(SkillNameData.CONCENTRATE, 94),
-                personaSkill(SkillNameData.INFERNO, 95),
                 personaSkill(SkillNameData.MAGICAMP, 96)
             ], // skills
             [

@@ -1,5 +1,4 @@
 export class PersonaeNameData {
-    
     // PERSONAE
     // Standard
     public static ARSENE = 'Arsene';
@@ -207,7 +206,7 @@ export class PersonaeNameData {
     public static SATANAEL = 'Satanael';
     // Added
     public static MORDRED = 'Mordred';
-    public static CHARLEMAGNE = "Charlemagne";
+    public static CHARLEMAGNE = 'Charlemagne';
     public static ENKIDU = 'Enkidu';
     public static PERSEUS = 'Perseus';
     public static KUBERA = 'Kubera';
@@ -280,14 +279,14 @@ export class SkillNameData {
     public static GODSHAND = 'God\'s Hand';
     public static BRAVEBLADE = 'Brave Blade';
     // TIER7
-    public static SWORDDANCE ='Sword Dance';
+    public static SWORDDANCE = 'Sword Dance';
     public static GIGANTOMACHIA = 'Gigantomachia';
     public static AYAMUR = 'Ayamur';
     public static AGNEYASTRA = 'Agneyastra';
     public static RIOTGUN = 'Riot Gun';
     public static HASSOUTOBI = 'Hassou Tobi';
     public static DRAGONCLAW = 'Dragon Claw';
-    public static ARTEMISARROW ='Artemis\' Arrow';
+    public static ARTEMISARROW = 'Artemis\' Arrow';
     public static DRAGONTHRASH = 'Dragon Thrash';
     // Fire
     public static AGI = 'Agi';
@@ -389,7 +388,7 @@ export class SkillNameData {
     public static MUDOON = 'Mudoon';
     public static MAMUDOON = 'Mamudoon';
     public static DEATHSTOUCH = 'Death\'s Touch';
-    public static DIEFORME = 'Die for Me!'
+    public static DIEFORME = 'Die for Me!';
     public static DEMONICDECREE = 'Demonic Decree';
     // Almighty
     public static MEGIDO = 'Megido';
@@ -516,7 +515,7 @@ export class SkillNameData {
     public static FREEZEBOOST = 'Freeze Boost';
     public static SHOCKBOOST = 'Shock Boost';
     public static DIZZYBOOST = 'Dizzy Boost';
-    public static FORGETBOOST = 'ForBoost';
+    public static FORGETBOOST = 'Forget Boost';
     public static SLEEPBOOST = 'Sleep Boost';
     public static CONFUSEBOOST = 'Confuse Boost';
     public static FEARBOOST = 'Fear Boost';
@@ -1185,7 +1184,6 @@ export class ItemNameData {
     public static MASTERSRING = 'Master\'s Ring';
     public static SAGESRING = 'Sage\'s Ring';
 
-    
     public static SHIELDHELMET = 'Shield Helmet';
     public static ATTACHMENTPEARL = 'Attachment Pearl';
     public static FATEDFLAME = 'Fated Flame';
