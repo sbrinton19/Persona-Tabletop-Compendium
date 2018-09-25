@@ -29,7 +29,7 @@
       <label *ngFor="let origin of item.origins; last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
     <td class="left-border">
-      <label *ngIf="item.transmute!=''; else emptyBlock" [innerHTML]="getSourceHtml(item.transmute)"></label>
+      <label *ngIf="item.transmute; else emptyBlock" [innerHTML]="getSourceHtml(item.transmute)"></label>
       <ng-template #emptyBlock>-</ng-template>
     </td>
     <td class="left-border">

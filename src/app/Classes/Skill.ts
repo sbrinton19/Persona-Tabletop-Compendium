@@ -1,6 +1,6 @@
 import { skillCardList } from '../Data/ItemData';
 import { SkillCard, OriginType, SkillCardType } from './Item';
-import { ELEMENT_PROBE_PROVIDERS } from '@angular/platform-browser/src/dom/debug/ng_probe';
+import { Persona } from './Persona';
 
 export enum Element {
     Physical = 'Physical',
@@ -135,7 +135,9 @@ export abstract class Skill {
     readonly element: Element;
     readonly minLevel: number;
     protected description: string;
-    personaSources: string[] = [];
+    personaSources: Persona[] = [];
+    allySkillCard: SkillCard;
+    mainSkillCard: SkillCard;
 
     constructor(name: string, cost: number, element: Element, description: string, minLevel = 0, createSkillCards = true) {
         this.id = Skill.idSource++;
@@ -157,12 +159,12 @@ export abstract class Skill {
     }
 
     createSkillCards(): void {
-        skillCardList.push(
-            new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
-            `Grants 1 ${SkillCardType[SkillCardType.Ally]} Persona the ${this.name} skill`, SkillCardType.Ally));
-        skillCardList.push(
-            new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Transmute], `A skill card for ${this.name}`,
-            `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main));
+        this.allySkillCard = new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
+            `Grants 1 ${SkillCardType[SkillCardType.Ally]} Persona the ${this.name} skill`, SkillCardType.Ally);
+        this.mainSkillCard = new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
+            `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main);
+        skillCardList.push(this.allySkillCard);
+        skillCardList.push(this.mainSkillCard);
     }
 
     getSkillElement(): string {

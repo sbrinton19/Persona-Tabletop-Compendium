@@ -971,7 +971,7 @@ export class ItemNameData {
     // Mystic
     public static SILKENSHIRT = 'Silken Shirt';
     public static KILIMWEAVESHIRT = 'Kilim Weave Shirt';
-    public static SHERPHERDSBOLERO = 'Shepherd\'s Bolero';
+    public static SHEPHERDSBOLERO = 'Shepherd\'s Bolero';
     public static WIZARDSROBES = 'Wizard\'s Robes';
     public static CHANTERSDJELLABA = 'Chanter\'s Djellaba';
     public static MAGESHABIT = 'Mage\'s Habit';

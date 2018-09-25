@@ -7,12 +7,14 @@ import { ItemsComponent } from './items/items.component';
 import { WeaponsComponent } from './weapons/weapons.component';
 import { ArmorsComponent } from './armors/armors.component';
 import { AccessoriesComponent } from './accessories/accessories.component';
+import { SkillComponent } from './skill/skill.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/personae', pathMatch: 'full' },
   { path: 'personae', component: PersonaeComponent },
   { path: 'persona/:id', component: PersonaComponent },
   { path: 'skills', component: SkillsComponent },
+  { path: 'skill/:id', component: SkillComponent },
   { path: 'weapons', component: WeaponsComponent },
   { path: 'armors', component: ArmorsComponent },
   { path: 'accessories', component: AccessoriesComponent },

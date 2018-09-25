@@ -1,4 +1,4 @@
-import { Arcana } from './Persona';
+import { Arcana, Persona } from './Persona';
 
 export enum ItemType {
     Weapon = 1,
@@ -18,12 +18,14 @@ export enum ConsumableType {
 }
 
 export enum OriginType {
-    Transmute = 1,
-    Store = 2,
-    Chest = 4,
-    Drop = 8,
-    Confidant = 16,
-    Error = 32,
+    Chest = 1,
+    Confidant = 2,
+    Drop = 4,
+    Negotiate = 8,
+    Store = 16,
+    Transmute = 32,
+    All = 63,
+    Error = 64,
     None = 0
 }
 
@@ -94,28 +96,27 @@ export class Item {
     readonly id: number;
     readonly name: string;
     readonly schedule: number;
-    readonly origins: OriginType[];
     readonly description: string;
     readonly special: string;
     readonly type: ItemType;
-    transmute = '';
-    personaSources: Set<string> = new Set();
+    origins: number = 0;
+    transmute: Persona = null;
+    personaSources: Set<Persona> = new Set();
 
     static getOriginName(origin: OriginType) {
         return OriginType[origin];
     }
-
-
 
     constructor(name: string, schedule: number, origin: OriginType[],
         description: string, special: string, type: ItemType) {
         this.id = Item.idSource++;
         this.name = name;
         this.schedule = schedule;
-        this.origins = origin;
+        origin.forEach(origin => this.origins += origin);
         this.description = description;
         this.special = special;
         this.type = type;
+
     }
 
     getTypeName(): string {
@@ -228,15 +229,32 @@ export class Drop {
     readonly item: Item;
     readonly low: number;
     readonly high: number;
-    readonly name: string;
     rollWinDisplay: string;
     constructor(item: Item, low: number, high: number) {
-        if (!item.origins.includes(OriginType.Drop) && item.name !== '-') {
-            console.warn(`${item.name} is available as a drop, but does not have the drop OriginType`);
-        }
         this.item = item;
-        this.name = item.name;
         this.low = low;
         this.high = high;
+    }
+
+    checkDrop(roll: number): boolean {
+        return this.low <= roll && roll <= this.high;
+    }
+
+    warning(): void {
+        if (!(this.item.origins & OriginType.Drop) && this.item.name !== '-') {
+            console.warn(`${this.item.name} is available as a drop, but does not have the drop OriginType`);
+        }
+    }
+}
+
+export class NegotiateDrop extends Drop {
+    constructor(item: Item, low: number, high: number) {
+        super(item, low, high);
+    }
+
+    warning(): void {
+        if (!(this.item.origins & OriginType.Negotiate) && this.item.name !== '-') {
+            console.warn(`${this.item.name} is available as a Negotiate, but does not have the negotiate OriginType`);
+        }
     }
 }

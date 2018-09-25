@@ -620,14 +620,14 @@ export const personaeList: Persona[] =
             ], // skills
             [
                 weaponList.find(w => w.name === ItemNameData.ZOMBIEKARAMBIT),
-                armorList.find(a => a.name === ItemNameData.SHERPHERDSBOLERO),
+                armorList.find(a => a.name === ItemNameData.SHEPHERDSBOLERO),
                 emptyItem,
                 emptyItem
             ], // transmu
             [
                 drop(consumableList, ItemNameData.WARDINGTALISMAN, 1, 4),
                 drop(weaponList, ItemNameData.KOPIS, 5, 9),
-                drop(armorList, ItemNameData.SHERPHERDSBOLERO, 12, 12),
+                drop(armorList, ItemNameData.SHEPHERDSBOLERO, 12, 12),
                 drop(weaponList, ItemNameData.ZOMBIEKARAMBIT, 13, 13)
             ], // negot
             [
@@ -1753,8 +1753,7 @@ export const personaeList: Persona[] =
             [
                 drop(lootList, ItemNameData.TINCLASP, 7, 16),
                 drop(accessoryList, ItemNameData.RUBYRING, 17, 18),
-                drop(consumableList, ItemNameData.RASETSUOFUDA, 19, 19),
-                drop(accessoryList, ItemNameData.THIEFMASK, 20, 20)
+                drop(consumableList, ItemNameData.RASETSUOFUDA, 19, 20)
             ], // drops
             false,
             false,
@@ -5966,7 +5965,7 @@ export const personaeList: Persona[] =
             [
                 drop(lootList, ItemNameData.IRONSAND, 5, 16),
                 drop(consumableList, ItemNameData.BEAD, 17, 18),
-                drop(accessoryList, ItemNameData.REFLECTIONGEM, 19, 20)
+                drop(armorList, ItemNameData.AEGISSHIELD, 19, 20)
             ], // drops
             false,
             false,

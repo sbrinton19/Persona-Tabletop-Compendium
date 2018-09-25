@@ -77,7 +77,7 @@
         <tr *ngFor="let skill of persona.skills">
             <td>{{skill.level}}</td>
             <td>{{skill.skill.getSkillElement()}}</td>
-            <td><a href="#/skill/{{skill.skill.id}}">{{skill.skill.name}}</a></td>
+            <td><a href="/skill/{{skill.skill.id}}">{{skill.skill.name}}</a></td>
             <td>{{skill.skill.getDescription()}}</td>
             <td>{{skill.skill.formatCost()}}</td>
         </tr>
@@ -96,7 +96,7 @@
         <tr *ngFor="let negot of persona.negotiates">
             <td>{{negot.rollWinDisplay}}</td>
             <td class="left-border">
-                <a *ngIf="negot.item.name != '-';else dummyData" href="#/item/{{negot.item.itemId}}">{{negot.name}}</a>
+                <a *ngIf="negot.item.name != '-';else dummyData" href="#/item/{{negot.item.itemId}}">{{negot.item.name}}</a>
                 <ng-template #dummyData>{{negot.name}}</ng-template>
             </td>
         </tr>
@@ -114,7 +114,7 @@
         <tbody>
         <tr *ngFor="let drop of persona.drops">
             <td>{{drop.rollWinDisplay}}</td>
-            <td class="left-border"><a href="#/item/{{drop.itemId}}">{{drop.name}}</a></td>
+            <td class="left-border"><a href="#/item/{{drop.itemId}}">{{drop.item.name}}</a></td>
         </tr>
         </tbody>
     </table>

@@ -17,6 +17,7 @@ import { WeaponsComponent } from './weapons/weapons.component';
 import { ArmorsComponent } from './armors/armors.component';
 import { AccessoriesComponent } from './accessories/accessories.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { SkillComponent } from './skill/skill.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { PaginationComponent } from './pagination/pagination.component';
     WeaponsComponent,
     ArmorsComponent,
     AccessoriesComponent,
-    PaginationComponent
+    PaginationComponent,
+    SkillComponent
   ],
   imports: [
     BrowserModule,

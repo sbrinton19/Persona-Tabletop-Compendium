@@ -1,0 +1,56 @@
+<div id="skillPage" *ngIf="skill; else notFound" style="margin-top:10px">
+  <h2>{{skill.name}} ({{skill.element}} / {{skill.formatCost()}})</h2>
+  <h2>{{skill.getDescription()}}</h2> 
+  <h3>Personae with this skill</h3>
+  <table id="personaTable" class="ui table unstackable striped">
+    <thead>
+      <tr>
+        <th>Persona</th>
+        <th>Level Learned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let persona of skill.personaSources">
+        <td><a href="/persona/{{persona.id}}">{{persona.name}}</a></td>
+        <td class="left-border">{{persona.getSkillLevel(skill.id)}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="skill.allySkillCard.personaSources.size !== 0">
+    <br>
+    <h3>Ally Skill Card</h3>
+    <table id="allyTable" class="ui table unstackable striped">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Drop Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let persona of skill.allySkillCard.personaSources">
+          <td><a href="/persona/{{persona.id}}">{{persona.name}}</a></td>
+          <td class="left-border">{{persona.getSkillCardSource(skill.allySkillCard)}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="skill.mainSkillCard.personaSources.size !== 0">
+    <br>
+    <h3>Main Skill Card</h3>
+    <table id="mainTable" class="ui table unstackable striped">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Drop Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let persona of skill.mainSkillCard.personaSources">
+          <td><a href="/persona/{{persona.id}}">{{persona.name}}</a></td>
+          <td class="left-border">{{persona.getSkillCardSource(skill.mainSkillCard)}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #notFound>"{{skill.name}}" not found!</ng-template>

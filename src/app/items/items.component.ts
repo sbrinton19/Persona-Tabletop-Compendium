@@ -3,6 +3,7 @@ import { Item } from '../Classes/Item';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { FilterPipe } from '../Pipes/filter-pipe';
+import { Persona } from '../Classes/Persona';
 
 @Component({
   selector: 'app-items',
@@ -38,9 +39,8 @@ export class ItemsComponent implements OnInit {
     this.displayList = pipe.transform(this.itemList, filter);
   }
 
-  getSourceHtml(source: string) {
-    const split = source.split('|');
-    return `<a href='/persona/${split[1]}'>${split[0]}</a><br>`;
+  getSourceHtml(source: Persona) {
+    return `<a href='/persona/${source.id}'>${source.name}</a><br>`;
   }
 
 }

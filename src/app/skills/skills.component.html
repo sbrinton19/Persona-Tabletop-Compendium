@@ -13,16 +13,17 @@
             <th (click)="orderBy('name')">Name</th>
             <th (click)="orderBy('cost')">Cost</th>
             <th (click)="orderBy('element')">Element</th>
+            <th (click)="orderBy('description')">Skill Description</th>
             <th (click)="orderBy('personaSources')">Personae with Skill</th>
         </tr>
       </thead>
       <tbody>
       <tr *ngFor="let skill of displayList">
           <td class="left-border">{{skill.id}}</td>
-        <td class="left-border"><a href='#/skill/{{skill.id}}'>{{skill.name}}</a></td>
+        <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
         <td class="left-border">{{skill.formatCost()}}</td>
         <td class="left-border">{{skill.getSkillElement()}}</td>
-        <td class="left-border">{{skill.description}}</td>
+        <td class="left-border">{{skill.getDescription()}}</td>
         <td class="left-border">
                 <label *ngIf="!skill.personaSources.length">-</label>
                 <label *ngFor="let source of skill.personaSources; last as isLast" [innerHTML]="getSourceHtml(source)"></label>

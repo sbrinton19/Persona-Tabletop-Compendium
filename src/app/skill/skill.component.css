@@ -1,0 +1,45 @@
+#skillPage {
+    margin-bottom: 1em;
+}
+
+#personaTable {
+    width: 50%;
+    text-align: center;
+    margin: auto;
+}
+
+#personaTable th {
+    cursor: pointer;
+    padding: .5em;
+}
+
+#personaTable th, #personaTable td {
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+}
+
+#personaTable tr:hover td {
+    background: rgba(64, 46, 24, 0.1);
+}
+
+#allyTable {
+    width: 50%;
+    text-align: center;
+    margin: auto;
+}
+
+#allyTable th, #allyTable td {
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+}
+
+#mainTable {
+    width: 50%;
+    text-align: center;
+    margin: auto;
+}
+
+#mainTable th, #mainTable td {
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+}

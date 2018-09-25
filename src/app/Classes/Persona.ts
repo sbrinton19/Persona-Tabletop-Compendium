@@ -1,5 +1,5 @@
 import { PersonaSkill } from './Skill';
-import { Drop, Item, Loot } from './Item';
+import { Drop, Item, Loot, NegotiateDrop, OriginType, SkillCard } from './Item';
 
 export enum ElemResist {
     Weak = 0,
@@ -47,7 +47,7 @@ export class Persona {
     elems: ElemResist[];
     skills: PersonaSkill[];
     transmutes: Item[];
-    negotiates: Drop[];
+    negotiates: NegotiateDrop[] = [];
     drops: Drop[];
     note: string;
     special: boolean;
@@ -116,7 +116,7 @@ export class Persona {
     }
 
     constructor(name: string, arcana: Arcana, level: number, stats: number[],
-        elems: ElemResist[], skills: PersonaSkill[], transmutes: Item[], negotiates: Drop[],
+        elems: ElemResist[], skills: PersonaSkill[], transmutes: Item[], negotiates: NegotiateDrop[],
         drops: Drop[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
             this.id = Persona.idSource++;
             this.name = name;
@@ -126,7 +126,7 @@ export class Persona {
             this.elems = elems;
             this.skills = skills;
             this.skills.forEach(skill => {
-                skill.skill.personaSources.push(`${this.name}|${this.id}`);
+                skill.skill.personaSources.push(this);
                 const temp = skill.level === 0 ? this.level : skill.level;
                 if (skill.skill.minLevel > temp) {
                     console.warn(`The persona ${this.name} learns the skill ${skill.skill.name} before its recommended minimum level`);
@@ -136,7 +136,9 @@ export class Persona {
                 }
             });
             this.transmutes = transmutes;
-            this.negotiates = negotiates;
+            negotiates.forEach(negot => {
+                this.negotiates.push(new NegotiateDrop(negot.item, negot.low, negot.high));
+            });
             this.drops = drops;
             this.special = special;
             this.max = max;
@@ -150,16 +152,25 @@ export class Persona {
 
     private processDrops(): void {
         if (this.drops.length === 1) {
-            this.drops[0].rollWinDisplay = 'All';
-            if (this.drops[0].item.id !== 0) {
-                this.drops[0].item.personaSources.add(`${this.name}|${this.id}`);
+            let drop = this.drops[0];
+            drop.warning();
+            if (drop.item.id !== 0) {
+                if (drop.low === drop.high) {
+                    drop.rollWinDisplay = `${drop.high}`;
+                } else {
+                    drop.rollWinDisplay = `${drop.low}-${drop.high}`;
+                }
+                drop.item.personaSources.add(this);
+            } else {
+                drop.rollWinDisplay = 'All';
             }
             return;
         }
         this.drops.forEach(drop => {
+            drop.warning();
             if (drop.item instanceof Loot) {
                 if (!drop.item.arcanaSources.includes(this.arcana)) {
-                    console.warn(`${drop.name} was assigned to ${this.name} which is the wrong drop for this Arcana`);
+                    console.warn(`${drop.item.name} was assigned to ${this.name} which is the wrong drop for this Arcana`);
                 }
             }
             if (drop.low === drop.high) {
@@ -167,31 +178,43 @@ export class Persona {
             } else {
                 drop.rollWinDisplay = `${drop.low}-${drop.high}`;
             }
-            drop.item.personaSources.add(`${this.name}|${this.id}`);
+            drop.item.personaSources.add(this);
          });
     }
 
     private processNegotiates(): void {
         if (this.negotiates.length === 1) {
-            this.negotiates[0].rollWinDisplay = 'All';
+            let negot = this.negotiates[0];
+            negot.warning();
             if (this.negotiates[0].item.id !== 0) {
-                this.negotiates[0].item.personaSources.add(`${this.name}|${this.id}`);
+                if (negot.low === negot.high) {
+                    negot.rollWinDisplay = `${negot.high}`;
+                } else {
+                    negot.rollWinDisplay = `${negot.low}-${negot.high}`;
+                }
+                this.negotiates[0].item.personaSources.add(this);
+            } else {
+                negot.rollWinDisplay = 'All';
             }
             return;
         }
         this.negotiates.forEach(negot => {
+            negot.warning();
             if (negot.low === negot.high) {
                 negot.rollWinDisplay = `${negot.high}`;
             } else {
                 negot.rollWinDisplay = `${negot.low}-${negot.high}`;
             }
-           negot.item.personaSources.add(`${this.name}|${this.id}`);
+           negot.item.personaSources.add(this);
         });
     }
 
     private processTransumtes(): void {
         this.transmutes.forEach(transmute => {
-            transmute.transmute = `${this.name}|${this.id}`;
+            if (!(transmute.origins & OriginType.Transmute)) {
+                console.warn(`${transmute.name} is available as a transmutation, but does not have the transmutation OriginType`);
+            }
+            transmute.transmute = this;
         });
     }
 
@@ -207,6 +230,27 @@ export class Persona {
         return Persona.getArcanaName(this.arcana);
     }
 
+    getSkillLevel(skill: number): number {
+        const level = this.skills.find(s => s.skill.id == skill).level;
+        return level == 0 ? this.level : level;
+    }
+
+    getSkillCardSource(item: SkillCard) : string {
+        let find = this.drops.find(d => d.item === item);
+        let find2 = this.negotiates.find(n => n.item === item);
+        let find3 = this.transmutes.find(t => t === item);
+        if (find && find2 && find3) {
+            return 'Drop, Negotiation, & Transmutation';
+        } else if (find && (find2 || find3)) {
+            return 'Drop & ' + (find2 ? 'Negotiation' : 'Transmuation');
+        } else if (find) {
+            return 'Drop';
+        } else if (find2) {
+            return 'Negotiation' + (find3 ? ' & Transmutation': '');
+        } else {
+            return 'Transmutation';
+        }
+    }
 }
 
 export class Recipe {

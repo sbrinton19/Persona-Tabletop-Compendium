@@ -3,6 +3,7 @@ import { SkillService } from '../skill.service';
 import { Skill } from '../Classes/Skill';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { FilterPipe } from '../Pipes/filter-pipe';
+import { Persona } from '../Classes/Persona';
 
 @Component({
   selector: 'app-skills',
@@ -39,9 +40,8 @@ export class SkillsComponent implements OnInit {
     this.displayList = pipe.transform(this.skillList, filter);
   }
 
-  getSourceHtml(source: string) {
-    const split = source.split('|');
-    return `<a href='/persona/${split[1]}'>${split[0]}</a><br>`;
+  getSourceHtml(source: Persona) {
+    return `<a href='/persona/${source.id}'>${source.name}</a><br>`;
   }
 
 
