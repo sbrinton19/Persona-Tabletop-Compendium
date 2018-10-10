@@ -1,43 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { Persona } from '../Classes/Persona';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FlatPersona } from '../Classes/Persona';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { PersonaService } from '../persona.service';
 import { FilterPipe } from '../Pipes/filter-pipe';
+import { ISubscription } from 'rxjs/Subscription';
+import { SkillService } from '../skill.service';
 @Component({
   selector: 'app-personae',
   templateUrl: './personae.component.html',
   styleUrls: ['./personae.component.css'],
 })
-export class PersonaeComponent implements OnInit {
-  fullPersonaeList: Persona[];
-  displayList: Persona[];
-  statList = Persona.STATNAMES;
-  elemList = Persona.ELEMNAMES;
-  sortOrder = false;
+export class PersonaeComponent implements OnInit, OnDestroy {
+  private displayList: FlatPersona[];
+  private flatPersonaList: FlatPersona[];
+  private subscriptions: ISubscription[] = [];
+  private statList = FlatPersona.STATNAMES;
+  private elemList = FlatPersona.ELEMNAMES;
+  private sortOrder = false;
 
-  constructor(private personaService: PersonaService) { }
+  constructor(private personaService: PersonaService, private skillService: SkillService) { }
 
   ngOnInit() {
-    this.getPersonae();
+    this.getFlatPersonae();
   }
 
-  getPersonae(): void {
-    this.personaService.getPersonaeList().subscribe(personae => this.fullPersonaeList = personae);
-    this.displayList = this.fullPersonaeList;
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+  
+  getFlatPersonae(): void {
+    this.subscriptions.push(this.personaService.getFlatPersonaeList().subscribe(resp => {
+      this.flatPersonaList = resp;
+      this.displayList = this.flatPersonaList;
+    }));
   }
 
   orderBy(field: string, idx = 0): void {
     const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.fullPersonaeList, field, this.sortOrder, idx);
+    this.displayList = pipe.transform(this.flatPersonaList, field, this.sortOrder, idx);
   }
 
   filterStr(filter): void {
-    if (filter === '' && this.displayList.length !== this.fullPersonaeList.length) {
-       this.displayList = this.fullPersonaeList;
+    if (filter === '' && this.displayList.length !== this.flatPersonaList.length) {
+       this.displayList = this.flatPersonaList;
     }
     const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.fullPersonaeList, filter);
+    this.displayList = pipe.transform(this.flatPersonaList, filter);
   }
+
 
 }

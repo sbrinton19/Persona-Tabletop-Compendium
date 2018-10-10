@@ -1,40 +1,30 @@
-<div class="ui mini input">
-    <label class="ui-mini-label">
-      Filter:
-      <input #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
-    </label>
-    <button (click)="filterStr('')" class="ui mini button">Clear</button>
+<div id="filterDiv" class="ui mini input">
+  <label class="ui-mini-label">
+    Filter:
+    <input id="inputFilter" #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
+  </label>
+  <button (click)="filterStr('')" class="ui mini button">Clear</button>
 </div>
 
 <table id="accessoryTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
-  <tr>
+    <tr>
       <th (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
-      <th class="mobile-hidden-1" (click)="orderBy('schedule')">Schedule</th>
-      <th class="mobile-hidden-1" (click)="orderBy('origins')">Origins</th>
-      <th class="mobile-hidden-1" (click)="orderBy('transmute')">Transmute from</th>
-      <th class="mobile-hidden-1">Drops from</th>
-      <th class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
-  </tr>
+      <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
+      <th class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
+      <th class="mobile-hidden-2" (click)="orderBy('special')">Special</th>
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let accessory of displayList">
-    <td class="left-border">{{accessory.id}}</td>
-    <td class="left-border"><a href='#/item/{{accessory.id}}'>{{accessory.name}}</a></td>
-    <td class="left-border mobile-hidden-1">{{accessory.schedule}}</td>
-    <td class="left-border mobile-hidden-1">
-      <label *ngFor="let origin of accessory.origins; last as isLast">{{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-    </td>
-    <td class="left-border mobile-hidden-1">
-      <label *ngIf="accessory.transmute!=''; else emptyBlock" [innerHTML]="getSourceHtml(accessory.transmute)"></label>
-      <ng-template #emptyBlock>-</ng-template>
-    </td>
-    <td class="left-border mobile-hidden-1">
-        <label *ngIf="!accessory.personaSources.size">-</label>
-        <label *ngFor="let source of accessory.personaSources; last as isLast" [innerHTML]="getSourceHtml(source)"></label>
-    </td>
-    <td class="left-border mobile-hidden-3">{{accessory.special}}</td>
-  </tr>
+    <tr *ngFor="let accessory of displayList">
+      <td class="left-border">{{accessory.id}}</td>
+      <td class="left-border"><a href='#/item/{{accessory.id}}'>{{accessory.name}}</a></td>
+      <td class="left-border mobile-hidden-3">{{accessory.schedule}}</td>
+      <td class="left-border mobile-hidden-3">
+        <label *ngFor="let origin of accessory.getOrigins(); last as isLast">{{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      </td>
+      <td class="left-border mobile-hidden-2">{{accessory.special}}</td>
+    </tr>
   </tbody>
 </table>

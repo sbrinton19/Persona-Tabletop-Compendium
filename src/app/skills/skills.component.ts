@@ -1,48 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SkillService } from '../skill.service';
-import { Skill } from '../Classes/Skill';
+import { FlatSkill, FlatDamageSkill, PhysAilmentSkill, FlatDamageAilmentSkill, AilmentType, ElementalMagic, Element, AilmentFV, DivineKillMagic, BuffMagic, FlatSupportSkill, WallMagic, BreakMagic, FlatAilmentSkill, AilmentMagic, BoostSkill, FlatPassiveSkill, PassiveType, ReductionSkill, DodgeSkill, CounterSkill, RecoverySkill, MasterSkill, KillSkill, PostCombatSkill, GrowthSkill, ChainSkill, IrregularPassive } from '../Classes/Skill';
+import { PersonaReference } from "../Classes/PersonaReference";
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { FilterPipe } from '../Pipes/filter-pipe';
-import { Persona } from '../Classes/Persona';
+import { ISubscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-skills',
   templateUrl: './skills.component.html',
   styleUrls: ['./skills.component.css']
 })
-export class SkillsComponent implements OnInit {
-  skillList: Skill[];
+export class SkillsComponent implements OnInit, OnDestroy {
   sortOrder = false;
-  displayList: Skill[];
+  displayList: FlatSkill[];
+  private subscriptions: ISubscription[] = [];
+  private flatSkillList: FlatSkill[] = [];
 
   constructor(private skillService: SkillService) { }
 
-  ngOnInit() {
-    this.getSkills();
+  public ngOnInit() {
+    this.getFlatSkills();
   }
 
-  getSkills(): void {
-    this.skillService.getSkillList().subscribe(skills => this.skillList = skills);
-    this.displayList = this.skillList;
+  public ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe);
+  }
+
+  getFlatSkills(): void {
+    this.subscriptions.push(
+      this.skillService.getFlatSkillList().subscribe(skills => {
+        this.flatSkillList = skills;
+        this.displayList = this.flatSkillList;
+      })
+    );
   }
 
   orderBy(field: string, idx = 0): void {
     const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.skillList, field, this.sortOrder, idx);
+    this.displayList = pipe.transform(this.flatSkillList, field, this.sortOrder, idx);
   }
 
   filterStr(filter): void {
-    if (filter === '' && this.displayList.length !== this.skillList.length) {
-      this.displayList = this.skillList;
+    if (filter === '' && this.displayList.length !== this.flatSkillList.length) {
+      this.displayList = this.flatSkillList;
     }
     const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.skillList, filter);
+    this.displayList = pipe.transform(this.flatSkillList, filter);
   }
-
-  getSourceHtml(source: Persona) {
-    return `<a href='/persona/${source.id}'>${source.name}</a><br>`;
-  }
-
-
 }

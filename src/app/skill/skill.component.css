@@ -2,6 +2,24 @@
     margin-bottom: 1em;
 }
 
+#skillTitle {
+    font-size: 300%;
+    font-weight: bold;
+}
+
+#skillSubtitle {
+    padding-block-start: .75em;
+    font-size: 180%;
+    font-weight: bold;
+    padding-block-end: .75em;
+}
+
+#skillDetailTable {
+    width: 80%;
+    text-align: center;
+    margin: auto;
+}
+
 #personaTable {
     width: 50%;
     text-align: center;
@@ -22,24 +40,13 @@
     background: rgba(64, 46, 24, 0.1);
 }
 
-#allyTable {
+#cardTable {
     width: 50%;
     text-align: center;
     margin: auto;
 }
 
-#allyTable th, #allyTable td {
-    padding-left: 1.25em;
-    padding-right: 1.25em;
-}
-
-#mainTable {
-    width: 50%;
-    text-align: center;
-    margin: auto;
-}
-
-#mainTable th, #mainTable td {
+#cardTable th, #cardTable td {
     padding-left: 1.25em;
     padding-right: 1.25em;
 }

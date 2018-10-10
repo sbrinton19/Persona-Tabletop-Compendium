@@ -8,16 +8,20 @@ import { AppRoutingModule } from './/app-routing.module';
 import { OrderByPipe } from './Pipes/order-by-pipe';
 import { PersonaComponent } from './persona/persona.component';
 import { PersonaService } from './persona.service';
+import { PersonaResolver } from './persona.resolver';
 import { ItemService } from './item.service';
 import { FilterPipe } from './Pipes/filter-pipe';
 import { SkillsComponent } from './skills/skills.component';
 import { SkillService } from './skill.service';
+import { SkillResolver } from './skill.resolver';
 import { ItemsComponent } from './items/items.component';
 import { WeaponsComponent } from './weapons/weapons.component';
 import { ArmorsComponent } from './armors/armors.component';
 import { AccessoriesComponent } from './accessories/accessories.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { SkillComponent } from './skill/skill.component';
+import { WebsocketService } from './websocket.service';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,8 @@ import { SkillComponent } from './skill/skill.component';
     ArmorsComponent,
     AccessoriesComponent,
     PaginationComponent,
-    SkillComponent
+    SkillComponent,
+    ItemComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,10 @@ import { SkillComponent } from './skill/skill.component';
   providers: [
     PersonaService,
     ItemService,
-    SkillService
+    SkillService,
+    WebsocketService,
+    PersonaResolver,
+    SkillResolver
   ],
   bootstrap: [AppComponent]
 })

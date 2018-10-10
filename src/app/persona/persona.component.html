@@ -16,7 +16,7 @@
         </thead>
         <tbody>
         <tr>
-            <td *ngFor="let stat of persona.stats">{{stat}}</td>
+            <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
         </tr>
         </tbody>
     </table>
@@ -30,7 +30,7 @@
         </thead>
         <tbody>
         <tr>
-            <td *ngFor="let elem of persona.elems" class="{{persona.getElemFull(elem)}}">{{persona.getElemFull(elem)}}</td>
+            <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-1 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
         </tr>
         </tbody>
     </table>
@@ -76,10 +76,10 @@
         <tbody>
         <tr *ngFor="let skill of persona.skills">
             <td>{{skill.level}}</td>
-            <td>{{skill.skill.getSkillElement()}}</td>
-            <td><a href="/skill/{{skill.skill.id}}">{{skill.skill.name}}</a></td>
-            <td>{{skill.skill.getDescription()}}</td>
-            <td>{{skill.skill.formatCost()}}</td>
+            <td>{{skill.getSkillElement()}}</td>
+            <td><a href="/skill/{{skill.id}}">{{skill.name}}</a></td>
+            <td>{{skill.getDescription()}}</td>
+            <td>{{skill.formatCost()}}</td>
         </tr>
         </tbody>
     </table>
@@ -94,9 +94,9 @@
         </thead>
         <tbody>
         <tr *ngFor="let negot of persona.negotiates">
-            <td>{{negot.rollWinDisplay}}</td>
+            <td>{{negot.getRollWinDisplay()}}</td>
             <td class="left-border">
-                <a *ngIf="negot.item.name != '-';else dummyData" href="#/item/{{negot.item.itemId}}">{{negot.item.name}}</a>
+                <a *ngIf="negot.name !== '-';else dummyData" href="#/item/{{negot.id}}">{{negot.name}}</a>
                 <ng-template #dummyData>{{negot.name}}</ng-template>
             </td>
         </tr>
@@ -113,8 +113,8 @@
         </thead>
         <tbody>
         <tr *ngFor="let drop of persona.drops">
-            <td>{{drop.rollWinDisplay}}</td>
-            <td class="left-border"><a href="#/item/{{drop.itemId}}">{{drop.item.name}}</a></td>
+            <td>{{drop.getRollWinDisplay()}}</td>
+            <td class="left-border"><a href="#/item/{{drop.itemId}}">{{drop.name}}</a></td>
         </tr>
         </tbody>
     </table>
@@ -136,7 +136,7 @@
         </tbody>
     </table>
 
-    <app-pagination [listData]="toRecipes" [header]="'Fusion(s) to this persona (| Recipes)'" [owner]="persona.name">
+    <app-pagination [listData]="persona.toRecipes" [header]="'Fusion(s) to this persona (| Recipes)'" [owner]="persona.name">
         <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
             <table id="recipesToTable" class="ui table unstackable striped recipe-table">
                 <thead>
@@ -151,7 +151,7 @@
                     <td>{{i + 1 + (currPage - 1) * perPage}}</td>
                     <td>¥{{recipe.cost | number}}</td>
                     <td *ngFor="let persona of recipe.sources">
-                        <a href='/persona/{{persona.id}}'>{{persona.name}}</a>
+                        <a href='/persona/{{persona.personaId}}'>{{persona.personaName}}</a>
                         ({{persona.level}} / {{persona.getArcanaName()}})
                     </td>
                 </tr>
@@ -160,7 +160,7 @@
         </ng-template>
     </app-pagination>
     
-    <app-pagination [listData]="fromRecipes" [header]="'Fusion(s) from this persona (| Recipes)'" [owner]="persona.name">
+    <app-pagination [listData]="persona.fromRecipes" [header]="'Fusion(s) from this persona (| Recipes)'" [owner]="persona.name">
         <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
             <table id="recipesFromTable" class="ui table unstackable striped recipe-table">
                 <thead>
@@ -176,11 +176,11 @@
                     <td>{{i + 1 + (currPage - 1) * perPage}}</td>
                     <td>¥{{recipe.cost | number}}</td>
                     <td>
-                        <a href='/persona/{{recipe.sources[1].id}}'>{{recipe.sources[1].name}}</a>
+                        <a href='/persona/{{recipe.sources[1].personaId}}'>{{recipe.sources[1].personaName}}</a>
                         ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
                     </td>
                     <td>
-                        <a href='/persona/{{recipe.result.id}}'>{{recipe.result.name}}</a>
+                        <a href='/persona/{{recipe.result.personaId}}'>{{recipe.result.personaName}}</a>
                         ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
                     </td>
                 </tr>

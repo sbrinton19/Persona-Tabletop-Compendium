@@ -1,9 +1,9 @@
-<ul class="top-nav">
+<ul id="masterNav" class="top-nav">
     <li><a routerLink="/personae">Personae</a></li>
     <li><a routerLink="/skills">Skills</a></li>
-    <li id="childNav" [ngStyle]="{'background': color}" (click)="openCloseSubNav()"><a>Items</a></li>
+    <li id="itens" [ngStyle]="{'background': color}" (click)="openCloseSubNav()"><a>Items</a></li>
 </ul>
-<ul class="sub-nav" *ngIf="opened">
+<ul id="itemSubNav" class="sub-nav" *ngIf="opened">
     <li><a routerLink="/weapons">Weapons</a></li>
     <li><a routerLink="/armors">Armors</a></li>
     <li><a routerLink="/accessories">Accessories</a></li>

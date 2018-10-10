@@ -1,40 +1,13 @@
-import { PersonaSkill } from './Skill';
-import { Drop, Item, Loot, NegotiateDrop, OriginType, SkillCard } from './Item';
+import { OldPersonaSkill, LeveledSkill } from './Skill';
+import { PersonaReference } from "./PersonaReference";
+import { OldDrop, Item, Loot, NegotiateDrop, OriginType, SkillCard, ItemReference, DropReference, Drop } from './Item';
+import { Arcana, getArcanaName } from './Arcana';
+import { ElemResist, getElemShort, getElemFull } from './ElemResist';
 
-export enum ElemResist {
-    Weak = 0,
-    Neutral,
-    Resist,
-    Null,
-    Repel,
-    Absorb
-}
-
-export enum Arcana {
-    Fool = 0,
-    Magician,
-    Priestess,
-    Empress,
-    Emperor,
-    Hierophant,
-    Lovers,
-    Chariot,
-    Strength,
-    Hermit,
-    Fortune,
-    Justice,
-    Hanged,
-    Death,
-    Temperance,
-    Devil,
-    Tower,
-    Star,
-    Moon,
-    Sun,
-    Judgement
-}
-
-export class Persona {
+/**
+ * This class is a reference-less version of persona with the list view display data for a persona
+ */
+export class FlatPersona {
     private static idSource = 0;
     public static get STATNAMES(): string[] { return ['HP', 'SP', 'Strength', 'Magic', 'Endurance', 'Agility', 'Luck']; }
     public static get ELEMNAMES(): string[] { return ['Phys', 'Gun', 'Fire', 'Ice', 'Elec', 'Wind', 'Psy', 'Nuke', 'Bless', 'Curse']; }
@@ -45,106 +18,127 @@ export class Persona {
     level: number;
     stats: number[];
     elems: ElemResist[];
-    skills: PersonaSkill[];
-    transmutes: Item[];
-    negotiates: NegotiateDrop[] = [];
-    drops: Drop[];
     note: string;
     special: boolean;
     max: boolean;
     dlc: boolean;
     rare: boolean;
 
-    static getElemShort(elem: ElemResist): string {
-        switch (elem) {
-            case ElemResist.Weak:
-                return 'wk';
-            case ElemResist.Neutral:
-                return '-';
-            case ElemResist.Resist:
-                return 'rs';
-            case ElemResist.Null:
-                return 'nu';
-            case ElemResist.Repel:
-                return 'rp';
-            case ElemResist.Absorb:
-                return 'ab';
-        }
+    constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[], elems: ElemResist[],
+        special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
+        if(id === -1)
+            this.id = Persona.idSource++;
+        else
+            this.id = id;
+        this.name = name;
+        this.arcana = arcana;
+        this.level = level;
+        this.stats = stats;
+        this.elems = elems;
+        this.special = special;
+        this.max = max;
+        this.dlc = dlc;
+        this.rare = rare;
+        this.note = note;
     }
 
-    static getElemFull(elem: ElemResist): string {
-        switch (elem) {
-            case ElemResist.Neutral:
-                return '-';
-            case ElemResist.Weak:
-            case ElemResist.Resist:
-            case ElemResist.Null:
-            case ElemResist.Repel:
-            case ElemResist.Absorb:
-                return ElemResist[elem];
-        }
+    public static copyConstructor(source: FlatPersona): FlatPersona {
+        return new FlatPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max,
+            source.dlc, source.rare, source.note);
     }
 
-    static getArcanaName(arcana: Arcana): string {
-        switch (arcana) {
-            case Arcana.Fool:
-            case Arcana.Magician:
-            case Arcana.Empress:
-            case Arcana.Emperor:
-            case Arcana.Hierophant:
-            case Arcana.Lovers:
-            case Arcana.Chariot:
-            case Arcana.Strength:
-            case Arcana.Hermit:
-            case Arcana.Justice:
-            case Arcana.Death:
-            case Arcana.Temperance:
-            case Arcana.Devil:
-            case Arcana.Tower:
-            case Arcana.Star:
-            case Arcana.Moon:
-            case Arcana.Sun:
-            case Arcana.Judgement:
-                return Arcana[arcana];
-            case Arcana.Priestess:
-                return 'High Priestess';
-            case Arcana.Hanged:
-                return 'Hanged Man';
-            case Arcana.Fortune:
-                return 'Wheel of Fortune';
-        }
+    getElemShort(elem: ElemResist): string {
+        return getElemShort(elem);
     }
+
+    getElemFull(elem: ElemResist): string {
+        return getElemFull(elem);
+    }
+
+    getArcanaName(): string {
+        return getArcanaName(this.arcana);
+    }
+}
+
+export class FullPersona extends FlatPersona {
+    skills: LeveledSkill[] = [];
+    drops: DropReference[] = [];
+    negotiates: DropReference[] = [];
+    transmutes: ItemReference[] = [];
+    toRecipes: Recipe[] = [];
+    fromRecipes: Recipe[] = [];
+
+    constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[],
+        elems: ElemResist[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string,
+        skills: LeveledSkill[], drops: DropReference[], negotiates: DropReference[], transmutes: ItemReference[], toRecipes: Recipe[],
+        fromRecipes: Recipe[]) {
+            super(id, name, arcana, level, stats, elems, special, max, dlc, rare, note);
+            this.skills = skills;
+            this.drops = drops;
+            this.negotiates = negotiates;
+            this.transmutes = transmutes;
+            this.toRecipes = toRecipes;
+            this.fromRecipes = fromRecipes;
+            
+    }
+
+    public static copyConstructor(source: FullPersona): FullPersona {
+        const skills: LeveledSkill[] = [];
+        source.skills.forEach(skill => {
+            const temp = skill.level === 0 ? source.level : skill.level;
+            if (skill.minLevel > temp) {
+                console.warn(`The persona ${this.name} learns the skill ${skill.name} before its recommended minimum level`);
+            }
+            if (skill.minLevel + 20 < temp && skill.minLevel !== 0) {
+                console.warn(`The persona ${this.name} learns the skill ${skill.name} after its recommended maximum level`);
+            }
+            skills.push(new LeveledSkill(skill.id, skill.name, skill.cost, skill.element, skill.description, skill.minLevel, skill.level));
+        });
+        const drops: DropReference[] = [];
+        source.drops.forEach(drop => {
+            drops.push(DropReference.copyConstructor(drop));
+        });
+        const negotiates: DropReference[] = [];
+        source.negotiates.forEach(negotiate => {
+            negotiates.push(DropReference.copyConstructor(negotiate));
+        });
+        const transmutes: ItemReference[] = [];
+        source.transmutes.forEach(transmute => {
+            transmutes.push(ItemReference.copyConstructor(transmute));
+        });
+        const toRecipes: Recipe[] = [];
+        source.toRecipes.forEach(recipe => {
+            toRecipes.push(Recipe.copyConstructor(recipe));
+        });
+        const fromRecipes: Recipe[] = [];
+        source.fromRecipes.forEach(recipe => {
+            fromRecipes.push(Recipe.copyConstructor(recipe));
+        });
+        return new FullPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc, source.rare,
+            source.note, skills, drops, negotiates, transmutes, toRecipes, fromRecipes);
+    }
+}
+
+/**
+ * Complete Persona object with references for detail view page
+ */
+class Persona extends FlatPersona {
+    skills: OldPersonaSkill[];
+    transmutes: Item[];
+    negotiates: NegotiateDrop[] = [];
+    drops: OldDrop[];
+
 
     constructor(name: string, arcana: Arcana, level: number, stats: number[],
-        elems: ElemResist[], skills: PersonaSkill[], transmutes: Item[], negotiates: NegotiateDrop[],
-        drops: Drop[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
-            this.id = Persona.idSource++;
-            this.name = name;
-            this.arcana = arcana;
-            this.level = level;
-            this.stats = stats;
-            this.elems = elems;
+        elems: ElemResist[], skills: OldPersonaSkill[], transmutes: Item[], negotiates: NegotiateDrop[],
+        drops: OldDrop[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
+            super(-1, name, arcana, level, stats, elems, special, max, dlc, rare, note);
             this.skills = skills;
-            this.skills.forEach(skill => {
-                skill.skill.personaSources.push(this);
-                const temp = skill.level === 0 ? this.level : skill.level;
-                if (skill.skill.minLevel > temp) {
-                    console.warn(`The persona ${this.name} learns the skill ${skill.skill.name} before its recommended minimum level`);
-                }
-                if (skill.skill.minLevel + 20 < temp && skill.skill.minLevel !== 0) {
-                    console.warn(`The persona ${this.name} learns the skill ${skill.skill.name} after its recommended maximum level`);
-                }
-            });
             this.transmutes = transmutes;
             negotiates.forEach(negot => {
                 this.negotiates.push(new NegotiateDrop(negot.item, negot.low, negot.high));
             });
             this.drops = drops;
-            this.special = special;
-            this.max = max;
-            this.dlc = dlc;
-            this.rare = rare;
-            this.note = note;
             this.processDrops();
             this.processNegotiates();
             this.processTransumtes();
@@ -154,13 +148,14 @@ export class Persona {
         if (this.drops.length === 1) {
             let drop = this.drops[0];
             drop.warning();
+            
             if (drop.item.id !== 0) {
                 if (drop.low === drop.high) {
                     drop.rollWinDisplay = `${drop.high}`;
                 } else {
                     drop.rollWinDisplay = `${drop.low}-${drop.high}`;
                 }
-                drop.item.personaSources.add(this);
+                drop.item.addPersonaSource(this.id, this.name, OriginType.Drop);
             } else {
                 drop.rollWinDisplay = 'All';
             }
@@ -178,7 +173,7 @@ export class Persona {
             } else {
                 drop.rollWinDisplay = `${drop.low}-${drop.high}`;
             }
-            drop.item.personaSources.add(this);
+            drop.item.addPersonaSource(this.id, this.name, OriginType.Drop);
          });
     }
 
@@ -192,7 +187,7 @@ export class Persona {
                 } else {
                     negot.rollWinDisplay = `${negot.low}-${negot.high}`;
                 }
-                this.negotiates[0].item.personaSources.add(this);
+                this.negotiates[0].item.addPersonaSource(this.id, this.name, OriginType.Negotiate);
             } else {
                 negot.rollWinDisplay = 'All';
             }
@@ -205,34 +200,23 @@ export class Persona {
             } else {
                 negot.rollWinDisplay = `${negot.low}-${negot.high}`;
             }
-           negot.item.personaSources.add(this);
+           negot.item.addPersonaSource(this.id, this.name, OriginType.Negotiate);;
         });
     }
 
     private processTransumtes(): void {
         this.transmutes.forEach(transmute => {
+            if(transmute.name === "-")
+                return;
             if (!(transmute.origins & OriginType.Transmute)) {
                 console.warn(`${transmute.name} is available as a transmutation, but does not have the transmutation OriginType`);
             }
-            transmute.transmute = this;
+            if (transmute.transmuteId !== -1) {
+                console.error(`${transmute.name} is available as a transmutation of ${transmute.transmuteId} and is also attempting to be used by ${this.name}`);
+            }
+            transmute.transmuteId = this.id;
+            transmute.addPersonaSource(this.id, this.name, OriginType.Transmute);
         });
-    }
-
-    getElemShort(elem: ElemResist): string {
-        return Persona.getElemShort(elem);
-    }
-
-    getElemFull(elem: ElemResist): string {
-        return Persona.getElemFull(elem);
-    }
-
-    getArcanaName(): string {
-        return Persona.getArcanaName(this.arcana);
-    }
-
-    getSkillLevel(skill: number): number {
-        const level = this.skills.find(s => s.skill.id == skill).level;
-        return level == 0 ? this.level : level;
     }
 
     getSkillCardSource(item: SkillCard) : string {
@@ -251,22 +235,23 @@ export class Persona {
             return 'Transmutation';
         }
     }
+
 }
 
 export class Recipe {
-    sources: Persona[];
-    result: Persona;
+    sources: PersonaReference[];
+    result: PersonaReference;
     cost: number;
 
-    constructor(sources: Persona[], result: Persona) {
+    constructor(sources: PersonaReference[], result: PersonaReference, cost: number) {
         this.sources = sources;
         this.result = result;
-        this.result = result;
-        let cost = 0;
-        sources.forEach(persona => {
-            const level = persona.level;
-            cost += (27 * level * level) + (126 * level) + 2147;
-        });
         this.cost = cost;
+    }
+
+    static copyConstructor(source: Recipe): Recipe {
+        let newSources: PersonaReference[] = [];
+        source.sources.forEach(source => newSources.push(PersonaReference.copyConstructor(source)));
+        return new Recipe(newSources, PersonaReference.copyConstructor(source.result), source.cost);
     }
 }

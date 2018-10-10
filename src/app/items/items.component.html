@@ -14,8 +14,7 @@
       <th (click)="orderBy('type')">Item Type</th>
       <th (click)="orderBy('schedule')">Schedule</th>
       <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
-      <th (click)="orderBy('transmute')">Transmute from</th>
-      <th>Drops from</th>
+      <th (click)="orderBy('transmuteId')">Transmute from</th>
       <th class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
   </tr>
   </thead>
@@ -26,16 +25,12 @@
     <td class="left-border">{{item.getTypeName()}}</td>
     <td class="left-border">{{item.schedule}}</td>
     <td class="left-border mobile-hidden-2">
-      <label *ngFor="let origin of item.origins; last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
     <td class="left-border">
-      <label *ngIf="item.transmute; else emptyBlock" [innerHTML]="getSourceHtml(item.transmute)"></label>
+      <label *ngIf="item.transmuteId != -1; else emptyBlock" [innerHTML]="getSourceHtml(item.transmuteId)"></label>
       <ng-template #emptyBlock>-</ng-template>
     </td>
-    <td class="left-border">
-        <label *ngIf="!item.personaSources.size">-</label>
-        <label *ngFor="let source of item.personaSources; last as isLast" [innerHTML]="getSourceHtml(source)"></label>
-      </td>
     <td class="left-border mobile-hidden-3">{{item.special}}</td>
   </tr>
   </tbody>

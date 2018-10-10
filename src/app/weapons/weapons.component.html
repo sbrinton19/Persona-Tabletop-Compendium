@@ -13,8 +13,7 @@
       <th><a (click)="orderBy('name')">Name</a></th>
       <th class="mobile-hidden-1"><a (click)="orderBy('schedule')">Schedule</a></th>
       <th class="mobile-hidden-1"><a (click)="orderBy('origins')">Origins</a></th>
-      <th class="mobile-hidden-1"><a (click)="orderBy('transmute')">Transmute from</a></th>
-      <th class="mobile-hidden-1"><a>Drops from</a></th>
+      <th class="mobile-hidden-1"><a (click)="orderBy('transmuteId')">Transmute from</a></th>
       <th class="mobile-hidden-2"><a (click)="orderBy('baseDamage')">Base Damage</a></th>
       <th class="mobile-hidden-2"><a (click)="orderBy('maxDamageDice')">Max Dice</a></th>
       <th class="mobile-hidden-2"><a (click)="orderBy('damageDie')">Damage Die</a></th>
@@ -31,23 +30,25 @@
     <td class="left-border"><a href='#/item/{{weapon.id}}'>{{weapon.name}}</a></td>
     <td class="left-border mobile-hidden-1">{{weapon.schedule}}</td>
     <td class="left-border mobile-hidden-1">
-      <label *ngFor="let origin of weapon.origins; last as isLast">{{weapon.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
+      <label *ngFor="let origin of weapon.getOrigins(); last as isLast">{{weapon.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
     </td>
     <td class="left-border mobile-hidden-1">
-      <label *ngIf="weapon.transmute!=''" [innerHTML]="getSourceHtml(weapon.transmute)"></label>
-      <label *ngIf="weapon.transmute==''">-</label>
-    </td>
-    <td class="left-border mobile-hidden-1">
-        <label *ngIf="!weapon.personaSources.size">-</label>
-        <label *ngFor="let source of weapon.personaSources; last as isLast" [innerHTML]="getSourceHtml(source)"></label>
+      <label *ngIf="weapon.transmuteId!=-1;else empty" [innerHTML]="getSourceHtml(weapon.transmuteId)"></label>
+      <ng-template #empty>-</ng-template>
     </td>
     <td class="left-border mobile-hidden-2">{{weapon.baseDamage}}</td>
     <td class="left-border mobile-hidden-2">{{weapon.maxDamageDice}}</td>
     <td class="left-border mobile-hidden-2">{{weapon.damageDie}}</td>
     <td class="left-border mobile-hidden-2">{{weapon.range}}</td>
     <td class="left-border mobile-hidden-2">{{weapon.failValue}}</td>
-    <td class="left-border">{{weapon.magSize}}</td>
-    <td class="left-border">{{weapon.magCount}}</td>
+    <td class="left-border">
+      <label *ngIf="weapon.magSize;else empty">{{weapon.magSize}}</label>
+      <ng-template #empty>-</ng-template>
+    </td>
+    <td class="left-border">
+        <label *ngIf="weapon.magCount;else empty">{{weapon.magCount}}</label>
+        <ng-template #empty>-</ng-template>
+      </td>
     <td class="left-border mobile-hidden-3">{{weapon.special}}</td>
   </tr>
   </tbody>

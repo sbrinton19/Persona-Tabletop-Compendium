@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Persona } from '../Classes/Persona';
+import { getArcanaName } from '../Classes/Arcana';
 @Pipe({
   name: 'orderBy'
 })
@@ -13,8 +13,8 @@ export class OrderByPipe implements PipeTransform {
       let ae = a[ orderField ];
       let be = b[ orderField ];
       if (orderField === 'arcana') {
-        ae = Persona.getArcanaName(ae);
-        be = Persona.getArcanaName(be);
+        ae = getArcanaName(ae);
+        be = getArcanaName(be);
       }
       if (orderField === 'stats'
       || orderField === 'elems'

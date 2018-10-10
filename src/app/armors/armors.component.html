@@ -13,8 +13,7 @@
       <th (click)="orderBy('name')">Name</th>
       <th class="mobile-hidden-1" (click)="orderBy('schedule')">Schedule</th>
       <th class="mobile-hidden-1" (click)="orderBy('origins')">Origins</th>
-      <th class="mobile-hidden-1" (click)="orderBy('transmute')">Transmute from</th>
-      <th class="mobile-hidden-1">Drops from</th>
+      <th class="mobile-hidden-1" (click)="orderBy('transmuteId')">Transmute from</th>
       <th class="mobile-hidden-2" (click)="orderBy('armorClass')">Armor<br>Class</th>
       <th class="mobile-hidden-2" (click)="orderBy('damageReduction')">DMG<br>Reduction</th>
       <th class="mobile-hidden-2" (click)="orderBy('moveAimPenalty')">Move/Aim<br>Penalty</th>
@@ -29,15 +28,11 @@
     <td class="left-border"><a href='#/item/{{armor.id}}'>{{armor.name}}</a></td>
     <td class="left-border mobile-hidden-1">{{armor.schedule}}</td>
     <td class="left-border mobile-hidden-1">
-      <label *ngFor="let origin of armor.origins; last as isLast">{{armor.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      <label *ngFor="let origin of armor.getOrigins(); last as isLast">{{armor.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
     <td class="left-border mobile-hidden-1">
-      <label *ngIf="armor.transmute!=''; else emptyBlock" [innerHTML]="getSourceHtml(armor.transmute)"></label>
+      <label *ngIf="armor.transmuteId != -1; else emptyBlock" [innerHTML]="getTransmuteHtml(armor.transmuteId)"></label>
       <ng-template #emptyBlock>-</ng-template>
-    </td>
-    <td class="left-border mobile-hidden-1">
-        <label *ngIf="!armor.personaSources.size">-</label>
-        <label *ngFor="let source of armor.personaSources; last as isLast" [innerHTML]="getSourceHtml(source)"></label>
     </td>
     <td class="left-border mobile-hidden-2">{{armor.getArmorClassName()}}</td>
     <td class="left-border mobile-hidden-2">{{armor.damageReduction}}</td>

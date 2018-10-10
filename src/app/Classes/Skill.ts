@@ -1,34 +1,64 @@
 import { skillCardList } from '../Data/ItemData';
-import { SkillCard, OriginType, SkillCardType } from './Item';
-import { Persona } from './Persona';
+import { SkillCard, OriginType, SkillCardType, ItemReference } from './Item';
+import { Arcana } from './Arcana';
+import { DamageMultiplier, getDamageMultiplierString } from './DamageMultiplier';
+import { PersonaReference } from './PersonaReference';
 
-export enum Element {
-    Physical = 'Physical',
-    Gun = 'Gun',
-    Fire = 'Fire',
-    Ice = 'Ice',
-    Elec = 'Electric',
-    Wind = 'Wind',
-    Psy = 'Psy',
-    Nuke = 'Nuclear',
-    Bless = 'Bless',
-    Curse = 'Curse',
-    Almighty = 'Almighty',
-    Healing = 'Healing',
-    Support = 'Support',
-    Ailment = 'Ailment',
-    Passive = 'Passive',
-    Magic = 'Magic',
-    AllDamage = 'any damage'
+export interface UnflattenSkill {
+    personaSources: PersonaReference[];
 }
 
-export enum DamageMultiplier {
-    None = 0,
-    Light = 0.5,
-    Medium = 1,
-    Heavy = 2,
-    Severe = 3,
-    Collosal = 4
+interface OldUnflatten {
+    personaSources: PersonaReference[];
+    allySkillCard: SkillCard;
+    mainSkillCard: SkillCard;
+}
+
+export enum Element {
+    Physical = 0,
+    Gun,
+    Fire,
+    Ice,
+    Elec,
+    Wind,
+    Psy,
+    Nuke,
+    Bless,
+    Curse,
+    Almighty,
+    Healing,
+    Support,
+    Ailment,
+    Passive,
+    Magic,
+    AllDamage
+}
+
+function getElementString(element: Element): string {
+    switch (element) {
+        case Element.Ailment:
+        case Element.Almighty:
+        case Element.Bless:
+        case Element.Curse:
+        case Element.Fire:
+        case Element.Gun:
+        case Element.Healing:
+        case Element.Ice:
+        case Element.Magic:
+        case Element.Passive:
+        case Element.Physical:
+        case Element.Support:
+        case Element.Wind:
+            return Element[element];
+        case Element.Elec:
+            return 'Electric';
+        case Element.Nuke:
+            return 'Nuclear';
+        case Element.Psy:
+            return 'Psychic';
+        case Element.AllDamage:
+            return 'any damage';
+    }
 }
 
 export enum KillFV {
@@ -38,22 +68,37 @@ export enum KillFV {
 }
 
 export enum AilmentType {
-    Sleep = 'Sleep',
-    Forget = 'Forget',
-    Dizzy = 'Dizzy',
-    Hunger = 'Hunger',
-    Physical = 'Dizzy, Forget, Sleep, & Hunger',
-    Confuse = 'Confuse',
-    Brainwash = 'Brainwash',
-    Rage = 'Rage',
-    Fear = 'Fear',
-    Despair = 'Despair',
-    Mental = 'Confuse, Fear, Rage, Despair, & Brainwash',
-    Burn = 'Burn',
-    Freeze = 'Freeze',
-    Shock = 'Shock',
-    Elemental = 'Burn, Freeze, & Shock',
-    All = 'any non-special ailment',
+    Sleep = 0,
+    Forget,
+    Dizzy,
+    Hunger,
+    Physical,
+    Confuse,
+    Brainwash,
+    Rage,
+    Fear,
+    Despair,
+    Mental,
+    Burn,
+    Freeze,
+    Shock,
+    Elemental,
+    All,
+    Instakill
+}
+
+function getAilmentString(ailmentType: AilmentType): string {
+    switch (ailmentType) {
+        case AilmentType.Physical:
+            return "Dizzy, Forget, Sleep, & Hunger";
+        case AilmentType.Mental:
+            return "Confuse, Fear, Rage, Despair, & Brainwash";
+        case AilmentType.Elemental:
+            return "Burn, Freeze, & Shock";
+        case AilmentType.All:
+            return "any non-special ailment";
+    }
+    return AilmentType[ailmentType];
 }
 
 export enum AilmentFV {
@@ -72,45 +117,77 @@ export enum SupportType {
     SpecialBuff
 }
 
-export enum BuffStats {
-    Attack = 'Damage',
-    Defense = 'Damage Reduction',
-    Agility = 'AGI Bonus',
-    CritMod = 'Crit Mod',
-    CritBonus = 'Crit Bonus',
-    Crit = 'Crit Mod & Bonus',
-    AllStat = 'Damage, Damage Reduction, & AGI Bonus'
+export enum BuffType {
+    Attack = 0,
+    Defense,
+    Agility,
+    TripleStat,
+    CritMod,
+    CritBonus,
+    Crit
+}
+
+function getBuffString(buffType: BuffType): string {
+    switch (buffType) {
+        case BuffType.Attack:
+            return "Damage";
+        case BuffType.Defense:
+            return "Damage Reduction";
+        case BuffType.Agility:
+            return "AGI Bonus";
+        case BuffType.TripleStat:
+            return "Damage, Damage Reduction, & AGI Bonus";
+        case BuffType.CritMod:
+            return "Crit Mod";
+        case BuffType.CritBonus:
+            return "Crit Bonus";
+        case BuffType.Crit:
+            return "Crit Mod & Bonus";
+    }
 }
 
 export enum BoostType {
     Boost = 25,
     Amp = 50,
     Ailment = 2,
-    Special
+    Special = 0
 }
 
 export enum ReductionType {
-    ResistElement,
+    Special = 0,
+    ResistElement = 1,
     ResistAilment,
     NullElement,
     NullAilment,
     Repel,
-    Absorb,
-    Special
+    Absorb
 }
 
 export enum DodgeBonus {
     Dodge = 16,
     Evade = 12,
     HighEvade = 10,
-    Speical
+    Speical = 0
 }
 
 export enum RecoveryType {
-    HP = '% max health',
-    SP = 'SP',
-    HPSP = '',
-    Ailment = 'Ailments last'
+    HP = 1,
+    SP = 2,
+    HPSP = 3,
+    Ailment = 4
+}
+
+function getRecoveryString(recoveryType: RecoveryType): string {
+    switch (recoveryType) {
+        case RecoveryType.HP:
+            return "% max health";
+        case RecoveryType.SP:
+            return "SP";
+        case RecoveryType.HPSP:
+            return "";
+        case RecoveryType.Ailment:
+            return "Ailments last";
+    }
 }
 
 export enum MasterType {
@@ -122,36 +199,61 @@ export enum MasterType {
 }
 
 export enum MasteryLevel {
-    Master,
-    God
+    Master = 1,
+    God = 2
 }
 
-export abstract class Skill {
+export enum PassiveType {
+    Boost = 0,
+    Reduction,
+    Dodge,
+    Counter,
+    Recover,
+    Master,
+    Kill,
+    Post,
+    Growth,
+    Chain,
+    Irregular
+}
+
+export class FlatSkill {
     private static idSource = 0;
-    protected compiledDescription = false;
     readonly id: number;
     readonly name: string;
     readonly cost: number;
     readonly element: Element;
     readonly minLevel: number;
-    protected description: string;
-    personaSources: Persona[] = [];
-    allySkillCard: SkillCard;
-    mainSkillCard: SkillCard;
+    readonly aoe: number;
+    description: string;
+    allyCardId: number;
+    mainCardId: number;
 
-    constructor(name: string, cost: number, element: Element, description: string, minLevel = 0, createSkillCards = true) {
-        this.id = Skill.idSource++;
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe = -1, minLevel = 0, createSkillCards = true) {
+        if (id !== -1) {
+            this.id = id;
+        } else {
+            this.id = FlatSkill.idSource++;
+        }
         this.name = name;
         this.cost = cost;
         this.element = element;
         this.minLevel = minLevel;
-        if (description !== '') {
-            description += '; ';
-        }
         this.description = description;
+        this.allyCardId = allyCardId;
+        this.mainCardId = mainCardId;
+        this.aoe = aoe;
         if (createSkillCards) {
             this.createSkillCards();
         }
+    }
+
+    getAllyCardName(): String {
+        return `${this.name} Ally`;
+    }
+
+    geMainCardName(): String {
+        return `${this.name} Main`;
     }
 
     getDescription(): string {
@@ -159,16 +261,18 @@ export abstract class Skill {
     }
 
     createSkillCards(): void {
-        this.allySkillCard = new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
+        let allySkillCard = new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
             `Grants 1 ${SkillCardType[SkillCardType.Ally]} Persona the ${this.name} skill`, SkillCardType.Ally);
-        this.mainSkillCard = new SkillCard(this.id, this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
+        this.allyCardId = allySkillCard.id;
+        let mainSkillCard = new SkillCard(this.name, 1, [OriginType.Drop, OriginType.Negotiate, OriginType.Transmute], `A skill card for ${this.name}`,
             `Grants 1 ${SkillCardType[SkillCardType.Main]} Persona the ${this.name} skill`, SkillCardType.Main);
-        skillCardList.push(this.allySkillCard);
-        skillCardList.push(this.mainSkillCard);
+        this.mainCardId = mainSkillCard.id;
+        skillCardList.push(allySkillCard);
+        skillCardList.push(mainSkillCard);
     }
 
     getSkillElement(): string {
-        return this.element;
+        return getElementString(this.element);
     }
 
     formatCost(): string {
@@ -180,61 +284,211 @@ export abstract class Skill {
             return `${this.cost} SP`;
         }
     }
-}
 
-abstract class ActiveSkill extends Skill {
-    protected readonly aoe: number;
-    constructor(name: string, cost: number, element: Element, aoe: number,
-        minLevel: number, description: string, createSkillCards: boolean) {
-            super(name, cost, element, description, minLevel, createSkillCards);
-            this.aoe = aoe;
-    }
     getAoE(): string {
         if (this.aoe === -1) {
-            return '';
+            return '-';
         }
         if (this.aoe === 0) {
-            return 'Self; ';
+            return 'Self';
         }
-        return `AoE=${this.aoe}; `;
+        return `AoE=${this.aoe}`;
+    }
+
+    isEqual(other: FlatSkill): boolean {
+        return (this.id === other.id && this.name === other.name && this.cost === other.cost && this.element === other.element &&
+            this.minLevel === other.minLevel && this.aoe === other.aoe && this.description === other.description &&
+            this.allyCardId === other.allyCardId && this.mainCardId === other.mainCardId);
     }
 }
 
-abstract class DamageSkill extends ActiveSkill {
-    protected readonly maxDamageDice: number;
-    protected readonly multiplier: DamageMultiplier;
-    protected readonly damageBonus: number;
-    protected readonly damageDie: number;
+export class FullSkill {
+    skill: FlatSkill;
+    personaSources: PersonaReference[] = [];
+    skillClass: string;
 
-    constructor(name: string, cost: number, element: Element, damageMultiplier: DamageMultiplier, maxDamageDice: number,
-        damageDie: number, damageBonus: number, aoe: number, minLevel: number, description: string, createSkillCards: boolean) {
-            super(name, cost, element, aoe, minLevel, description, createSkillCards);
+    constructor(skill: FlatSkill, personaSources: PersonaReference[], skillClass: string) {
+        this.skill = skill;
+        this.personaSources = personaSources;
+        this.skillClass = skillClass;
+    }
+
+    static copyConstructor(source: FullSkill): FullSkill {
+        let realSkill: FlatSkill;
+        switch(source.skillClass) {
+          case 'FlatDamageSkill':
+            realSkill = FlatDamageSkill.copyConstructor(<FlatDamageSkill> source.skill);
+            break;
+          case 'FlatDamageAilmentSkill':
+            realSkill = FlatDamageAilmentSkill.copyConstructor(<FlatDamageAilmentSkill> source.skill);
+            break;
+          case 'FlatSupportSkill':
+            realSkill = FlatSupportSkill.copyConstructor(<FlatSupportSkill> source.skill);
+            break;
+          case 'FlatAilmentSkill':
+            realSkill = FlatAilmentSkill.copyConstructor(<FlatAilmentSkill> source.skill);
+            break;
+          case 'FlatPassiveSkill':
+            realSkill = FlatPassiveSkill.copyConstructor(<FlatPassiveSkill> source.skill);
+            break;
+        }
+        let sourceArray: PersonaReference[] = [];
+        source.personaSources.forEach(personaSource => sourceArray.push(PersonaReference.copyConstructor(personaSource)));
+        return new FullSkill(realSkill, sourceArray, source.skillClass);
+    }
+
+    isEqual(other: FullSkill): boolean {
+        return this.skill.isEqual(other.skill);
+    }
+
+    formatCost(): string {
+        if (this.skill.element === Element.Physical || this.skill.element === Element.Gun) {
+            return `${this.skill.cost}% HP`;
+        } else if (this.skill.element === Element.Passive) {
+            return `-`;
+        } else {
+            return `${this.skill.cost} SP`;
+        }
+    }
+
+    getSkillElement(): string {
+        return getElementString(this.skill.element);
+    }
+
+    getAllyCardName(): String {
+        return `${this.skill.name} Ally`;
+    }
+
+    geMainCardName(): String {
+        return `${this.skill.name} Main`;
+    }
+
+    getDescription(): string {
+        return this.skill.description;
+    }
+}
+
+export class FlatDamageSkill extends FlatSkill {
+    readonly maxDamageDice: number;
+    readonly multiplier: DamageMultiplier;
+    readonly damageBonus: number;
+    readonly damageDie: number;
+
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, 
+        aoe: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number, createSkillCards = false) {
+            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, createSkillCards);
             this.maxDamageDice = maxDamageDice;
             this.multiplier = damageMultiplier;
             this.damageBonus = damageBonus;
             this.damageDie = damageDie;
     }
 
-    abstract getDamageCalculation(): string;
+    static copyConstructor(source: FlatDamageSkill): FlatDamageSkill {
+        return new FlatDamageSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
+            source.aoe, source.minLevel, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus, false);
+    }
 
-    getDescription(): string {
-        if (!this.compiledDescription) {
-            let desc = this.getDamageCalculation() + this.description + this.getAoE();
-            desc = desc.trim();
-            if (desc.endsWith(';')) {
-                desc = desc.substr(0, desc.length - 1);
-            }
-            this.description = desc;
-            this.compiledDescription = true;
+    isEqual(other: FlatDamageSkill): boolean {
+        if(super.isEqual(other)){
+            return (this.maxDamageDice === other.maxDamageDice && this.multiplier === other.multiplier && this.damageBonus === other.damageBonus &&
+                this.damageDie === other.damageDie);
         }
-        return this.description;
+        return false;
+    }
+
+    getDamageMultiplierString(): string {
+        return getDamageMultiplierString(this.multiplier);
     }
 }
 
-abstract class HPSkill extends DamageSkill {
+export class FlatDamageAilmentSkill extends FlatDamageSkill {
+    ailmentType: AilmentType;
+    ailmentFailValue: number;
+
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number, minLevel: number,
+        damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number, ailmentType: AilmentType, ailmentFailValue: number) {
+            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus);
+            this.ailmentType = ailmentType;
+            this.ailmentFailValue = ailmentFailValue;
+    }
+
+    static copyConstructor(source: FlatDamageAilmentSkill): FlatDamageAilmentSkill {
+        return new FlatDamageAilmentSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
+            source.aoe, source.minLevel, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus, source.ailmentType,
+            source.ailmentFailValue);
+    }
+
+    isEqual(other: FlatDamageAilmentSkill): boolean {
+        if(super.isEqual(other)) {
+            return (this.ailmentType === other.ailmentType && this.ailmentFailValue === other.ailmentFailValue);
+        }
+        return false;
+    }
+}
+
+export class FlatSupportSkill extends FlatSkill {
+    supportType: SupportType;
+    supportValue: number;
+
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number, minLevel: number, supportType: SupportType, supportValue: number) {
+        super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, false);
+        this.supportType = supportType;
+        this.supportValue =supportValue;
+    }
+
+    static copyConstructor(source: FlatSupportSkill): FlatSupportSkill {
+        return new FlatSupportSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
+            source.aoe, source.minLevel, source.supportType, source.supportValue);
+    }
+
+    isEqual(other: FlatSupportSkill): boolean {
+        if (super.isEqual(other)) {
+            return (this.supportType === other.supportType && this.supportValue === other.supportValue);
+        }
+        return false;
+    }
+}
+
+export class FlatAilmentSkill extends FlatSkill {
+    ailmentType: AilmentType;
+    ailmentFailValue: number;
+
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number, minLevel: number, ailmentType: AilmentType, ailmentFailValue: number) {
+        super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, false);
+        this.ailmentType = ailmentType;
+        this.ailmentFailValue = ailmentFailValue;
+    }
+
+    static copyConstructor(source: FlatAilmentSkill): FlatAilmentSkill {
+        return new FlatAilmentSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
+            source.aoe, source.minLevel, source.ailmentType, source.ailmentFailValue);
+    }
+}
+
+export class FlatPassiveSkill extends FlatSkill {
+    passiveType: PassiveType;
+    type: number;
+    value: number;
+    secondValue: number;
+
+    constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number, minLevel: number, passiveType: PassiveType, type: number, value: number, secondValue: number) {
+        super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, false);
+        this.passiveType = passiveType;
+        this.type = type;
+        this.value = value;
+        this.secondValue = secondValue;
+    }
+
+    static copyConstructor(source: FlatPassiveSkill): FlatPassiveSkill {
+        return new FlatPassiveSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
+            source.aoe, source.minLevel, source.passiveType, source.type, source.value, source.secondValue);
+    }
+}
+
+abstract class HPSkill extends FlatDamageSkill {
     constructor(name: string, cost: number, element: Element, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
         damageDie: number, damageBonus: number, aoe: number, description: string, createSkillCards: boolean) {
-        super(name, cost, element, damageMultiplier, maxDamageDice, damageDie, damageBonus, aoe, minLevel, description, createSkillCards);
+        super(-1, name, cost, element, description, -1, -1, aoe, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus, createSkillCards);
     }
 
     formatCost(): string {
@@ -242,10 +496,10 @@ abstract class HPSkill extends DamageSkill {
     }
 }
 
-abstract class CombatMagic extends DamageSkill {
+abstract class CombatMagic extends FlatDamageSkill {
     constructor(name: string, cost: number, element: Element, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
         damageDie: number, damageBonus: number, aoe: number, description: string, createSkillCards: boolean) {
-        super(name, cost, element, damageMultiplier, maxDamageDice, damageDie, damageBonus, aoe, minLevel, description, createSkillCards);
+        super(-1, name, cost, element, description, -1, -1, aoe, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus, createSkillCards);
     }
 
     formatCost(): string {
@@ -253,7 +507,9 @@ abstract class CombatMagic extends DamageSkill {
     }
 }
 
-export class PhysSkill extends HPSkill {
+export class PhysSkill extends HPSkill implements UnflattenSkill {
+    personaSources: PersonaReference[] = [];
+
     constructor(name: string, cost: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
         damageBonus: number, aoe = -1, description = '', damageDie = 6, createSkillCards = true) {
         super(name, cost, Element.Physical, minLevel, damageMultiplier, maxDamageDice,
@@ -268,44 +524,40 @@ export class PhysSkill extends HPSkill {
     }
 }
 
-export class PhysAilmentSkill extends PhysSkill {
-    private readonly ailment: AilmentType;
-    private readonly ailmentFV: number;
+export class PhysAilmentSkill extends PhysSkill implements UnflattenSkill {
+    readonly ailmentType: AilmentType;
+    readonly ailmentFailValue: number;
 
     constructor(name: string, cost: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
-        damageBonus: number, ailment: AilmentType, ailmentFV: number, aoe = -1, description = '', damageDie = 6, createSkillCards = true) {
+        damageBonus: number, ailmentType: AilmentType, ailmentFV: number, aoe = -1, description = '', damageDie = 6, createSkillCards = true) {
         super(name, cost, minLevel, damageMultiplier, maxDamageDice, damageBonus, aoe, description, damageDie, createSkillCards);
-        this.ailment = ailment;
-        this.ailmentFV = ailmentFV;
+        this.ailmentType = ailmentType;
+        this.ailmentFailValue = ailmentFV;
     }
 
     getAilment(): string {
-        return this.ailment + ` FV=${this.ailmentFV}; `;
+        return getAilmentString(this.ailmentType) + ` FV=${this.ailmentFailValue}; `;
     }
 
     getDescription(): string {
-        if (!this.compiledDescription) {
             let desc = this.getDamageCalculation() + this.getAilment() + this.getAoE() + this.description;
             desc = desc.trim();
             if (desc.endsWith(';')) {
-                this.description = desc.substr(0, desc.length - 1);
-            } else {
-                this.description = desc;
+                desc = desc.substr(0, desc.length - 1);
             }
-            this.compiledDescription = true;
-        }
-        return this.description;
+            return desc
     }
 }
 
-export class GunSkill extends HPSkill {
+export class GunSkill extends HPSkill implements UnflattenSkill{
+    personaSources: PersonaReference[];
     constructor(name: string, cost: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
         damageDie: number, damageBonus: number, description = '', aoe = -1, createSkillCards = true) {
             super(name, cost, Element.Gun, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus, aoe, description, createSkillCards);
     }
 
     getDamageCalculation(): string {
-        if (this.damageDie === -1) {
+        if (this.multiplier === DamageMultiplier.None) {
             return '';
         }
          if (this.multiplier === DamageMultiplier.Medium) {
@@ -319,9 +571,22 @@ export class GunSkill extends HPSkill {
  * ElementalMagic is the class for all elemental magic attacks,
  * that use the traditional damage calculation
  */
-export class ElementalMagic extends CombatMagic {
+export class ElementalMagic extends CombatMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
+    ailmentType: AilmentType;
+    ailmentFailValue: number;
     constructor(name: string, cost: number, element: Element, minLevel: number, damageMultiplier: DamageMultiplier, aoe = -1, createSkillCards = true) {
         super(name, cost, element, minLevel, damageMultiplier, 20, 6, 10, aoe, '', createSkillCards);
+        if (this.element === Element.Fire) {
+            this.ailmentType = AilmentType.Burn;
+            this.ailmentFailValue  = AilmentFV.Rare;
+        } else if (this.element === Element.Ice) {
+            this.ailmentType = AilmentType.Freeze;
+            this.ailmentFailValue  = AilmentFV.Rare;
+        } else if (this.element === Element.Elec) {
+            this.ailmentType = AilmentType.Shock;
+            this.ailmentFailValue  = AilmentFV.Rare;
+        }
     }
 
     getDamageCalculation(): string {
@@ -356,7 +621,8 @@ abstract class DivineMagic extends CombatMagic {
     }
 }
 
-export class DivineDamageMagic extends DivineMagic {
+export class DivineDamageMagic extends DivineMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
     constructor(name: string, cost: number, element: Element, minLevel: number, damageMultiplier: DamageMultiplier, aoe = -1,  createSkillCards = true) {
         super(name, cost, element, minLevel, damageMultiplier, 20, 6, 0, aoe, '', createSkillCards);
     }
@@ -374,21 +640,24 @@ export class DivineDamageMagic extends DivineMagic {
 
 }
 
-export class DivineKillMagic extends DivineMagic {
-    private killFV: number;
+export class DivineKillMagic extends DivineMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
+    ailment = AilmentType.Instakill;
+    ailmentFailValue: number;
     constructor(name: string, cost: number, element: Element, minLevel: number, killFV: number, aoe = -1,  createSkillCards = true) {
-        super(name, cost, element, minLevel, DamageMultiplier.None, -1, -1, 0, aoe, '', createSkillCards);
-        this.killFV = killFV;
+        super(name, cost, element, minLevel, DamageMultiplier.None, 0, 0, 0, aoe, '', createSkillCards);
+        this.ailmentFailValue  = killFV;
     }
 
     getDamageCalculation(): string {
         // These spells do no damage so this just returns the kill values
-        return `Instakill FV=${this.killFV}; `;
+        return `Instakill FV=${this.ailmentFailValue }; `;
     }
 
 }
 
-export class DivineSpecialMagic extends DivineMagic {
+export class DivineSpecialMagic extends DivineMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
     constructor(name: string, cost: number, element: Element, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number,
         damageDie: number, aoe = -1, description = '', createSkillCards = true) {
         super(name, cost, element, minLevel, damageMultiplier, maxDamageDice, damageDie, 0, aoe, description, createSkillCards);
@@ -396,23 +665,24 @@ export class DivineSpecialMagic extends DivineMagic {
 
     getDamageCalculation(): string {
         // These spells are irregular some will use a standard-ish equations the rest are just descriptions
-        if (this.maxDamageDice === -1) {
+        if (this.multiplier === DamageMultiplier.None) {
             return '';
         } else {
-            return `Deals ${this.maxDamageDice}d${this.damageDie}; `;
+            return `Deals ${-1*this.maxDamageDice}d${-1*this.damageDie}; `;
         }
     }
 
 }
 
-export class HealingMagic extends CombatMagic {
+export class HealingMagic extends CombatMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
     constructor(name: string, cost: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number,
         damageBonus: number, aoe = -1, description = '', createSkillCards = true) {
         super(name, cost, Element.Healing, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus, aoe, description, createSkillCards);
     }
 
     getDamageCalculation(): string {
-        if (this.damageDie === -1) {
+        if (this.multiplier === DamageMultiplier.None) {
             return '';
         }
         let retVal = 'Heals ';
@@ -426,141 +696,135 @@ export class HealingMagic extends CombatMagic {
     }
 }
 
-abstract class SupportMagic extends ActiveSkill {
-    protected supportType: SupportType;
+abstract class SupportMagic extends FlatSkill {
+    supportType: SupportType;
     constructor(name: string, cost: number, minLevel: number, supportType: SupportType, aoe: number, description: string, createSkillCards: boolean) {
-        super(name, cost, Element.Support, aoe, minLevel, description, createSkillCards);
+        super(-1, name, cost, Element.Support, description, -1, -1, aoe, minLevel, createSkillCards);
         this.supportType = supportType;
     }
 
     abstract getSupportDescription(): string;
 
     getDescription(): string {
-        if (!this.compiledDescription) {
-            let desc = this.getSupportDescription() + this.description + this.getAoE();
+            let desc = this.getSupportDescription() + this.description + (this.description.length > 0 ? "; " : "") + this.getAoE();
             desc = desc.trim();
             if (desc.endsWith(';')) {
                 desc = desc.substr(0, desc.length - 1);
             }
-            this.description = desc;
-            this.compiledDescription = true;
-        }
-        return this.description;
+            return desc;
     }
 }
 
-export class BuffMagic extends SupportMagic {
-    private buffStat: BuffStats;
-    constructor(name: string, cost: number, minLevel: number, supportType: SupportType, buffStat: BuffStats,
+export class BuffMagic extends SupportMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
+    supportValue: BuffType;
+    constructor(name: string, cost: number, minLevel: number, supportType: SupportType, buffStat: BuffType,
         aoe = -1, description = '', createSkillCards = true) {
             super(name, cost, minLevel, supportType, aoe, description, createSkillCards);
-            this.buffStat = buffStat;
+            this.supportValue = buffStat;
     }
 
     getSupportDescription(): string {
         if (this.supportType !== SupportType.SpecialBuff) {
-            return `${SupportType[this.supportType]} ${this.buffStat} by 1/3 for 3 turns; `;
+            return `${SupportType[this.supportType]} ${getBuffString(this.supportValue)} by 1/3 for 3 turns; `;
         }
         return '';
     }
 }
 
-export class WallMagic extends SupportMagic {
-    private wallElement: Element;
+export class WallMagic extends SupportMagic implements  UnflattenSkill {
+    personaSources: PersonaReference[];
+    supportValue: Element;
     constructor(name: string, cost: number, minLevel: number, wallElement: Element, aoe = -1, description = '', createSkillCards = true) {
         super(name, cost, minLevel, SupportType.Wall, aoe, description, createSkillCards);
-        this.wallElement = wallElement;
+        this.supportValue = wallElement;
     }
 
     getSupportDescription(): string {
-        if (this.wallElement === Element.Support) {
+        if (this.supportValue === Element.Support) {
             // This wall is in some way weird or special just use the description
             return '';
         }
-        return `Immunity to ${this.wallElement} for 3 turns; `;
+        return `Immunity to ${getElementString(this.supportValue)} for 3 turns; `;
     }
 }
 
-export class BreakMagic extends SupportMagic {
-    private breakElement: Element;
+export class BreakMagic extends SupportMagic implements UnflattenSkill {
+    personaSources: PersonaReference[];
+    supportValue: Element;
     constructor(name: string, cost: number, minLevel: number, breakElement: Element, aoe = -1, description = '', createSkillCards = true) {
         super(name, cost, minLevel, SupportType.Break, aoe, description, createSkillCards);
-        this.breakElement = breakElement;
+        this.supportValue = breakElement;
     }
 
     getSupportDescription(): string {
-        if (this.breakElement === Element.Support) {
+        if (this.supportValue === Element.Support) {
             // This break is in some way weird or special just use the description
             return '';
         }
-        return `Removes all ${this.breakElement} resistances, except ${this.breakElement} Wall, for 3 turns; `;
+        return `Removes all ${getElementString(this.supportValue)} resistances, except ${getElementString(this.supportValue)} Wall, for 3 turns; `;
     }
 }
 
-export class AilmentMagic extends ActiveSkill {
-    private ailmentType: AilmentType;
-    private ailmentFV: number;
+export class AilmentMagic extends FlatSkill {
+    ailmentType: AilmentType;
+    ailmentFailValue: number;
     constructor(name: string, cost: number, minLevel: number, ailmentType: AilmentType, ailmentFV: number,
         aoe = -1, description = '', createSkillCards = true) {
-            super(name, cost, Element.Ailment, aoe, minLevel, description, createSkillCards);
+            super(-1, name, cost, Element.Ailment, description, -1, -1, aoe, minLevel, createSkillCards);
             this.ailmentType = ailmentType;
-            this.ailmentFV = ailmentFV;
+            this.ailmentFailValue = ailmentFV;
     }
 
     getAilmentDescription(): string {
-        return `${this.ailmentType} FV=${this.ailmentFV}; `;
+        return `${getAilmentString(this.ailmentType)} FV=${this.ailmentFailValue}; `;
     }
 
-    getDescription(): string {
-        if (!this.compiledDescription) {
-            let desc = this.getAilmentDescription() + this.description + this.getAoE();
+     getDescription(): string {
+            let desc = this.getAilmentDescription() + this.description + (this.description.length > 0 ? "; " : "") + this.getAoE();
             desc = desc.trim();
             if (desc.endsWith(';')) {
                 desc = desc.substr(0, desc.length - 1);
             }
-            this.description = desc;
-            this.compiledDescription = true;
-        }
-        return this.description;
+            return desc;
     }
 }
 
 
-abstract class PassiveSkill extends Skill {
+abstract class PassiveSkill extends FlatSkill implements UnflattenSkill {
+    personaSources: PersonaReference[];
+    passiveType: PassiveType;
     constructor(name: string, cost: number, minLevel: number, description: string, createSkillCards: boolean) {
-        super(name, cost, Element.Passive, description, minLevel, createSkillCards);
+        super(-1, name, cost, Element.Passive, description, -1, -1, -1, minLevel, createSkillCards);
     }
 
     abstract passiveDescription(): string;
 
     getDescription(): string {
-        if (!this.compiledDescription) {
             let desc = this.passiveDescription() + this.description;
             desc = desc.trim();
             if (desc.endsWith(';')) {
                 desc = desc.substr(0, desc.length - 1);
             }
-            this.description = desc;
-            this.compiledDescription = true;
-        }
-        return this.description;
+            return desc;
     }
 }
 
 export class BoostSkill extends PassiveSkill {
-    private boostElement: Element | AilmentType;
-    private boostType: BoostType;
+    passiveType = PassiveType.Boost;
+    value: Element | AilmentType;
+    type: BoostType;
     constructor(name: string, boostElement: Element | AilmentType, minLevel: number, boostType: BoostType, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.boostElement = boostElement;
-        this.boostType = boostType;
+        this.value = boostElement;
+        this.type = boostType;
     }
 
     passiveDescription(): string {
-        if (this.boostType === BoostType.Boost || this.boostType === BoostType.Amp) {
-            return `+${this.boostType}% to all ${this.boostElement} damage; `;
-        } else if (this.boostType === BoostType.Ailment) {
-            return `Reduce FV for attacks that inflict ${this.boostElement} by ${this.boostType}; `;
+        if (this.type === BoostType.Boost || this.type === BoostType.Amp) {
+            return `+${this.type}% to all ${getElementString(<Element>this.value)} damage; `;
+        } else if (this.type === BoostType.Ailment) {
+            return `Reduce FV for attacks that inflict ${getAilmentString(<AilmentType>this.value)} by ${this.type}; `;
         } else {
             return '';
         }
@@ -568,30 +832,31 @@ export class BoostSkill extends PassiveSkill {
 }
 
 export class ReductionSkill extends PassiveSkill {
-    private reductionElement: Element | AilmentType;
-    private reductionType: ReductionType;
+    passiveType = PassiveType.Reduction;
+    value: Element | AilmentType;
+    type: ReductionType;
     constructor(name: string, reductionElement: Element | AilmentType, minLevel: number, reductionType: ReductionType,
         description = '', createSkillCards = true) {
             super(name, 0, minLevel, description, createSkillCards);
-            this.reductionElement = reductionElement;
-            this.reductionType = reductionType;
+            this.value = reductionElement;
+            this.type = reductionType;
     }
 
     passiveDescription(): string {
-        if (this.reductionType === ReductionType.ResistElement) {
-            return `Halve all ${this.reductionElement}; `;
-        } else if (this.reductionType === ReductionType.ResistAilment) {
-            return `When you would be afflicted with ${this.reductionElement}, roll a d20 on an 11+ it misses instead; `;
-        } else if (this.reductionType === ReductionType.NullElement) {
-            return `Nullify all ${this.reductionElement} attacks; `;
-        } else if (this.reductionType === ReductionType.NullAilment) {
-            return `Nullify ${this.reductionElement}; `;
+        if (this.type === ReductionType.ResistElement) {
+            return `Halve all ${getElementString(<Element>this.value)}; `;
+        } else if (this.type === ReductionType.ResistAilment) {
+            return `When you would be afflicted with ${getAilmentString(<AilmentType>this.value)}, roll a d20 on an 11+ it misses instead; `;
+        } else if (this.type === ReductionType.NullElement) {
+            return `Nullify all ${getElementString(<Element>this.value)} attacks; `;
+        } else if (this.type === ReductionType.NullAilment) {
+            return `Nullify ${getAilmentString(<AilmentType>this.value)}; `;
         } else {
-            const cbRider = this.reductionElement === Element.Bless || this.reductionElement === Element.Curse ? 'Insta-kill attacks are nullifed; ' : '';
-            if (this.reductionType === ReductionType.Repel) {
-                return `Reflect all ${this.reductionElement} damage back to attacker; ` + cbRider;
-            } else if (this.reductionType === ReductionType.Absorb) {
-                return `All ${this.reductionElement} damage is treated as healing; ` + cbRider;
+            const cbRider = this.value === Element.Bless || this.value === Element.Curse ? 'Instakill attacks are nullified; ' : '';
+            if (this.type === ReductionType.Repel) {
+                return `Reflect all ${getElementString(<Element>this.value)} damage back to attacker; ` + cbRider;
+            } else if (this.type === ReductionType.Absorb) {
+                return `All ${getElementString(<Element>this.value)} damage is treated as healing; ` + cbRider;
             } else {
                 return '';
             }
@@ -600,17 +865,18 @@ export class ReductionSkill extends PassiveSkill {
 }
 
 export class DodgeSkill extends PassiveSkill {
-    private dodgeElement: Element;
-    private dodgeBonus: DodgeBonus;
+    passiveType = PassiveType.Dodge;
+    value: Element;
+    type: DodgeBonus;
     constructor(name: string, dodgeElement: Element, minLevel: number, dodgeBonus: DodgeBonus, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.dodgeElement = dodgeElement;
-        this.dodgeBonus = dodgeBonus;
+        this.value = dodgeElement;
+        this.type = dodgeBonus;
     }
 
     passiveDescription(): string {
-        if (this.dodgeBonus !== DodgeBonus.Speical) {
-            return `When targeted by ${this.dodgeElement} attacks, roll d20, on a ${this.dodgeBonus} or higher you dodge the attack`;
+        if (this.type !== DodgeBonus.Speical) {
+            return `When targeted by ${getElementString(this.value)} attacks, roll d20, on a ${this.type} or higher you dodge the attack`;
         } else {
             return '';
         }
@@ -618,122 +884,142 @@ export class DodgeSkill extends PassiveSkill {
 }
 
 export class CounterSkill extends PassiveSkill {
-    private repelRoll: number;
+    passiveType = PassiveType.Counter;
+    type: number = 1;
+    value: number;
     constructor(name: string, minLevel: number, repelRoll: number, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.repelRoll = repelRoll;
+        this.value = repelRoll;
     }
 
     passiveDescription(): string {
-        return `Every time you are hit with a Phyical or Gun attack, roll d20, on a ${this.repelRoll}-20 repel the attack`;
+        return `Every time you are hit with a Physical or Gun attack, roll d20, on a ${this.value}-20 repel the attack`;
     }
 }
 
 export class RecoverySkill extends PassiveSkill {
-    protected recoveryType: RecoveryType;
-    protected recoveryValues: number[];
+    type: RecoveryType;
+    value: number;
+    secondValue: number = -1;
     constructor(name: string, minLevel: number, recoveryType: RecoveryType, recoveryValues: number[], description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.recoveryType = recoveryType;
-        this.recoveryValues = recoveryValues;
+        this.type = recoveryType;
+        this.value = recoveryValues[0];
+        this.passiveType = PassiveType.Recover;
+        if(recoveryValues.length == 2)
+            this.secondValue = recoveryValues[1];
     }
 
     passiveDescription(): string {
-        if (this.recoveryType === RecoveryType.Ailment) {
-            return `${this.recoveryType} ${this.recoveryValues[0]} turns`;
+        if (this.type === RecoveryType.Ailment) {
+            return `${getRecoveryString(this.type)} ${this.value} turns`;
         }
         let recString = '';
-        if (this.recoveryType === RecoveryType.HPSP) {
-            recString = `${this.recoveryValues[0]}${RecoveryType.HP} & ${this.recoveryValues[1]}${RecoveryType.SP}`;
+        if (this.type === RecoveryType.HPSP) {
+            recString = `${this.value}${getRecoveryString(RecoveryType.HP)} & ${this.secondValue}${getRecoveryString(RecoveryType.SP)}`;
         } else {
-            recString = `${this.recoveryValues[0]}${this.recoveryType}`;
+            recString = `${this.value}${getRecoveryString(this.type)}`;
         }
         return `Heal ${recString} a turn`;
     }
 }
 
 export class MasterSkill extends PassiveSkill {
-    protected masterType: MasterType;
-    protected level: MasteryLevel;
+    passiveType = PassiveType.Master;
+    type: MasterType;
+    value: MasteryLevel;
     constructor(name: string, minLevel: number, masterType: MasterType, masteryLevel: MasteryLevel, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.masterType = masterType;
-        this.level = masteryLevel;
+        this.type = masterType;
+        this.value = masteryLevel;
     }
 
     passiveDescription(): string {
-        if (this.masterType % 2 === 0) {
-            return `Grants ${MasterType[this.masterType]} ${this.level === MasteryLevel.God ? 'to all allies ' : ''}at battle's start`;
+        if (this.type % 2 === 0) {
+            return `Grants ${MasterType[this.type]} ${this.value === MasteryLevel.God ? 'to all allies ' : ''}at the outbreak of combat`;
         } else {
-            return `Reduces skill ${MasterType[this.masterType]} cost by ${this.level === MasteryLevel.God ? 'half' : 'a quarter'}`;
+            return `Reduces skill ${MasterType[this.type]} cost by ${this.value === MasteryLevel.God ? 'half' : 'a quarter'}`;
         }
     }
 }
 
 export class KillSkill extends RecoverySkill {
+    
     constructor(name: string, minLevel: number, recoveryType: RecoveryType, recoveryValues: number[], description = '', createSkillCards = true) {
         super(name, 0, recoveryType, recoveryValues, description, createSkillCards);
+        this.passiveType = PassiveType.Kill;
     }
 
     passiveDescription(): string {
         let recString = '';
-        if (this.recoveryType === RecoveryType.HPSP) {
-            recString = `${this.recoveryValues[0]}${RecoveryType.HP} & ${this.recoveryValues[1]}${RecoveryType.SP}`;
+        if (this.type === RecoveryType.HPSP) {
+            recString = `${this.value}${getRecoveryString(RecoveryType.HP)} & ${this.secondValue}${getRecoveryString(RecoveryType.SP)}`;
         } else {
-            recString = `${this.recoveryValues[0]}${this.recoveryType}`;
+            recString = `${this.value}${getRecoveryString(this.type)}`;
         }
         return `Heal ${recString} when you kill an enemy`;
     }
 }
 
 export class PostCombatSkill extends RecoverySkill {
+    
     constructor(name: string, minLevel: number, recoveryType: RecoveryType, recoveryValues: number[], description = '', createSkillCards = true) {
         super(name, 0, recoveryType, recoveryValues, description, createSkillCards);
+        this.passiveType = PassiveType.Post;
     }
 
     passiveDescription(): string {
         let recString = '';
-        if (this.recoveryType === RecoveryType.HPSP) {
-            if (this.recoveryValues[0] === -1) {
+        if (this.type === RecoveryType.HPSP) {
+            if (this.value === -1) {
                 recString = `Fully restore HP & SP`;
+            } else {
+                recString = `Gain ${this.value}${getRecoveryString(RecoveryType.HP)} & ${this.secondValue}${getRecoveryString(RecoveryType.SP)}`;
             }
-            recString = `Gain ${this.recoveryValues[0]}${RecoveryType.HP} & ${RecoveryType.SP}`;
         } else {
-            recString = `Gain ${this.recoveryValues[0]}${this.recoveryType}`;
+            recString = `Gain ${this.value}${getRecoveryString(this.type)}`;
         }
         return `${recString} after combat if you did not die`;
     }
 }
 
 export class GrowthSkill extends PassiveSkill {
-    private growth: number;
+    passiveType = PassiveType.Growth;
+    type: number = 1;
+    value: number;
     constructor(name: string, minLevel: number, growth: number, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
-        this.growth = growth;
+        this.value = growth;
     }
 
     passiveDescription(): string {
-        return `Allows ${this.growth} acitve ally skill at no`;
+        return `Allows ${this.value} active ally skill${this.value > 1 ? 's' : ''} at no cost`;
     }
 }
 
 export class ChainSkill extends MasterSkill {
+    passiveType = PassiveType.Chain;
     constructor(name: string, minLevel: number, masterType: MasterType, masteryLevel: MasteryLevel, description = '', createSkillCards = true) {
         super(name, minLevel, masterType, masteryLevel, description, createSkillCards);
     }
 
     passiveDescription(): string {
-        if (this.masterType % 2 === 0) {
-            return `Grants ${MasterType[this.masterType]} ${this.level === MasteryLevel.God ? 'to all allies ' : ''}after a baton pass`;
+        if (this.type % 2 === 0) {
+            return `Grants ${MasterType[this.type]} ${this.value === MasteryLevel.God ? 'to all allies ' : ''}after a baton pass`;
         } else {
-            return `Restores ${this.level === MasteryLevel.God ? '4' : '2'}% ${MasterType[this.masterType]} after a baton pass`;
+            return `Restores ${this.value === MasteryLevel.God ? '4' : '2'}% ${MasterType[this.type]} after a baton pass`;
         }
     }
 }
 
 export class IrregularPassive extends PassiveSkill {
+    passiveType = PassiveType.Irregular;
+    type: number;
+    value: number;
     constructor(name: string, minLevel: number, description = '', createSkillCards = true) {
         super(name, 0, minLevel, description, createSkillCards);
+        this.type = 0;
+        this.value = 0;
     }
 
     passiveDescription(): string {
@@ -741,11 +1027,43 @@ export class IrregularPassive extends PassiveSkill {
     }
 }
 
-export class PersonaSkill {
+export class OldPersonaSkill {
     readonly level: number;
-    readonly skill: Skill;
-    constructor(skill: Skill, level: number) {
+    readonly skill: UnflattenSkill;
+    constructor(skill: UnflattenSkill, level: number) {
         this.skill = skill;
         this.level = level;
+    }
+}
+
+export class PersonaSkill {
+    readonly personaid: number;
+    readonly skillid: number;
+    readonly level: number;
+    constructor(personaid: number, skillid: number, level: number) {
+        this.personaid = personaid;
+        this.skillid = skillid;
+        this.level = level;
+    }
+}
+
+export class LeveledSkill extends FlatSkill{
+    level: number;
+    constructor(id: number, name: string, cost: number, element: Element, description: string, minLevel: number, level: number) {
+        super(id, name, cost, element, description, -1, -1, -1, minLevel, false);
+        this.level = level;
+    }
+}
+
+
+export abstract class Skill extends FlatSkill implements OldUnflatten {
+    personaSources: PersonaReference[] = [];
+    allySkillCard: SkillCard;
+    mainSkillCard: SkillCard;
+
+    constructor(name: string, cost: number, element: Element, description: string, minLevel = 0, createSkillCards = true) {
+        super(-1, name, cost, element, description, -1, -1, -1, minLevel, createSkillCards);
+        this.allySkillCard = skillCardList.find(sc => sc.id === this.allyCardId);
+        this.mainSkillCard = skillCardList.find(sc => sc.id === this.mainCardId);
     }
 }
