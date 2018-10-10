@@ -1,11 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Item, Weapon, FlatItem, OriginType, FlatArmor, getOrigins, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard, SkillCardType, SkillCard, FlatRangedWeapon, OldDrop, Drop } from './Classes/Item';
-import { Observable } from 'rxjs/Observable';
 import { weaponList, armorList, accessoryList, consumableList, skillCardList, lootList } from './Data/ItemData';
-import { of } from 'rxjs/observable/of';
 import { WebsocketService } from './websocket.service';
-import { Subject } from 'rxjs';
 import { Payload } from './Classes/Payload';
+import { Subject, Observable, of } from 'rxjs';
 
 @Injectable()
 export class ItemService implements OnDestroy{

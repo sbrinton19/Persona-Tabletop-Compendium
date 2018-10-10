@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FullSkill, FlatDamageSkill } from '../Classes/Skill';
 import { ActivatedRoute } from '@angular/router';
 import { SkillService } from '../skill.service';
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 import { DamageMultiplier } from '../Classes/DamageMultiplier';
 
 @Component({

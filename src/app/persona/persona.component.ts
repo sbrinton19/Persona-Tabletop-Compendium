@@ -1,8 +1,8 @@
 import { Component, OnInit, ContentChildren, QueryList, AfterContentInit, OnDestroy } from '@angular/core';
-import { Recipe, FullPersona, FlatPersona } from '../Classes/Persona';
+import { Recipe, FullPersona, FlatPersona } from '../Classes/FlatPersona';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationComponent } from '../pagination/pagination.component';
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 
 @Component({
   selector: 'app-persona',

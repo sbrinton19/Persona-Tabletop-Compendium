@@ -1,7 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { FlatSkill, FlatDamageSkill, FlatDamageAilmentSkill, FlatSupportSkill, FlatAilmentSkill, FlatPassiveSkill, PersonaSkill, FullSkill } from './Classes/Skill';
-import { of } from 'rxjs/observable/of';
 import { WebsocketService } from './websocket.service';
 import { Payload } from './Classes/Payload';
 import { Subject } from 'rxjs';

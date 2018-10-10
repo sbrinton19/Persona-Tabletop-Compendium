@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Recipe, FlatPersona } from '../Classes/Persona';
+import { Recipe, FlatPersona } from '../Classes/FlatPersona';
 import { FlatItem } from '../Classes/Item';
 @Pipe({
   name: 'filterStr'

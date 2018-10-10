@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatPersona, FullPersona } from './Classes/Persona';
+import { FlatPersona, FullPersona } from './Classes/FlatPersona';
 import { ElemResist } from "./Classes/ElemResist";
 import { WebsocketService } from './websocket.service';
 import { Subject } from 'rxjs';

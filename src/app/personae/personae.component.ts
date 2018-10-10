@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FlatPersona } from '../Classes/Persona';
+import { FlatPersona } from '../Classes/FlatPersona';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { PersonaService } from '../persona.service';
 import { FilterPipe } from '../Pipes/filter-pipe';
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 import { SkillService } from '../skill.service';
 @Component({
   selector: 'app-personae',

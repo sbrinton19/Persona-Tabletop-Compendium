@@ -3,7 +3,7 @@ import { FlatAccessory } from '../Classes/Item';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { FilterPipe } from '../Pipes/filter-pipe';
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 
 @Component({
   selector: 'app-accessories',
