@@ -1,44 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { FlatAccessory } from '../Classes/Item';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FlatAccessory } from '../Classes/FlatItem';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
-import { FilterPipe } from '../Pipes/filter-pipe';
-import { SubscriptionLike as ISubscription } from 'rxjs';
+import { SubscriptionLike } from 'rxjs';
 
 @Component({
   selector: 'app-accessories',
   templateUrl: './accessories.component.html',
   styleUrls: ['./accessories.component.css']
 })
-export class AccessoriesComponent implements OnInit {
+export class AccessoriesComponent implements OnInit, OnDestroy {
   private flatAccessoriesList: FlatAccessory[];
   private displayList: FlatAccessory[];
-  private subscriptions: ISubscription[] = [];
+  private subscription: SubscriptionLike;
   private sortOrder = false;
+  private readonly orderByPipe: OrderByPipe = new OrderByPipe();
+
   constructor(private itemService: ItemService) { }
 
   ngOnInit() {
     this.getFlatAccessories();
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   private getFlatAccessories(): void {
-    this.subscriptions.push(this.itemService.getFlatAccessoryList().subscribe(accessories => {
+    this.subscription = this.itemService.getFlatAccessoryList().subscribe(accessories => {
       this.flatAccessoriesList = accessories;
       this.displayList = this.flatAccessoriesList;
-    }));
+    });
   }
 
   orderBy(field: string, idx = 0): void {
-    const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.flatAccessoriesList, field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.flatAccessoriesList, field, this.sortOrder, idx);
   }
 
-  filterStr(filter: string): void {
-    if (filter === '' && this.displayList.length !== this.flatAccessoriesList.length) {
-       this.displayList = this.flatAccessoriesList;
-    }
-    const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.flatAccessoriesList, filter);
+  onFiltered(filteredData: FlatAccessory[]): void {
+    this.displayList = filteredData;
   }
 }

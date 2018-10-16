@@ -1,0 +1,7 @@
+<div class="ui mini input">
+  <label id="filterLabel" class="ui mini label">
+    Filter:
+  </label>
+  <input id="filterInput" #toFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="getFiltered(toFilter.value)">
+  <button id="filterButton" (click)="getFiltered(''); toFilter.value=''" class="ui mini button">Clear</button>
+</div>

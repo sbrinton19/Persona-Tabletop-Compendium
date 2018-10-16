@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SkillService } from '../skill.service';
-import { FlatSkill, FlatDamageSkill, PhysAilmentSkill, FlatDamageAilmentSkill, AilmentType, ElementalMagic, Element, AilmentFV, DivineKillMagic, BuffMagic, FlatSupportSkill, WallMagic, BreakMagic, FlatAilmentSkill, AilmentMagic, BoostSkill, FlatPassiveSkill, PassiveType, ReductionSkill, DodgeSkill, CounterSkill, RecoverySkill, MasterSkill, KillSkill, PostCombatSkill, GrowthSkill, ChainSkill, IrregularPassive } from '../Classes/Skill';
-import { PersonaReference } from "../Classes/PersonaReference";
+import { FlatSkill } from '../Classes/FlatSkill';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
-import { FilterPipe } from '../Pipes/filter-pipe';
-import { SubscriptionLike as ISubscription } from 'rxjs';
+import { SubscriptionLike } from 'rxjs';
 
 @Component({
   selector: 'app-skills',
@@ -12,10 +10,11 @@ import { SubscriptionLike as ISubscription } from 'rxjs';
   styleUrls: ['./skills.component.css']
 })
 export class SkillsComponent implements OnInit, OnDestroy {
-  sortOrder = false;
-  displayList: FlatSkill[];
-  private subscriptions: ISubscription[] = [];
-  private flatSkillList: FlatSkill[] = [];
+  private sortOrder = false;
+  private displayList: FlatSkill[];
+  private subscriptions: SubscriptionLike;
+  private flatSkillList: FlatSkill[];
+  private readonly orderByPipe = new OrderByPipe();
 
   constructor(private skillService: SkillService) { }
 
@@ -24,29 +23,22 @@ export class SkillsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe);
+    this.subscriptions.unsubscribe();
   }
 
   getFlatSkills(): void {
-    this.subscriptions.push(
-      this.skillService.getFlatSkillList().subscribe(skills => {
-        this.flatSkillList = skills;
-        this.displayList = this.flatSkillList;
-      })
-    );
+    this.subscriptions = this.skillService.getFlatSkillList().subscribe(skills => {
+      this.flatSkillList = skills;
+      this.displayList = this.flatSkillList;
+    });
   }
 
   orderBy(field: string, idx = 0): void {
-    const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.flatSkillList, field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.flatSkillList, field, this.sortOrder, idx);
   }
 
-  filterStr(filter): void {
-    if (filter === '' && this.displayList.length !== this.flatSkillList.length) {
-      this.displayList = this.flatSkillList;
-    }
-    const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.flatSkillList, filter);
+  onFiltered(filteredData: FlatSkill[]): void {
+    this.displayList = filteredData;
   }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit, ContentChildren, QueryList, AfterContentInit, OnDestroy } from '@angular/core';
-import { Recipe, FullPersona, FlatPersona } from '../Classes/FlatPersona';
+import { FullPersona, FlatPersona } from '../Classes/FlatPersona';
+import { Recipe } from '../Classes/Recipe';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationComponent } from '../pagination/pagination.component';
-import { SubscriptionLike as ISubscription } from 'rxjs';
+import { SubscriptionLike } from 'rxjs';
 
 @Component({
   selector: 'app-persona',
@@ -17,7 +18,7 @@ export class PersonaComponent implements OnInit, OnDestroy {
   private elemNames = FlatPersona.ELEMNAMES;
   private Math = Math;
   private transmutationsHeader = ['Black Kogatana', 'Black Robe', 'Black Rock', 'Black Card'];
-  private subscription: ISubscription;
+  private subscription: SubscriptionLike;
 
   constructor(private route: ActivatedRoute) { }
 

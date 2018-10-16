@@ -1,6 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Recipe, FlatPersona } from '../Classes/FlatPersona';
-import { FlatItem } from '../Classes/Item';
+import { FlatPersona } from '../Classes/FlatPersona';
+import { Recipe } from '../Classes/Recipe';
+import { FlatItem } from '../Classes/FlatItem';
+import { FlatSkill } from '../Classes/FlatSkill';
 @Pipe({
   name: 'filterStr'
 })
@@ -13,12 +15,15 @@ export class FilterPipe implements PipeTransform {
     }
     if (array[0] instanceof FlatPersona) {
       return this.transformPersona(array, filter);
-    }
-    if (array[0] instanceof Recipe) {
+    } else if (array[0] instanceof Recipe) {
       return this.transformRecipe(array, filter, personaName);
-    }
-    if (array[0] instanceof FlatItem) {
+    } else if (array[0] instanceof FlatItem) {
       return this.transformItem(array, filter);
+    } else if (array[0] instanceof FlatSkill) {
+      return this.transformSkill(array, filter);
+    } else {
+      console.warn('Filtering an unexpected array type return unmodified array');
+      return array;
     }
   }
 
@@ -43,5 +48,9 @@ export class FilterPipe implements PipeTransform {
       }
       return match;
     });
+  }
+
+  private transformSkill(array: Array<FlatSkill>, filter: string): Array<FlatSkill> {
+    return array.filter(s => s.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1);
   }
 }

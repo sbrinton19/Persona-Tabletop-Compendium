@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { getArcanaName } from '../Classes/Arcana';
+import { getArcanaName } from '../Enums/Arcana';
 @Pipe({
   name: 'orderBy'
 })

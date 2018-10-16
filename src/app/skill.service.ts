@@ -1,8 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatSkill, FlatDamageSkill, FlatDamageAilmentSkill, FlatSupportSkill, FlatAilmentSkill, FlatPassiveSkill, PersonaSkill, FullSkill } from './Classes/Skill';
+import { FlatSkill, FlatDamageSkill, FlatDamageAilmentSkill, FlatSupportSkill,
+  FlatAilmentSkill, FlatPassiveSkill, PersonaSkill, FullSkill } from './Classes/FlatSkill';
 import { WebsocketService } from './websocket.service';
 import { Payload } from './Classes/Payload';
 import { Subject } from 'rxjs';
+import { Globals } from './Classes/Globals';
 
 @Injectable()
 export class SkillService implements OnDestroy {
@@ -16,7 +18,7 @@ export class SkillService implements OnDestroy {
   private fullSkillMap: Map<number, FullSkill> = new Map<number, FullSkill>();
 
   constructor(private sockService: WebsocketService) {
-    this.sockService.connect("ws://localhost:1992", this, this.onMessage);
+    this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
   }
 
   ngOnDestroy() {
@@ -24,63 +26,63 @@ export class SkillService implements OnDestroy {
   }
 
   private onMessage(response: MessageEvent): void {
-    if (response.data === "Failed to read database") {
-      //TODO: Actually do something graceful
+    if (response.data === 'Failed to read database') {
+      // TODO: Actually do something graceful
       return null;
     }
-    let data = <Payload> JSON.parse(response.data);
-    if(data.PayloadType === "FlatSkill[]"){
-      let payload = <FlatSkill[]> data.Payload;
-      let returnData: FlatSkill[] = [];
-      payload.forEach(data => {
-        let flatSkill: FlatSkill = new FlatSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, false);
+    const payloadObject = <Payload> JSON.parse(response.data);
+    if (payloadObject.PayloadType === 'FlatSkill[]') {
+      const payloadData = <FlatSkill[]> payloadObject.Payload;
+      const returnData: FlatSkill[] = [];
+      payloadData.forEach(data => {
+        const flatSkill: FlatSkill = FlatSkill.copyConstructor(data);
         returnData.push(flatSkill);
       });
       this.flatSkillList.next(returnData);
-    } else if(data.PayloadType === "FullSkill[]"){
-      let payload = <FullSkill[]> data.Payload;
-      payload.forEach(data => {
-        let skill: FullSkill = FullSkill.copyConstructor(data);
+    } else if (payloadObject.PayloadType === 'FullSkill[]') {
+      const payloadData = <FullSkill[]> payloadObject.Payload;
+      payloadData.forEach(data => {
+        const skill: FullSkill = FullSkill.copyConstructor(data);
         this.fullSkillMap.set(data.skill.id, skill);
       });
       this.fullSkillMapSubject.next(this.fullSkillMap);
-    } else if(data.PayloadType === "FlatDamageSkill[]"){
-      let payload = <FlatDamageSkill[]> data.Payload;
-      let returnData: FlatDamageSkill[] = [];
-      payload.forEach(data => {
-        let flatDamageSkill: FlatDamageSkill = new FlatDamageSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, data.multiplier, data.maxDamageDice, data.damageDie, data.damageBonus);
+    } else if (payloadObject.PayloadType === 'FlatDamageSkill[]') {
+      const payloadData = <FlatDamageSkill[]> payloadObject.Payload;
+      const returnData: FlatDamageSkill[] = [];
+      payloadData.forEach(data => {
+        const flatDamageSkill: FlatDamageSkill = FlatDamageSkill.copyConstructor(data);
         returnData.push(flatDamageSkill);
       });
       this.flatDamageSkillList.next(returnData);
-    } else if(data.PayloadType === "FlatDamageAilmentSkill[]"){
-      let payload = <FlatDamageAilmentSkill[]> data.Payload;
-      let returnData: FlatDamageAilmentSkill[] = [];
-      payload.forEach(data => {
-        let flatDamageAilmentSkill: FlatDamageAilmentSkill = new FlatDamageAilmentSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, data.multiplier, data.maxDamageDice, data.damageDie, data.damageBonus, data.ailmentType, data.ailmentFailValue);
+    } else if (payloadObject.PayloadType === 'FlatDamageAilmentSkill[]') {
+      const payloadData = <FlatDamageAilmentSkill[]> payloadObject.Payload;
+      const returnData: FlatDamageAilmentSkill[] = [];
+      payloadData.forEach(data => {
+        const flatDamageAilmentSkill: FlatDamageAilmentSkill = FlatDamageAilmentSkill.copyConstructor(data);
         returnData.push(flatDamageAilmentSkill);
       });
       this.flatDamageAilmentSkillList.next(returnData);
-    } else if(data.PayloadType === "FlatSupportSkill[]"){
-      let payload = <FlatSupportSkill[]> data.Payload;
-      let returnData: FlatSupportSkill[] = [];
-      payload.forEach(data => {
-        let flatSupportSkill: FlatSupportSkill = new FlatSupportSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, data.supportType, data.supportValue);
+    } else if (payloadObject.PayloadType === 'FlatSupportSkill[]') {
+      const payloadData = <FlatSupportSkill[]> payloadObject.Payload;
+      const returnData: FlatSupportSkill[] = [];
+      payloadData.forEach(data => {
+        const flatSupportSkill: FlatSupportSkill = FlatSupportSkill.copyConstructor(data);
         returnData.push(flatSupportSkill);
       });
       this.flatSupportSkillList.next(returnData);
-    } else if(data.PayloadType === "FlatAilmentSkill[]"){
-      let payload = <FlatAilmentSkill[]> data.Payload;
-      let returnData: FlatAilmentSkill[] = [];
-      payload.forEach(data => {
-        let flatAilmentSkill: FlatAilmentSkill = new FlatAilmentSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, data.ailmentType, data.ailmentFailValue);
+    } else if (payloadObject.PayloadType === 'FlatAilmentSkill[]') {
+      const payloadData = <FlatAilmentSkill[]> payloadObject.Payload;
+      const returnData: FlatAilmentSkill[] = [];
+      payloadData.forEach(data => {
+        const flatAilmentSkill: FlatAilmentSkill = FlatAilmentSkill.copyConstructor(data);
         returnData.push(flatAilmentSkill);
       });
       this.flatAilmentSkillList.next(returnData);
-    } else if(data.PayloadType === "FlatPassiveSkill[]"){
-      let payload = <FlatPassiveSkill[]> data.Payload;
-      let returnData: FlatPassiveSkill[] = [];
-      payload.forEach(data => {
-        let flatPassiveSkill: FlatPassiveSkill = new FlatPassiveSkill(data.id, data.name, data.cost, data.element, data.description, data.allyCardId, data.mainCardId, data.aoe, data.minLevel, data.passiveType, data.type, data.value, data.secondValue);
+    } else if (payloadObject.PayloadType === 'FlatPassiveSkill[]') {
+      const payloadData = <FlatPassiveSkill[]> payloadObject.Payload;
+      const returnData: FlatPassiveSkill[] = [];
+      payloadData.forEach(data => {
+        const flatPassiveSkill: FlatPassiveSkill = FlatPassiveSkill.copyConstructor(data);
         returnData.push(flatPassiveSkill);
       });
       this.flatPassiveSkillList.next(returnData);
@@ -98,56 +100,56 @@ export class SkillService implements OnDestroy {
   }
 
   getFlatSkillList(): Subject<FlatSkill[]> {
-    this.sockService.sendMessage("get|FlatSkill|[]");
+    this.sockService.sendMessage('get|FlatSkill|[]');
     return this.flatSkillList;
   }
 
   getFlatDamageSkillList(): Subject<FlatDamageSkill[]> {
-    this.sockService.sendMessage("get|FlatDamageSkill|[]");
+    this.sockService.sendMessage('get|FlatDamageSkill|[]');
     return this.flatDamageSkillList;
   }
 
-  addFlatDamageSkill(damageSkill: FlatDamageSkill) : void {
-    this.sockService.sendMessage("add|FlatDamageSkill|" + JSON.stringify(damageSkill));
+  addFlatDamageSkill(damageSkill: FlatDamageSkill): void {
+    this.sockService.sendMessage('add|FlatDamageSkill|' + JSON.stringify(damageSkill));
   }
 
   getFlatDamageAilmentSkillList(): Subject<FlatDamageAilmentSkill[]> {
-    this.sockService.sendMessage("get|FlatDamageAilmentSkill|[]");
+    this.sockService.sendMessage('get|FlatDamageAilmentSkill|[]');
     return this.flatDamageAilmentSkillList;
   }
 
-  addFlatDamageAilmentSkill(damageAilmentSkill: FlatDamageAilmentSkill) : void {
-    this.sockService.sendMessage("add|FlatDamageAilmentSkill|" + JSON.stringify(damageAilmentSkill));
+  addFlatDamageAilmentSkill(damageAilmentSkill: FlatDamageAilmentSkill): void {
+    this.sockService.sendMessage('add|FlatDamageAilmentSkill|' + JSON.stringify(damageAilmentSkill));
   }
 
   getFlatSupportSkillList(): Subject<FlatSupportSkill[]> {
-    this.sockService.sendMessage("get|FlatSupportSkill|[]");
+    this.sockService.sendMessage('get|FlatSupportSkill|[]');
     return this.flatSupportSkillList;
   }
 
-  addFlatSupportSkill(flatSupportSkill: FlatSupportSkill) : void {
-    this.sockService.sendMessage("add|FlatSupportSkill|" + JSON.stringify(flatSupportSkill));
+  addFlatSupportSkill(flatSupportSkill: FlatSupportSkill): void {
+    this.sockService.sendMessage('add|FlatSupportSkill|' + JSON.stringify(flatSupportSkill));
   }
 
   getFlatAilmentSkillList(): Subject<FlatAilmentSkill[]> {
-    this.sockService.sendMessage("get|FlatAilmentSkill|[]");
+    this.sockService.sendMessage('get|FlatAilmentSkill|[]');
     return this.flatAilmentSkillList;
   }
 
-  addFlatAilmentSkill(ailmentSkill: FlatAilmentSkill) : void {
-    this.sockService.sendMessage("add|FlatAilmentSkill|" + JSON.stringify(ailmentSkill));
+  addFlatAilmentSkill(ailmentSkill: FlatAilmentSkill): void {
+    this.sockService.sendMessage('add|FlatAilmentSkill|' + JSON.stringify(ailmentSkill));
   }
 
   getFlatPassiveSkillList(): Subject<FlatPassiveSkill[]> {
-    this.sockService.sendMessage("get|FlatPassiveSkill|[]");
+    this.sockService.sendMessage('get|FlatPassiveSkill|[]');
     return this.flatPassiveSkillList;
   }
 
-  addFlatPassiveSkill(passiveSkill: FlatPassiveSkill) : void {
-    this.sockService.sendMessage("add|FlatPassiveSkill|" + JSON.stringify(passiveSkill));
+  addFlatPassiveSkill(passiveSkill: FlatPassiveSkill): void {
+    this.sockService.sendMessage('add|FlatPassiveSkill|' + JSON.stringify(passiveSkill));
   }
 
-  addPersonaSkill(personaSkill: PersonaSkill) : void {
-    this.sockService.sendMessage("add|PersonaSkill|" + JSON.stringify(personaSkill));
+  addPersonaSkill(personaSkill: PersonaSkill): void {
+    this.sockService.sendMessage('add|PersonaSkill|' + JSON.stringify(personaSkill));
   }
 }

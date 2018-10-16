@@ -1,77 +1,103 @@
-import { OldPersonaSkill, LeveledSkill } from './Skill';
-import { PersonaReference } from "./PersonaReference";
-import { OldDrop, Item, Loot, NegotiateDrop, OriginType, SkillCard, ItemReference, DropReference, Drop } from './Item';
-import { Arcana, getArcanaName } from './Arcana';
-import { ElemResist, getElemShort, getElemFull } from './ElemResist';
+import { LeveledSkill } from './FlatSkill';
+import { ItemReference, DropReference } from './ItemReference';
+import { Arcana, getArcanaName } from '../Enums/Arcana';
+import { ElemResist, getElemShort, getElemFull } from '../Enums/ElemResist';
+import { Recipe } from './Recipe';
 
 /**
- * This class is a reference-less version of persona with the list view display data for a persona
+ * This class is a reference-less persona with the data for the list view display
  */
 export class FlatPersona {
-    private static idSource = 0;
-    public static get STATNAMES(): string[] { return ['HP', 'SP', 'Strength', 'Magic', 'Endurance', 'Agility', 'Luck']; }
-    public static get ELEMNAMES(): string[] { return ['Phys', 'Gun', 'Fire', 'Ice', 'Elec', 'Wind', 'Psy', 'Nuke', 'Bless', 'Curse']; }
+    public static STATNAMES: string[] =  ['HP', 'SP', 'Strength', 'Magic', 'Endurance', 'Agility', 'Luck'];
+    public static ELEMNAMES: string[] = ['Phys', 'Gun', 'Fire', 'Ice', 'Elec', 'Wind', 'Psy', 'Nuke', 'Bless', 'Curse'];
 
-    id: number;
-    name: string;
-    arcana: Arcana;
-    level: number;
-    stats: number[];
-    elems: ElemResist[];
-    note: string;
-    special: boolean;
-    max: boolean;
-    dlc: boolean;
-    rare: boolean;
+    readonly id: number;
+    readonly name: string;
+    readonly arcana: Arcana;
+    readonly level: number;
+    readonly stats: number[];
+    readonly elems: ElemResist[];
+    readonly note: string;
+    readonly special: boolean;
+    readonly max: boolean;
+    readonly dlc: boolean;
+    readonly rare: boolean;
 
-    constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[], elems: ElemResist[],
-        special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
-        if(id === -1)
-            this.id = Persona.idSource++;
-        else
+    public constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[], elems: ElemResist[], special: boolean,
+        max: boolean, dlc: boolean, rare: boolean, note: string) {
             this.id = id;
-        this.name = name;
-        this.arcana = arcana;
-        this.level = level;
-        this.stats = stats;
-        this.elems = elems;
-        this.special = special;
-        this.max = max;
-        this.dlc = dlc;
-        this.rare = rare;
-        this.note = note;
+            this.name = name;
+            this.arcana = arcana;
+            this.level = level;
+            this.stats = stats;
+            this.elems = elems;
+            this.special = special;
+            this.max = max;
+            this.dlc = dlc;
+            this.rare = rare;
+            this.note = note;
     }
 
     public static copyConstructor(source: FlatPersona): FlatPersona {
-        return new FlatPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max,
-            source.dlc, source.rare, source.note);
+        return new FlatPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc,
+            source.rare, source.note);
     }
 
-    getElemShort(elem: ElemResist): string {
+    public getElemShort(elem: ElemResist): string {
         return getElemShort(elem);
     }
 
-    getElemFull(elem: ElemResist): string {
+    public getElemFull(elem: ElemResist): string {
         return getElemFull(elem);
     }
 
-    getArcanaName(): string {
+    public getArcanaName(): string {
         return getArcanaName(this.arcana);
+    }
+
+    public isEqual(other: FlatPersona): boolean {
+        if (!other) {
+            return false;
+        }
+
+        if (this.stats.length !== other.stats.length) {
+            return false;
+        }
+        for (let i = 0; i < this.stats.length; i++) {
+            if (this.stats[i] !== other.stats[i]) {
+                return false;
+            }
+        }
+
+        if (this.elems.length !== other.elems.length) {
+            return false;
+        }
+        for (let i = 0; i < this.elems.length; i++) {
+            if (this.elems[i] !== other.elems[i]) {
+                return false;
+            }
+        }
+
+        return (this.id === other.id && this.name === other.name && this.arcana === other.arcana && this.level === other.level &&
+            this.special === other.special && this.max === other.max && this.dlc === other.dlc && this.rare === other.rare &&
+            this.note === other.note);
     }
 }
 
+/**
+ * A complete Persona with all its references
+ */
 export class FullPersona extends FlatPersona {
-    skills: LeveledSkill[] = [];
-    drops: DropReference[] = [];
-    negotiates: DropReference[] = [];
-    transmutes: ItemReference[] = [];
-    toRecipes: Recipe[] = [];
-    fromRecipes: Recipe[] = [];
+    readonly skills: LeveledSkill[];
+    readonly drops: DropReference[];
+    readonly negotiates: DropReference[];
+    readonly transmutes: ItemReference[];
+    readonly toRecipes: Recipe[];
+    readonly fromRecipes: Recipe[];
 
-    constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[],
-        elems: ElemResist[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string,
-        skills: LeveledSkill[], drops: DropReference[], negotiates: DropReference[], transmutes: ItemReference[], toRecipes: Recipe[],
-        fromRecipes: Recipe[]) {
+    public constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[], elems: ElemResist[], special: boolean,
+        max: boolean, dlc: boolean, rare: boolean, note: string, skills: LeveledSkill[], drops: DropReference[], negotiates: DropReference[],
+        transmutes: ItemReference[], toRecipes: Recipe[], fromRecipes: Recipe[]) {
             super(id, name, arcana, level, stats, elems, special, max, dlc, rare, note);
             this.skills = skills;
             this.drops = drops;
@@ -79,7 +105,6 @@ export class FullPersona extends FlatPersona {
             this.transmutes = transmutes;
             this.toRecipes = toRecipes;
             this.fromRecipes = fromRecipes;
-            
     }
 
     public static copyConstructor(source: FullPersona): FullPersona {
@@ -92,7 +117,7 @@ export class FullPersona extends FlatPersona {
             if (skill.minLevel + 20 < temp && skill.minLevel !== 0) {
                 console.warn(`The persona ${this.name} learns the skill ${skill.name} after its recommended maximum level`);
             }
-            skills.push(new LeveledSkill(skill.id, skill.name, skill.cost, skill.element, skill.description, skill.minLevel, skill.level));
+            skills.push(LeveledSkill.copyConstructor(skill));
         });
         const drops: DropReference[] = [];
         source.drops.forEach(drop => {
@@ -114,144 +139,81 @@ export class FullPersona extends FlatPersona {
         source.fromRecipes.forEach(recipe => {
             fromRecipes.push(Recipe.copyConstructor(recipe));
         });
-        return new FullPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc, source.rare,
-            source.note, skills, drops, negotiates, transmutes, toRecipes, fromRecipes);
-    }
-}
-
-/**
- * Complete Persona object with references for detail view page
- */
-class Persona extends FlatPersona {
-    skills: OldPersonaSkill[];
-    transmutes: Item[];
-    negotiates: NegotiateDrop[] = [];
-    drops: OldDrop[];
-
-
-    constructor(name: string, arcana: Arcana, level: number, stats: number[],
-        elems: ElemResist[], skills: OldPersonaSkill[], transmutes: Item[], negotiates: NegotiateDrop[],
-        drops: OldDrop[], special: boolean, max: boolean, dlc: boolean, rare: boolean, note: string) {
-            super(-1, name, arcana, level, stats, elems, special, max, dlc, rare, note);
-            this.skills = skills;
-            this.transmutes = transmutes;
-            negotiates.forEach(negot => {
-                this.negotiates.push(new NegotiateDrop(negot.item, negot.low, negot.high));
-            });
-            this.drops = drops;
-            this.processDrops();
-            this.processNegotiates();
-            this.processTransumtes();
+        return new FullPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc,
+            source.rare, source.note, skills, drops, negotiates, transmutes, toRecipes, fromRecipes);
     }
 
-    private processDrops(): void {
-        if (this.drops.length === 1) {
-            let drop = this.drops[0];
-            drop.warning();
-            
-            if (drop.item.id !== 0) {
-                if (drop.low === drop.high) {
-                    drop.rollWinDisplay = `${drop.high}`;
-                } else {
-                    drop.rollWinDisplay = `${drop.low}-${drop.high}`;
-                }
-                drop.item.addPersonaSource(this.id, this.name, OriginType.Drop);
-            } else {
-                drop.rollWinDisplay = 'All';
-            }
-            return;
+    public isEqual(other: FullPersona) {
+        if (!other) {
+            return false;
         }
-        this.drops.forEach(drop => {
-            drop.warning();
-            if (drop.item instanceof Loot) {
-                if (!drop.item.arcanaSources.includes(this.arcana)) {
-                    console.warn(`${drop.item.name} was assigned to ${this.name} which is the wrong drop for this Arcana`);
-                }
-            }
-            if (drop.low === drop.high) {
-                drop.rollWinDisplay = `${drop.high}`;
-            } else {
-                drop.rollWinDisplay = `${drop.low}-${drop.high}`;
-            }
-            drop.item.addPersonaSource(this.id, this.name, OriginType.Drop);
-         });
-    }
 
-    private processNegotiates(): void {
-        if (this.negotiates.length === 1) {
-            let negot = this.negotiates[0];
-            negot.warning();
-            if (this.negotiates[0].item.id !== 0) {
-                if (negot.low === negot.high) {
-                    negot.rollWinDisplay = `${negot.high}`;
-                } else {
-                    negot.rollWinDisplay = `${negot.low}-${negot.high}`;
-                }
-                this.negotiates[0].item.addPersonaSource(this.id, this.name, OriginType.Negotiate);
-            } else {
-                negot.rollWinDisplay = 'All';
-            }
-            return;
+        if (this.skills.length !== other.skills.length) {
+            return false;
         }
-        this.negotiates.forEach(negot => {
-            negot.warning();
-            if (negot.low === negot.high) {
-                negot.rollWinDisplay = `${negot.high}`;
-            } else {
-                negot.rollWinDisplay = `${negot.low}-${negot.high}`;
-            }
-           negot.item.addPersonaSource(this.id, this.name, OriginType.Negotiate);;
+        const skillMatch = this.skills.every(skill => {
+            const matcher = other.skills.find(otherSkill => skill.isEqual(otherSkill));
+            return matcher !== undefined;
         });
-    }
-
-    private processTransumtes(): void {
-        this.transmutes.forEach(transmute => {
-            if(transmute.name === "-")
-                return;
-            if (!(transmute.origins & OriginType.Transmute)) {
-                console.warn(`${transmute.name} is available as a transmutation, but does not have the transmutation OriginType`);
-            }
-            if (transmute.transmuteId !== -1) {
-                console.error(`${transmute.name} is available as a transmutation of ${transmute.transmuteId} and is also attempting to be used by ${this.name}`);
-            }
-            transmute.transmuteId = this.id;
-            transmute.addPersonaSource(this.id, this.name, OriginType.Transmute);
-        });
-    }
-
-    getSkillCardSource(item: SkillCard) : string {
-        let find = this.drops.find(d => d.item === item);
-        let find2 = this.negotiates.find(n => n.item === item);
-        let find3 = this.transmutes.find(t => t === item);
-        if (find && find2 && find3) {
-            return 'Drop, Negotiation, & Transmutation';
-        } else if (find && (find2 || find3)) {
-            return 'Drop & ' + (find2 ? 'Negotiation' : 'Transmuation');
-        } else if (find) {
-            return 'Drop';
-        } else if (find2) {
-            return 'Negotiation' + (find3 ? ' & Transmutation': '');
-        } else {
-            return 'Transmutation';
+        if (!skillMatch) {
+            return false;
         }
-    }
 
-}
+        if (this.drops.length !== other.drops.length) {
+            return false;
+        }
+        const dropMatch = this.drops.every(drop => {
+            const matcher = other.drops.find(otherDrop => drop.isEqual(otherDrop));
+            return matcher !== undefined;
+        });
+        if (!dropMatch) {
+            return false;
+        }
 
-export class Recipe {
-    sources: PersonaReference[];
-    result: PersonaReference;
-    cost: number;
+        if (this.negotiates.length !== other.negotiates.length) {
+            return false;
+        }
+        const negotiatesMatch = this.negotiates.every(negotiate => {
+            const matcher = other.negotiates.find(otherNegotiate => negotiate.isEqual(otherNegotiate));
+            return matcher !== undefined;
+        });
+        if (!negotiatesMatch) {
+            return false;
+        }
 
-    constructor(sources: PersonaReference[], result: PersonaReference, cost: number) {
-        this.sources = sources;
-        this.result = result;
-        this.cost = cost;
-    }
+        if (this.transmutes.length !== other.transmutes.length) {
+            return false;
+        }
+        const transmutesMatch = this.transmutes.every(transmute => {
+            const matcher = other.transmutes.find(otherTransmute => transmute.isEqual(otherTransmute));
+            return matcher !== undefined;
+        });
+        if (!transmutesMatch) {
+            return false;
+        }
 
-    static copyConstructor(source: Recipe): Recipe {
-        let newSources: PersonaReference[] = [];
-        source.sources.forEach(source => newSources.push(PersonaReference.copyConstructor(source)));
-        return new Recipe(newSources, PersonaReference.copyConstructor(source.result), source.cost);
+        if (this.toRecipes.length !== other.toRecipes.length) {
+            return false;
+        }
+        const toRecipesMatch = this.toRecipes.every(toRecipe => {
+            const matcher = other.toRecipes.find(otherToRecipe => toRecipe.isEqual(otherToRecipe));
+            return matcher !== undefined;
+        });
+        if (!toRecipesMatch) {
+            return false;
+        }
+
+        if (this.fromRecipes.length !== other.fromRecipes.length) {
+            return false;
+        }
+        const fromRecipesMatch = this.fromRecipes.every(fromRecipe => {
+            const matcher = other.fromRecipes.find(otherFromRecipe => fromRecipe.isEqual(otherFromRecipe));
+            return matcher !== undefined;
+        });
+        if (!fromRecipesMatch) {
+            return false;
+        }
+
+        return super.isEqual(other);
     }
 }

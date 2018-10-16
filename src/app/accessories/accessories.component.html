@@ -1,30 +1,30 @@
-<div id="filterDiv" class="ui mini input">
-  <label class="ui-mini-label">
-    Filter:
-    <input id="inputFilter" #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
-  </label>
-  <button (click)="filterStr('')" class="ui mini button">Clear</button>
-</div>
+<app-filter id="accessoryFilter"
+  [displayList]="displayList"
+  [masterList]="flatAccessoriesList"
+  (filtered)="onFiltered($event)">
+</app-filter>
 
-<table id="accessoryTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
+<table id="accessoryTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>
     <tr>
-      <th (click)="orderBy('id')">ID</th>
+      <th class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
       <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
-      <th class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
-      <th class="mobile-hidden-2" (click)="orderBy('special')">Special</th>
+      <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
+      <th (click)="orderBy('special')">Special Effects</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let accessory of displayList">
-      <td class="left-border">{{accessory.id}}</td>
+      <td class="mobile-hidden-1">{{accessory.id}}</td>
       <td class="left-border"><a href='#/item/{{accessory.id}}'>{{accessory.name}}</a></td>
       <td class="left-border mobile-hidden-3">{{accessory.schedule}}</td>
-      <td class="left-border mobile-hidden-3">
-        <label *ngFor="let origin of accessory.getOrigins(); last as isLast">{{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      <td class="left-border mobile-hidden-2">
+        <label *ngFor="let origin of accessory.getOrigins(); last as isLast">
+          {{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container>
+        </label>
       </td>
-      <td class="left-border mobile-hidden-2">{{accessory.special}}</td>
+      <td class="left-border">{{accessory.special}}</td>
     </tr>
   </tbody>
 </table>

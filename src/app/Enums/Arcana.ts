@@ -48,6 +48,7 @@ export function getArcanaName(arcana: Arcana): string {
         case Arcana.Moon:
         case Arcana.Sun:
         case Arcana.Judgement:
+        default:
             return Arcana[arcana];
     }
 }

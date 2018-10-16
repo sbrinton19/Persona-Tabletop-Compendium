@@ -1,0 +1,13 @@
+#filterLabel {
+    margin: .75em .5em;
+}
+
+#filterInput {
+    border-top-right-radius: 0em;
+    border-bottom-right-radius: 0em;
+}
+
+#filterButton {
+    border-top-left-radius: 0em;
+    border-bottom-left-radius: 0em;
+}

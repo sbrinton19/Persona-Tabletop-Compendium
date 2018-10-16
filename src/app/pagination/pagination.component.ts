@@ -14,15 +14,14 @@ export class PaginationComponent<T> implements OnInit {
   @Input() perPage = 20;
   @Input() owner = '';
   @Input() header = '';
-  display: string;
   // If the paginator contains objects that have an owner
   // e.g., a Recipe, it may need its name for filtering
-  activeData: Array<T>;
+  private activeData: Array<T>;
   displayData: Array<T>;
-  currPage = 1;
-  maxPage: number;
-  orderBy = new OrderByPipe();
-  filter = new FilterPipe();
+  private currPage = 1;
+  private maxPage: number;
+  private readonly orderBy = new OrderByPipe();
+  private readonly filter = new FilterPipe();
   headerPart: string[];
   constructor() { }
 
@@ -67,8 +66,8 @@ export class PaginationComponent<T> implements OnInit {
     this.getCurrentPage();
   }
 
-  getFiltered(filter: string): void {
-    this.activeData = this.filter.transform(this.listData, filter, this.owner);
+  onFiltered(filteredData: Array<T>): void {
+    this.activeData = filteredData;
     this.getMaxPage();
     this.getCurrentPage();
   }

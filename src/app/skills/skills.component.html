@@ -1,29 +1,27 @@
-<div class="ui mini input">
-        <label class="ui-mini-label">
-          Filter:
-          <input #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
-        </label>
-        <button (click)="filterStr('')" class="ui mini button">Clear</button>
-    </div>
-    
-    <table id="skillTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
-      <thead>
-        <tr>
-            <th (click)="orderBy('id')">ID</th>
-            <th (click)="orderBy('name')">Name</th>
-            <th (click)="orderBy('cost')">Cost</th>
-            <th (click)="orderBy('element')">Element</th>
-            <th (click)="orderBy('description')">Skill Description</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let skill of displayList">
-        <td>{{skill.id}}</td>
-        <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
-        <td class="left-border">{{skill.formatCost()}}</td>
-        <td class="left-border">{{skill.getSkillElement()}}</td>
-        <td class="left-border">{{skill.getDescription()}}</td>
-      </tr>
-      </tbody>
-    </table>
+<app-filter id="skillFilter"
+  [displayList]="displayList"
+  [masterList]="flatSkillList"
+  (filtered)="onFiltered($event)">
+</app-filter>
+
+<table id="skillTable" cellspacing="0" class="ui table striped sortable unstackable">
+  <thead>
+    <tr>
+      <th class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
+      <th (click)="orderBy('name')">Name</th>
+      <th (click)="orderBy('cost')">Cost</th>
+      <th (click)="orderBy('element')">Element</th>
+      <th (click)="orderBy('description')">Skill Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let skill of displayList">
+      <td class="mobile-hidden-1">{{skill.id}}</td>
+      <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
+      <td class="left-border">{{skill.getFormattedCost()}}</td>
+      <td class="left-border">{{skill.getSkillElement()}}</td>
+      <td class="left-border">{{skill.description}}</td>
+    </tr>
+  </tbody>
+</table>
     

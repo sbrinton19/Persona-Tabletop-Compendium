@@ -1,21 +1,48 @@
 <div id="skillPage" *ngIf="skill; else notFound" style="margin-top:10px">
-  <div id="skillTitle">{{skill.skill.name}}</div>
-  <div id="skillSubtitle">({{skill.getSkillElement()}} / {{skill.skill.formatCost()}})</div>
-  <table id="skillDetailTable" class="ui table unstackable striped">
+  <h1 id="skillTitle">{{skill.skill.name}}</h1>
+  <h2 id="skillSubtitle">({{skill.getSkillElement()}} / {{skill.skill.getFormattedCost()}})</h2>
+  <h3 id="skillDescription">{{skill.getDescription()}}</h3> 
+  <table [class.mobile-hidden-2]="isSplitTable()" id="skillDetailTable" class="ui table unstackable striped skill-table">
     <thead>
       <tr>
-        <th class="left-border" *ngFor="let header of getDetailTableHeader()">{{header}}</th>
+        <th [class.left-border]="!isFirst" *ngFor="let header of detailTableHeader; first as isFirst">{{header}}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="left-border" *ngFor="let value of detailTableValues">{{value}}</td>
+        <td [class.left-border]="!isFirst" *ngFor="let value of detailTableValues; first as isFirst">{{value}}</td>
       </tr>
     </tbody>
   </table>
-  <h3>{{skill.getDescription()}}</h3> 
+
+  <ng-container *ngIf="isSplitTable()">
+    <table id="splitSkillTable1" class="ui table unstackable striped skill-table midsized-hidden">
+      <thead>
+        <tr>
+          <th [class.left-border]="!isFirst" *ngFor="let header of detailTableHeader | slice:0:splitTableIndex(); first as isFirst">{{header}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td [class.left-border]="!isFirst" *ngFor="let value of detailTableValues | slice:0:splitTableIndex(); first as isFirst">{{value}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table id="splitSkillTable2" class="ui table unstackable striped skill-table midsized-hidden">
+      <thead>
+        <tr>
+          <th [class.left-border]="!isFirst" *ngFor="let header of detailTableHeader | slice:splitTableIndex():detailTableHeader.length; first as isFirst">{{header}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td [class.left-border]="!isFirst" *ngFor="let value of detailTableValues | slice:splitTableIndex():detailTableHeader.length; first as isFirst">{{value}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
   <br>
-  <h3>Personae with this skill</h3>
+  <h2>Personae with this skill</h2>
   <table id="personaTable" class="ui table unstackable striped">
     <thead>
       <tr>
@@ -45,6 +72,5 @@
         </tr>
       </tbody>
     </table>
-  <h3></h3>
 </div>
 <ng-template #notFound>"{{skill.name}}" not found!</ng-template>

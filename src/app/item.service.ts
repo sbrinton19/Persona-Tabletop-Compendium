@@ -1,12 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Item, Weapon, FlatItem, OriginType, FlatArmor, getOrigins, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard, SkillCardType, SkillCard, FlatRangedWeapon, OldDrop, Drop } from './Classes/Item';
-import { weaponList, armorList, accessoryList, consumableList, skillCardList, lootList } from './Data/ItemData';
+import { FlatItem, FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard, FlatRangedWeapon } from './Classes/FlatItem';
+import { Drop } from './Classes/Drop';
+import { SkillCardType } from './Enums/SkillCardType';
 import { WebsocketService } from './websocket.service';
 import { Payload } from './Classes/Payload';
 import { Subject, Observable, of } from 'rxjs';
+import { Globals } from './Classes/Globals';
 
 @Injectable()
-export class ItemService implements OnDestroy{
+export class ItemService implements OnDestroy {
   private flatAccessoryList: Subject<FlatAccessory[]> = new Subject<FlatAccessory[]>();
   private flatArmorList: Subject<FlatArmor[]> = new Subject<FlatArmor[]>();
   private flatConsumableList: Subject<FlatConsumable[]> = new Subject<FlatConsumable[]>();
@@ -15,7 +17,7 @@ export class ItemService implements OnDestroy{
   private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
   private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
   constructor(private sockService: WebsocketService) {
-    this.sockService.connect("ws://localhost:1992", this, this.onMessage);
+    this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
   }
 
   ngOnDestroy() {
@@ -23,170 +25,139 @@ export class ItemService implements OnDestroy{
   }
 
   private onMessage(response: MessageEvent): void {
-    if (response.data === "Failed to read database") {
-      //TODO: Actually do something graceful
+    if (response.data === 'Failed to read database') {
+      // TODO: Actually do something graceful
       return null;
     }
-    let data = <Payload> JSON.parse(response.data);
-    
-    if(data.PayloadType === "FlatAccessory[]"){
-      let payload = <FlatAccessory[]> data.Payload;
-      let returnData: FlatAccessory[] = [];
+    const data = <Payload> JSON.parse(response.data);
+    if (data.PayloadType === 'FlatAccessory[]') {
+      const payload = <FlatAccessory[]> data.Payload;
+      const returnData: FlatAccessory[] = [];
       payload.forEach(element => {
-        let accessory: FlatAccessory = new FlatAccessory(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-          element.special, element.transmuteId);
+        const accessory: FlatAccessory = FlatAccessory.copyConstructor(element);
         returnData.push(accessory);
       });
       this.flatAccessoryList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatArmor[]"){
-      let payload = <FlatArmor[]> data.Payload;
-      let returnData: FlatArmor[] = [];
+    } else if (data.PayloadType === 'FlatArmor[]') {
+      const payload = <FlatArmor[]> data.Payload;
+      const returnData: FlatArmor[] = [];
       payload.forEach(element => {
-        let armor: FlatArmor = new FlatArmor(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-          element.special, element.transmuteId, element.armorClass, element.damageReduction, element.moveAimPenalty, element.maxDodgeBonus, element.dirtyGearPool);
+        const armor: FlatArmor = FlatArmor.copyConstructor(element);
         returnData.push(armor);
       });
       this.flatArmorList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatConsumable[]"){
-      let payload = <FlatConsumable[]> data.Payload;
-      let returnData: FlatConsumable[] = [];
+    } else if (data.PayloadType === 'FlatConsumable[]') {
+      const payload = <FlatConsumable[]> data.Payload;
+      const returnData: FlatConsumable[] = [];
       payload.forEach(element => {
-        let consumable: FlatConsumable = new FlatConsumable(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-          element.special, element.consumableType, element.transmuteId);
+        const consumable: FlatConsumable = FlatConsumable.copyConstructor(element);
         returnData.push(consumable);
       });
       this.flatConsumableList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatLoot[]"){
-      let payload = <FlatLoot[]> data.Payload;
-      let returnData: FlatLoot[] = [];
+    } else if (data.PayloadType === 'FlatLoot[]') {
+      const payload = <FlatLoot[]> data.Payload;
+      const returnData: FlatLoot[] = [];
       payload.forEach(element => {
-        let loot: FlatLoot = new FlatLoot(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-          element.special, element.transmuteId, element.arcanaSources);
+        const loot: FlatLoot = FlatLoot.copyConstructor(element);
         returnData.push(loot);
       });
       this.flatLootList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatSkillCard[]"){
-      let payload = <FlatSkillCard[]> data.Payload;
-      let returnData: FlatSkillCard[] = [];
+    } else if (data.PayloadType === 'FlatSkillCard[]') {
+      const payload = <FlatSkillCard[]> data.Payload;
+      const returnData: FlatSkillCard[] = [];
       payload.forEach(element => {
-        let split: string[] = element.name.split(" ");
-        let name = "";
-        for(let i = 0; i < split.length - 1; i++) {
+        const split: string[] = element.name.split(' ');
+        let name = '';
+        for (let i = 0; i < split.length - 1; i++) {
             name += split[i];
-            name += " ";
+            name += ' ';
         }
-        let skillCard: FlatSkillCard = new FlatSkillCard(element.id, name.trim(), element.schedule, 
-          getOrigins(element.origins), element.description, element.special, element.transmuteId, SkillCardType[split[split.length-1]]);
+        element.skillName = name.trim();
+        element.cardType = SkillCardType[split[split.length - 1]];
+        const skillCard: FlatSkillCard = FlatSkillCard.copyConstructor(element);
         returnData.push(skillCard);
       });
       this.flatSkillCardList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatRangedWeapon[]"){
-      let payload = <FlatRangedWeapon[]> data.Payload;
-      let returnData: FlatRangedWeapon[] = [];
+    } else if (data.PayloadType === 'FlatRangedWeapon[]') {
+      const payload = <FlatRangedWeapon[]> data.Payload;
+      const returnData: FlatRangedWeapon[] = [];
       payload.forEach(element => {
-        let rangedWeapon: FlatRangedWeapon = new FlatRangedWeapon(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-        element.special, element.transmuteId, element.baseDamage, element.maxDamageDice, element.damageDie, element.lowRange, element.highRange, element.failValue, element.magSize, element.magCount);
+        const rangedWeapon: FlatRangedWeapon = FlatRangedWeapon.copyConstructor(element);
         returnData.push(rangedWeapon);
       });
       this.flatRangedWeaponList.next(returnData);
-    }
-    else if(data.PayloadType === "FlatWeapon[]"){
-      let payload = <FlatWeapon[]> data.Payload;
-      let returnData: FlatWeapon[] = [];
+    } else if (data.PayloadType === 'FlatWeapon[]') {
+      const payload = <FlatWeapon[]> data.Payload;
+      const returnData: FlatWeapon[] = [];
       payload.forEach(element => {
-        let rangedWeapon: FlatWeapon = new FlatWeapon(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-        element.special, element.transmuteId, element.baseDamage, element.maxDamageDice, element.damageDie, element.lowRange, element.highRange, element.failValue);
+        const rangedWeapon: FlatWeapon = FlatWeapon.copyConstructor(element);
         returnData.push(rangedWeapon);
       });
       this.flatWeaponList.next(returnData);
-    } else if(data.PayloadType === "FullItem[]"){
+    } else if (data.PayloadType === 'FullItem[]') {
       /*let payload = <FullItem[]> data.Payload;
       let returnData: FullItem[] = [];
       payload.forEach(element => {
         let rangedWeapon: FullItem = new FullItem(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-        element.special, element.transmuteId, element.baseDamage, element.maxDamageDice, element.damageDie, element.lowRange, element.highRange, element.failValue);
+        element.special, element.transmuteId, element.baseDamage, element.maxDamageDice, element.damageDie, element.lowRange,
+        element.highRange, element.failValue);
         returnData.push(rangedWeapon);
       });
       this.flatWeaponList.next(returnData);*/
     }
   }
 
-  getWeaponList(): Observable<Item[]> {
-    return of(weaponList);
-  }
-
   getFlatWeaponList(): Subject<FlatWeapon[]> {
-    this.sockService.sendMessage("get|FlatWeapon|[]");
-    return this.flatWeaponList;    
+    this.sockService.sendMessage('get|FlatWeapon|[]');
+    return this.flatWeaponList;
   }
 
   addFlatWeapon(weapon: FlatWeapon): void {
-    this.sockService.sendMessage("add|FlatWeapon|" + JSON.stringify(weapon));
+    this.sockService.sendMessage('add|FlatWeapon|' + JSON.stringify(weapon));
   }
 
   getFlatRangedWeaponList(): Subject<FlatRangedWeapon[]> {
-    this.sockService.sendMessage("get|FlatRangedWeapon|[]");
-    return this.flatRangedWeaponList;    
+    this.sockService.sendMessage('get|FlatRangedWeapon|[]');
+    return this.flatRangedWeaponList;
   }
 
   addFlatRangedWeapon(weapon: FlatRangedWeapon): void {
-    this.sockService.sendMessage("add|FlatRangedWeapon|" + JSON.stringify(weapon));
+    this.sockService.sendMessage('add|FlatRangedWeapon|' + JSON.stringify(weapon));
   }
 
   getFlatArmorList(): Subject<FlatArmor[]> {
-    this.sockService.sendMessage("get|FlatArmor|[]");
+    this.sockService.sendMessage('get|FlatArmor|[]');
     return this.flatArmorList;
   }
 
   addFlatArmor(armor: FlatArmor): void {
-    this.sockService.sendMessage("add|FlatArmor|" + JSON.stringify(armor));
-  }
-
-  getArmorList(): Observable<Item[]> {
-    return of(armorList);
-  }
-
-  getAccessoryList(): Observable<Item[]> {
-    return of(accessoryList);
+    this.sockService.sendMessage('add|FlatArmor|' + JSON.stringify(armor));
   }
 
   getFlatAccessoryList(): Subject<FlatAccessory[]> {
-    this.sockService.sendMessage("get|FlatAccessory|[]")
+    this.sockService.sendMessage('get|FlatAccessory|[]');
     return this.flatAccessoryList;
   }
 
   addFlatAccessory(accessory: FlatAccessory): void {
-    this.sockService.sendMessage("add|FlatAccessory|" + JSON.stringify(accessory));
+    this.sockService.sendMessage('add|FlatAccessory|' + JSON.stringify(accessory));
   }
 
   addFlatItemList(item: FlatItem) {
     this.sockService.sendMessage('add|FlatItem|' + JSON.stringify(item));
   }
 
-  getConsumableList(): Observable<Item[]> {
-    return of(consumableList);
-  }
-
   getFlatConsumableList(): Subject<FlatConsumable[]> {
-    this.sockService.sendMessage("get|FlatConsumable|[]");
+    this.sockService.sendMessage('get|FlatConsumable|[]');
     return this.flatConsumableList;
   }
 
-  addFlatConsumable(consumable: FlatConsumable) : void {
+  addFlatConsumable(consumable: FlatConsumable): void {
     this.sockService.sendMessage('add|FlatConsumable|' + JSON.stringify(consumable));
   }
 
-  getSkillCardList(): Observable<Item[]> {
-    return of(skillCardList);
-  }
-
   getFlatSkillCardList(): Subject<FlatSkillCard[]> {
-    this.sockService.sendMessage("get|FlatSkillCard|[]");
+    this.sockService.sendMessage('get|FlatSkillCard|[]');
     return this.flatSkillCardList;
   }
 
@@ -194,20 +165,16 @@ export class ItemService implements OnDestroy{
     this.sockService.sendMessage('add|FlatSkillCard|' + JSON.stringify(skillCard));
   }
 
-  getLootList(): Observable<Item[]> {
-    return of(lootList);
-  }
-
   getFlatLootList(): Observable<FlatLoot[]> {
-    this.sockService.sendMessage("get|FlatLoot|[]");
+    this.sockService.sendMessage('get|FlatLoot|[]');
     return this.flatLootList;
   }
 
   addFlatLoot(loot: FlatLoot) {
-    this.sockService.sendMessage("add|FlatLoot|"+JSON.stringify(loot));
+    this.sockService.sendMessage('add|FlatLoot|' + JSON.stringify(loot));
   }
 
   addDrop(drop: Drop) {
-    this.sockService.sendMessage('add|Drop|'+JSON.stringify(drop));
+    this.sockService.sendMessage('add|Drop|' + JSON.stringify(drop));
   }
 }

@@ -1,37 +1,30 @@
-<div class="ui mini input">
-    <label class="ui-mini-label">
-      Filter:
-      <input #inputFilter autocorrect="off" autocomplete="off" spellcheck="false" (keyup.enter)="filterStr(inputFilter.value)">
-    </label>
-    <button (click)="filterStr('')" class="ui mini button">Clear</button>
-</div>
+<app-filter id="itemsFilter"
+  [displayList]="displayList"
+  [masterList]="flatConsumableList.concat(flatLootList)"
+  (filtered)="onFiltered($event)">
+</app-filter>
 
 <table id="itemTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
-  <tr>
+    <tr>
       <th (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
-      <th (click)="orderBy('type')">Item Type</th>
-      <th (click)="orderBy('schedule')">Schedule</th>
+      <th class="mobile-hidden-3" (click)="orderBy('type')">Item Type</th>
+      <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
       <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
-      <th (click)="orderBy('transmuteId')">Transmute from</th>
-      <th class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
-  </tr>
+      <th (click)="orderBy('special')">Special</th>
+    </tr>
   </thead>
   <tbody>
   <tr *ngFor="let item of displayList">
-    <td class="left-border">{{item.id}}</td>
+    <td>{{item.id}}</td>
     <td class="left-border"><a href='#/item/{{item.id}}'>{{item.name}}</a></td>
-    <td class="left-border">{{item.getTypeName()}}</td>
-    <td class="left-border">{{item.schedule}}</td>
+    <td class="left-border mobile-hidden-3">{{item.getTypeName()}}</td>
+    <td class="left-border mobile-hidden-3">{{item.schedule}}</td>
     <td class="left-border mobile-hidden-2">
       <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
-    <td class="left-border">
-      <label *ngIf="item.transmuteId != -1; else emptyBlock" [innerHTML]="getSourceHtml(item.transmuteId)"></label>
-      <ng-template #emptyBlock>-</ng-template>
-    </td>
-    <td class="left-border mobile-hidden-3">{{item.special}}</td>
+    <td class="left-border">{{item.special}}</td>
   </tr>
   </tbody>
 </table>

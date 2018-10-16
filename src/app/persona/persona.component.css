@@ -2,14 +2,22 @@
     margin-bottom: 1em;
 }
 
-#statsTable {
+.stat-table {
     margin: auto;
-    width: 95%;
     text-align: center;
+    margin-bottom: .5em;
 }
 
-#statsTable td {
-    border-right: .1em solid rgba(34,36,38,.1) !important;
+#fullStatsTable {
+    width: 95%;
+}
+
+#splitStats1 {
+    width: 90%;
+}
+
+#splitStats2 {
+    width: 67.5%;
 }
 
 .elem-table {
@@ -20,10 +28,6 @@
     margin-bottom: .5em;
 }
 
-#fullElemTable td {
-    border-right: .1em solid rgba(46, 50, 54, 0.1) !important;
-}
-
 #skillTable {
     width: 90%;
     text-align: left;
@@ -31,17 +35,12 @@
 }
 
 #skillTable th {
-    cursor: pointer;
     padding: .5em;
 }
 
 #skillTable th, #skillTable td {
     padding-left: 1.25em;
     padding-right: 1.25em;
-}
-
-#skillTable tr:hover td {
-    background: rgba(64, 46, 24, 0.1);
 }
 
 #negotiationTable, #dropTable {
@@ -61,7 +60,7 @@ app-pagination {
 }
 
 .recipe-table {
-    margin: auto;
+    margin: 1em auto auto;
     text-align: center;
     width: 85%;
 }
@@ -69,8 +68,4 @@ app-pagination {
 .recipe-table td, .recipe-table th {
     padding-left: .5em;
     padding-right: .5em;
-}
-
-.recipe-table tr:hover td {
-    background: rgba(97, 143, 182, 0.13);
 }

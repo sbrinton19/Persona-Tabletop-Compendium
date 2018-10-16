@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Item, FlatLoot, Loot, FlatConsumable, FlatAccessory, getOrigins, SkillCard, FlatSkillCard, SkillCardType, FlatItem } from '../Classes/Item';
+import { FlatLoot, FlatConsumable, FlatItem } from '../Classes/FlatItem';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
-import { FilterPipe } from '../Pipes/filter-pipe';
-import { SubscriptionLike as ISubscription } from 'rxjs';
+import { SubscriptionLike } from 'rxjs';
 
 @Component({
   selector: 'app-items',
@@ -11,11 +10,13 @@ import { SubscriptionLike as ISubscription } from 'rxjs';
   styleUrls: ['./items.component.css']
 })
 export class ItemsComponent implements OnInit, OnDestroy {
-  displayList: FlatItem[];
-  flatConsumableList: FlatConsumable[] = [];
-  flatLootList: FlatLoot[] = [];
-  private subscriptions: ISubscription[] = [];
-  sortOrder = false;
+  private displayList: FlatItem[];
+  private flatConsumableList: FlatConsumable[] = [];
+  private flatLootList: FlatLoot[] = [];
+  private subscriptions: SubscriptionLike[] = [];
+  private sortOrder = false;
+  private readonly orderByPipe = new OrderByPipe();
+
   constructor(private itemService: ItemService) { }
 
   ngOnInit() {
@@ -32,7 +33,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatLootList().subscribe(flatLoot => {
         this.flatLootList = flatLoot;
         this.displayList = this.flatConsumableList.concat(this.flatLootList);
-        
       })
     );
   }
@@ -47,22 +47,11 @@ export class ItemsComponent implements OnInit, OnDestroy {
   }
 
   orderBy(field: string, idx = 0): void {
-    const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.flatConsumableList.concat(this.flatLootList), field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.flatConsumableList.concat(this.flatLootList), field, this.sortOrder, idx);
   }
 
-  filterStr(filter: string): void {
-    if (filter === '' && this.displayList.length !== this.flatConsumableList.length + this.flatLootList.length) {
-       this.displayList = this.flatConsumableList.concat(this.flatLootList);
-    }
-    const pipe = new FilterPipe();
-    this.displayList = pipe.transform(this.flatConsumableList, filter);
-    this.displayList = this.displayList.concat(pipe.transform(this.flatLootList, filter))
+  onFiltered(filteredData: FlatItem[]): void {
+    this.displayList = filteredData;
   }
-
-  getSourceHtml(source: number) {
-    return `<a href='/persona/${source}'>${source}</a><br>`;
-  }
-
 }

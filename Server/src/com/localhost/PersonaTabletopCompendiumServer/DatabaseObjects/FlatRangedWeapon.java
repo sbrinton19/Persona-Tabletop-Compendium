@@ -340,8 +340,8 @@ public class FlatRangedWeapon extends FlatWeapon {
 		prep.setByte(1 + bump, this.getBaseDamage());
 		prep.setByte(2 + bump, this.getMaxDamageDice());
 		prep.setByte(3 + bump, this.getDamageDie());
-		prep.setByte(4 + bump, this.getLowRange());
-		prep.setByte(5 + bump, this.getHighRange());
+		prep.setByte(4 + bump, this.getMinRange());
+		prep.setByte(5 + bump, this.getMaxRange());
 		prep.setByte(6 + bump, this.getFailValue());
 		prep.setByte(7 + bump, this.magSize);
 		prep.setByte(8 + bump, this.magCount);

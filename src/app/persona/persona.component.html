@@ -1,14 +1,14 @@
 <div id="personaPage" *ngIf="persona; else notFound" style="margin-top:10px">
-   <h2>{{persona.name}} ({{persona.level}} / {{persona.getArcanaName()}})</h2>
-   <ng-container id="personaInfo" *ngIf='persona.max || persona.item || persona.rare || persona.note || persona.dlc'>
+   <h1>{{persona.name}} ({{persona.level}} / {{persona.getArcanaName()}})</h1>
+    <ng-container id="personaInfo" *ngIf='persona.max || persona.item || persona.rare || persona.note || persona.dlc'>
         <h3>Note</h3>
         <span style='color: red;' *ngIf='persona.max'>Social link must be maxed!</span>
         <span style='color: slateblue;' *ngIf='persona.rare'>This is a rare persona and cannot be fused!</span>
         <span style='color: slateblue;' *ngIf='persona.note'>{{persona.note}}</span>
         <span style='color: slateblue;' *ngIf='persona.dlc'>This is a DLC persona!</span>
     </ng-container>
-    <h3>Stats</h3>
-    <table id="statsTable" class="ui table unstackable striped">
+    <h2>Stats</h2>
+    <table id="fullStatsTable" class="ui table unstackable striped stat-table mobile-hidden-2">
         <thead>
         <tr>
             <th *ngFor="let stat of statNames">{{stat}}</th>
@@ -16,13 +16,39 @@
         </thead>
         <tbody>
         <tr>
-            <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
+            <td *ngFor="let stat of persona.stats">{{stat}}</td>
         </tr>
         </tbody>
     </table>
 
-    <h3>Elementals</h3>
-    <table id="fullElemTable" class="ui table unstackable striped mobile-hidden-1 elem-table">
+    <table id="splitStats1" class="ui table unstackable striped midsized-hidden stat-table">
+        <thead>
+        <tr>
+            <th *ngFor="let stat of statNames | slice:0:4">{{stat}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td *ngFor="let stat of persona.stats | slice:0:4">{{stat}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <table id="splitStats2" class="ui table unstackable striped midsized-hidden stat-table">
+        <thead>
+        <tr>
+            <th *ngFor="let stat of statNames | slice:4:7">{{stat}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td *ngFor="let stat of persona.stats | slice:4:7">{{stat}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <h2>Elementals</h2>
+    <table id="fullElemTable" class="ui table unstackable striped mobile-hidden-3 elem-table">
         <thead>
         <tr>
             <th *ngFor="let elem of elemNames">{{elem}}</th>
@@ -30,7 +56,7 @@
         </thead>
         <tbody>
         <tr>
-            <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-1 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
+            <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-1 {{persona.getElemShort(elem)}}">{{persona.getElemShort(elem)}}</td>
         </tr>
         </tbody>
     </table>
@@ -62,12 +88,12 @@
         </tbody>
     </table>
 
-    <h3>Skills</h3>
+    <h2>Skills</h2>
     <table id="skillTable" class="ui table unstackable striped">
         <thead>
         <tr>
             <th>Level</th>
-            <th>Type</th>
+            <th class="mobile-hidden-1">Element</th>
             <th>Name</th>
             <th>Effect</th>
             <th>Cost</th>
@@ -76,10 +102,10 @@
         <tbody>
         <tr *ngFor="let skill of persona.skills">
             <td>{{skill.level}}</td>
-            <td>{{skill.getSkillElement()}}</td>
+            <td class="mobile-hidden-1">{{skill.getSkillElement()}}</td>
             <td><a href="/skill/{{skill.id}}">{{skill.name}}</a></td>
-            <td>{{skill.getDescription()}}</td>
-            <td>{{skill.formatCost()}}</td>
+            <td>{{skill.description}}</td>
+            <td>{{skill.getFormattedCost()}}</td>
         </tr>
         </tbody>
     </table>
@@ -128,7 +154,7 @@
         </thead>
         <tbody>
         <tr>
-            <td class="left-border" *ngFor="let transmute of persona.transmutes">
+            <td [class.left-border]="!isFirst" *ngFor="let transmute of persona.transmutes; first as isFirst">
                 <a *ngIf="transmute.name != '-';else dummyData" href="#/item/{{transmute.itemId}}">{{transmute.name}}</a>
                 <ng-template #dummyData>{{transmute.name}}</ng-template>
             </td>

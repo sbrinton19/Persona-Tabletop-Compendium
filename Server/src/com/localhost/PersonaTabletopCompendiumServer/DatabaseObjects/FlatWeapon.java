@@ -22,8 +22,8 @@ public class FlatWeapon extends FlatItem {
 	protected byte baseDamage;
 	protected byte maxDamageDice;
 	protected byte damageDie;
-	protected byte lowRange;
-	protected byte highRange;
+	protected byte minRange;
+	protected byte maxRange;
 	protected byte failValue;
 	private static String WEAPONSEARCH = null;
 	private static String WEAPONINSERT = null;
@@ -61,22 +61,22 @@ public class FlatWeapon extends FlatItem {
 	 *            The maximum number of damage dice rolled for an attack
 	 * @param damageDie
 	 *            The side count of the damage die
-	 * @param lowRange
+	 * @param minRange
 	 *            The minimum range of this weapon
-	 * @param highrange
+	 * @param maxrange
 	 *            The maximum range of this weapon
 	 * @param failValue
 	 *            Rolling this value or lower is an automatic failure to hit
 	 */
 	public FlatWeapon(int id, String name, byte schedule, String description, String special, ItemType type,
-			byte origins, int transmuteid, byte baseDamage, byte maxDamageDice, byte damageDie, byte lowRange,
-			byte highRange, byte failValue) {
+			byte origins, int transmuteid, byte baseDamage, byte maxDamageDice, byte damageDie, byte minRange,
+			byte maxRange, byte failValue) {
 		super(id, name, schedule, description, special, type, origins, transmuteid, ConsumableType.NONE);
 		this.baseDamage = baseDamage;
 		this.maxDamageDice = maxDamageDice;
 		this.damageDie = damageDie;
-		this.lowRange = lowRange;
-		this.highRange = highRange;
+		this.minRange = minRange;
+		this.maxRange = maxRange;
 		this.failValue = failValue;
 		initSUIDStrings();
 	}
@@ -124,15 +124,15 @@ public class FlatWeapon extends FlatItem {
 	/**
 	 * @return The minimum range of this weapon
 	 */
-	public byte getLowRange() {
-		return lowRange;
+	public byte getMinRange() {
+		return minRange;
 	}
 
 	/**
 	 * @return The maximum range of this weapon
 	 */
-	public byte getHighRange() {
-		return highRange;
+	public byte getMaxRange() {
+		return maxRange;
 	}
 
 	/**
@@ -360,8 +360,8 @@ public class FlatWeapon extends FlatItem {
 		prep.setByte(1 + bump, this.baseDamage);
 		prep.setByte(2 + bump, this.maxDamageDice);
 		prep.setByte(3 + bump, this.damageDie);
-		prep.setByte(4 + bump, this.lowRange);
-		prep.setByte(5 + bump, this.highRange);
+		prep.setByte(4 + bump, this.minRange);
+		prep.setByte(5 + bump, this.maxRange);
 		prep.setByte(6 + bump, this.failValue);
 		if (!insert) {
 			prep.setInt(7, this.getId());

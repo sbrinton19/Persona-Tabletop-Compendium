@@ -22,6 +22,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { SkillComponent } from './skill/skill.component';
 import { WebsocketService } from './websocket.service';
 import { ItemComponent } from './item/item.component';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ItemComponent } from './item/item.component';
     AccessoriesComponent,
     PaginationComponent,
     SkillComponent,
-    ItemComponent
+    ItemComponent,
+    FilterComponent
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,3 @@
     text-align: center;
     width: 95%;
 }
-
-#armorTable tr:hover td {
-    background: rgba(97, 182, 142, 0.13);
-}
