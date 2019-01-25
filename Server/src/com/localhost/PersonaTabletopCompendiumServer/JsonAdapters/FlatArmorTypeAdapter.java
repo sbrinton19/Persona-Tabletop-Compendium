@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatArmor;
 
 /**
- * A Custom adapter for Serializing/Deserializing FlatArmor from JSON
+ * A custom JSON adapter for the FlatArmor Class
  * 
  * @author Stefan
  *

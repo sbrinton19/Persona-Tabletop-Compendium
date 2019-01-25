@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.DropReferen
  *
  */
 public class DropReferenceTypeAdapter extends TypeAdapter<DropReference> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the DropReference class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, DropReference dropReference) throws IOException {
 		try {
@@ -28,7 +26,7 @@ public class DropReferenceTypeAdapter extends TypeAdapter<DropReference> {
 	}
 
 	/**
-	 * Shouldn't ever try to read in an DropReference form JSON
+	 * Shouldn't ever try to read in an DropReference from JSON
 	 */
 	@Override
 	public DropReference read(JsonReader in) throws IOException {

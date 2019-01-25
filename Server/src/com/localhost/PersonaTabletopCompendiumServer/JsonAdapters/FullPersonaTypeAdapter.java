@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FullPersona
  *
  */
 public class FullPersonaTypeAdapter extends TypeAdapter<FullPersona> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the FullPersona class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, FullPersona FullPersona) throws IOException {
 		try {

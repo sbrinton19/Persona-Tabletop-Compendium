@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatSkill;
 
 /**
- * TypeAdapter for serializing/deserializing FlatSkills from JSON
+ * A custom JSON adapter for the FlatSkill Class
  * 
  * @author Stefan
  *

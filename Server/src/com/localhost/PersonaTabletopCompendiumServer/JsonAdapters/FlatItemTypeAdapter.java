@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatItem;
  *
  */
 public class FlatItemTypeAdapter extends TypeAdapter<FlatItem> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the FlatItem class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, FlatItem item) throws IOException {
 		try {

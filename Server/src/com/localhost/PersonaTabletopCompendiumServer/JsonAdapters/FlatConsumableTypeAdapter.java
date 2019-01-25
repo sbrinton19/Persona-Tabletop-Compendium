@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatConsumable;
 
 /**
- * A Custom adapter for Serializing/Deserializing FlatConsumable from JSON
+ * A custom JSON adapter for the FlatConsumable Class
  * 
  * @author Stefan
  *

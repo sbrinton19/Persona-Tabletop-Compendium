@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatAilmentSkill;
 
 /**
- * TypeAdapter for (De)Serializing FlatAilmentSkills from JSON
+ * A custom JSON adapter for the FlatAilmentSkill Class
  * 
  * @author Stefan
  *

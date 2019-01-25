@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatPassiveSkill;
 
 /**
- * TypeAdapter for (De)Serializing FlatPassiveSkills from JSON
+ * A custom JSON adapter for the FlatPassiveSkill Class
  * 
  * @author Stefan
  *

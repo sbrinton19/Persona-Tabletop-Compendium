@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatLoot;
 
 /**
- * A Custom adapter for Serializing/Deserializing FlatLoot from JSON
+ * A custom JSON adapter for the FlatLoot Class
  * 
  * @author Stefan
  *

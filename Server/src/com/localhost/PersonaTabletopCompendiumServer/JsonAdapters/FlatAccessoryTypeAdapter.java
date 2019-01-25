@@ -8,12 +8,13 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatAccessory;
 
 /**
- * A Custom adapter for Serializing/Deserializing FlatAccessory from JSON
+ * A custom JSON adapter for the FlatAccessory Class
  * 
  * @author Stefan
  *
  */
 public class FlatAccessoryTypeAdapter extends TypeAdapter<FlatAccessory> {
+
 	@Override
 	public void write(JsonWriter out, FlatAccessory accessory) throws IOException {
 		try {

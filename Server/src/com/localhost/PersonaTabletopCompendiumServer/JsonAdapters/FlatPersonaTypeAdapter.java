@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatPersona;
 
 /**
- * A custom TypeAdapter for serializing/deserializing FlatPersonae from JSON
+ * A custom JSON adapter for the FlatPersona Class
  * 
  * @author Stefan
  *

@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatSkillCard;
 
 /**
- * Custom TypeAdapter for reading and writing FlatSkillCards to/from JSON
+ * A custom JSON adapter for the FlatSkillCard Class
  * 
  * @author Stefan
  *

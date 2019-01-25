@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatDamageSkill;
 
 /**
- * TypeAdapter for (De)Serializing FlatDamageSkills from JSON
+ * A custom JSON adapter for the FlatDamageSkill Class
  * 
  * @author Stefan
  *

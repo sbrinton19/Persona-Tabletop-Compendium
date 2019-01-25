@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.ItemReferen
  *
  */
 public class ItemReferenceTypeAdapter extends TypeAdapter<ItemReference> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the ItemReference class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, ItemReference ItemReference) throws IOException {
 		try {
@@ -28,7 +26,7 @@ public class ItemReferenceTypeAdapter extends TypeAdapter<ItemReference> {
 	}
 
 	/**
-	 * Shouldn't ever try to read in an ItemReference form JSON
+	 * Shouldn't ever try to read in an ItemReference from JSON
 	 */
 	@Override
 	public ItemReference read(JsonReader in) throws IOException {

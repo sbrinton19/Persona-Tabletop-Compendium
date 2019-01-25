@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Recipe;
  *
  */
 public class RecipeTypeAdapter extends TypeAdapter<Recipe> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the PersonaSkill class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, Recipe recipe) throws IOException {
 		try {

@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.PersonaSkil
  *
  */
 public class PersonaSkillTypeAdapter extends TypeAdapter<PersonaSkill> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the PersonaSkill class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, PersonaSkill personaSkill) throws IOException {
 		try {

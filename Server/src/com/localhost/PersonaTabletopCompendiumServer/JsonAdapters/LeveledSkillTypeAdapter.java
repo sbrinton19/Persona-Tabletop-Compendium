@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.LeveledSkil
  *
  */
 public class LeveledSkillTypeAdapter extends TypeAdapter<LeveledSkill> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the LeveledSkill class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, LeveledSkill leveledSkill) throws IOException {
 		try {
@@ -28,7 +26,7 @@ public class LeveledSkillTypeAdapter extends TypeAdapter<LeveledSkill> {
 	}
 
 	/**
-	 * Shouldn't ever try to read in an LeveledSkill form JSON
+	 * Shouldn't ever try to read in an LeveledSkill from JSON
 	 */
 	@Override
 	public LeveledSkill read(JsonReader in) throws IOException {

@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FullSkill;
 
 /**
- * TypeAdapter for serializing/deserializing FullSkills from JSON
+ * A custom JSON adapter for the FullSkill Class
  * 
  * @author Stefan
  *

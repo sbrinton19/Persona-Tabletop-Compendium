@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatRangedWeapon;
 
 /**
- * Custom adapter for serializing/deserializing FlatRangedWeapons from JSON
+ * A custom JSON adapter for the FlatRangedWeapon Class
  * 
  * @author Stefan
  *

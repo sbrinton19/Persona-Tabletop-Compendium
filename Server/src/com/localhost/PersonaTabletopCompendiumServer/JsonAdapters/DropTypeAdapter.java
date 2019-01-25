@@ -14,9 +14,7 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Drop;
  *
  */
 public class DropTypeAdapter extends TypeAdapter<Drop> {
-	// The only time either function should hit the catch is after
-	// adding a new member variable to the drop class if its
-	// type is unhandled in the write or read methods
+
 	@Override
 	public void write(JsonWriter out, Drop drop) throws IOException {
 		try {
