@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum representing the Generic "dirty" gear an armor can be obtained from
+ * An enum for the generic "dirty" gear an armor can be obtained from
  * via washing represented by a byte
  * 
  * @author Stefan
@@ -38,7 +38,7 @@ public enum GearPool implements ByteValueEnum<GearPool> {
 	 * Retrieve the GearPool associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired GearPool as an {@code byte}
+	 *            The value of the desired GearPool as a {@code byte}
 	 * @return The GearPool associated with that value, {@code null} if no
 	 *         GearPool exists with that value
 	 */
@@ -61,6 +61,9 @@ public enum GearPool implements ByteValueEnum<GearPool> {
 		return GearPool.fromByteStatic(value);
 	}
 	
+	/**
+	 * @return The display string representation of this GearPool
+	 */
 	public String asString() {
 		switch (this) {
 		case REVELER:

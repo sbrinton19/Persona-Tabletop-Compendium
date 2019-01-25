@@ -37,7 +37,7 @@ public enum Element implements ByteValueEnum<Element> {
 	 * Retrieve the Element associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired Element as an {@code byte}
+	 *            The value of the desired Element as a {@code byte}
 	 * @return The Element associated with that value, {@code null} if no
 	 *         Element exists with that value
 	 */
@@ -60,6 +60,9 @@ public enum Element implements ByteValueEnum<Element> {
 		return Element.fromByteStatic(value);
 	}
 
+	/**
+	 * @return The display string representation of this Element
+	 */
 	public String asString() {
 		switch (this) {
 		case ELEC:

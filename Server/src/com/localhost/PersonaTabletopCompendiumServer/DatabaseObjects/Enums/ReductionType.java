@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various types of reductions
+ * An enum for the various types of reductions represented with a byte
  * 
  * @author Stefan
  *
@@ -20,6 +20,35 @@ public enum ReductionType implements ByteValueEnum<ReductionType> {
 		return value;
 	}
 
+	/**
+	 * Retrieve the ReductionType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired ReductionType as an {@code int}
+	 * @return The ReductionType associated with that value, {@code null} if no
+	 *         ReductionType exists with that value
+	 */
+	public static ReductionType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the ReductionType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired ReductionType as a {@code byte}
+	 * @return The ReductionType associated with that value, {@code null} if no
+	 *         ReductionType exists with that value
+	 */
+	public static ReductionType fromByteStatic(byte value) {
+		for (ReductionType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public ReductionType fromInt(int value) {
 		return fromByteStatic((byte) value);
@@ -28,18 +57,5 @@ public enum ReductionType implements ByteValueEnum<ReductionType> {
 	@Override
 	public ReductionType fromByte(byte value) {
 		return fromByteStatic(value);
-	}
-
-	public static ReductionType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static ReductionType fromByteStatic(byte value) {
-		for (ReductionType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
 	}
 }

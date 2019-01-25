@@ -36,7 +36,7 @@ public enum ArmorClass implements ByteValueEnum<ArmorClass> {
 	 * Retrieve the ArmorClass associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired ArmorClass as an {@code byte}
+	 *            The value of the desired ArmorClass as a {@code byte}
 	 * @return The ArmorClass associated with that value, {@code null} if no
 	 *         ArmorClass exists with that value
 	 */

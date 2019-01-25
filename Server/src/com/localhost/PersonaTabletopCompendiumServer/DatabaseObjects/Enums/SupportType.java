@@ -1,7 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various types of support magic
+ * An enum for the various types of support magic
+ * represented with a byte
  * 
  * @author Stefan
  *
@@ -19,6 +20,35 @@ public enum SupportType implements ByteValueEnum<SupportType> {
 	public byte getValue() {
 		return value;
 	}
+	
+	/**
+	 * Retrieve the SupportType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired SupportType as an {@code int}
+	 * @return The SupportType associated with that value, {@code null} if no
+	 *         SupportType exists with that value
+	 */
+	public static SupportType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the SupportType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired SupportType as a {@code byte}
+	 * @return The SupportType associated with that value, {@code null} if no
+	 *         SupportType exists with that value
+	 */
+	public static SupportType fromByteStatic(byte value) {
+		for (SupportType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public SupportType fromInt(int value) {
@@ -30,19 +60,9 @@ public enum SupportType implements ByteValueEnum<SupportType> {
 		return fromByteStatic(value);
 	}
 
-	public static SupportType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static SupportType fromByteStatic(byte value) {
-		for (SupportType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * @return The display string representation of this SupportType
+	 */
 	public String asString() {
 		switch (this) {
 		case SPECIAL:

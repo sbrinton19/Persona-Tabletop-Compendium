@@ -1,8 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum representing the damage multiplier against a persona for a given
- * element using a byte
+ * An enum for the damage multiplier against a persona for a given
+ * element represented with a byte
  * 
  * @author Stefan
  *
@@ -37,7 +37,7 @@ public enum ElemResist implements ByteValueEnum<ElemResist> {
 	 * Retrieve the ElemResist associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired ElemResist as an {@code byte}
+	 *            The value of the desired ElemResist as a {@code byte}
 	 * @return The ElemResist associated with that value, {@code null} if no
 	 *         ElemResist exists with that value
 	 */
@@ -59,6 +59,10 @@ public enum ElemResist implements ByteValueEnum<ElemResist> {
 	public ElemResist fromByte(byte value) {
 		return ElemResist.fromByteStatic(value);
 	}
+	
+	/**
+	 * @return The display string representation of this ElemResist
+	 */
 	public String asString() {
 		switch (this) {
 		case WEAK:

@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various mastery types
+ * An enum for the various mastery types represented with a byte
  * 
  * @author Stefan
  *
@@ -20,6 +20,35 @@ public enum MasteryType implements ByteValueEnum<MasteryType> {
 		return value;
 	}
 
+	/**
+	 * Retrieve the MasteryType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired MasteryType as an {@code int}
+	 * @return The MasteryType associated with that value, {@code null} if no
+	 *         MasteryType exists with that value
+	 */
+	public static MasteryType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the MasteryType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired MasteryType as a {@code byte}
+	 * @return The MasteryType associated with that value, {@code null} if no
+	 *         MasteryType exists with that value
+	 */
+	public static MasteryType fromByteStatic(byte value) {
+		for (MasteryType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public MasteryType fromInt(int value) {
 		return fromByteStatic((byte) value);
@@ -30,19 +59,9 @@ public enum MasteryType implements ByteValueEnum<MasteryType> {
 		return fromByteStatic(value);
 	}
 
-	public static MasteryType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static MasteryType fromByteStatic(byte value) {
-		for (MasteryType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * @return The display string representation of this MasteryType
+	 */
 	public String asString() {
 		if (this.value % 2 == 1) {
 			return this.toString();

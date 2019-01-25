@@ -1,8 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the amount raw damage is multiplied before 
- * damaging an enemy
+ * An enum for the amount raw damage is multiplied before 
+ * damaging an enemy represented as a double
  * 
  * @author Stefan
  *
@@ -20,12 +20,6 @@ public enum DamageMultiplier implements DoubleValueEnum<DamageMultiplier> {
 	public double getValue() {
 		return this.value;
 	}
-
-	@Override
-	public DamageMultiplier fromDouble(double value) {
-		return fromDoubleStatic(value);
-	}
-
 	/**
 	 * Retrieve the DamageMultiplier associated with the given value
 	 * 
@@ -42,14 +36,25 @@ public enum DamageMultiplier implements DoubleValueEnum<DamageMultiplier> {
 		}
 		return null;
 	}
+	
+	@Override
+	public DamageMultiplier fromDouble(double value) {
+		return fromDoubleStatic(value);
+	}
 
+	/**
+	 * Converts the given double into a pretty formatted string 
+	 * @param value The double to format 
+	 * @return The pretty formatted string
+	 */
+	public static String getPrettyString(double value) {
+		return value == (long) value ? String.format("%d", (long) value) : String.format("%s", value);
+	}
+	
 	@Override
 	public String getPrettyString() {
 		return this.value == (long) this.value ? String.format("%d", (long) this.value)
 				: String.format("%s", this.value);
 	}
 
-	public static String getPrettyString(double value) {
-		return value == (long) value ? String.format("%d", (long) value) : String.format("%s", value);
-	}
 }

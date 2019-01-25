@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum describing where an item may be consumed using a byte representation
+ * An enum describing where an item may be consumed represented with a byte
  * 
  * @author Stefan
  *
@@ -36,7 +36,7 @@ public enum ConsumableType implements ByteValueEnum<ConsumableType> {
 	 * Retrieve the ConsumableType associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired ConsumableType as an {@code byte}
+	 *            The value of the desired ConsumableType as a {@code byte}
 	 * @return The ConsumableType associated with that value, {@code null} if no
 	 *         ConsumableType exists with that value
 	 */

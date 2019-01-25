@@ -1,7 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various types of passive skills
+ * An enum for the various types of passive skills
+ * represented with a byte
  * 
  * @author Stefan
  *
@@ -21,6 +22,35 @@ public enum PassiveType implements ByteValueEnum<PassiveType> {
 		return value;
 	}
 
+	/**
+	 * Retrieve the PassiveType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired PassiveType as an {@code int}
+	 * @return The PassiveType associated with that value, {@code null} if no
+	 *         PassiveType exists with that value
+	 */
+	public static PassiveType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the PassiveType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired PassiveType as a {@code byte}
+	 * @return The PassiveType associated with that value, {@code null} if no
+	 *         PassiveType exists with that value
+	 */
+	public static PassiveType fromByteStatic(byte value) {
+		for (PassiveType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public PassiveType fromInt(int value) {
 		return fromByteStatic((byte) value);
@@ -29,18 +59,5 @@ public enum PassiveType implements ByteValueEnum<PassiveType> {
 	@Override
 	public PassiveType fromByte(byte value) {
 		return fromByteStatic(value);
-	}
-
-	public static PassiveType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static PassiveType fromByteStatic(byte value) {
-		for (PassiveType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
 	}
 }

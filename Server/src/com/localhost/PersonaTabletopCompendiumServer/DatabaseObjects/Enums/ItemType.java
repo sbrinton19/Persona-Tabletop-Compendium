@@ -36,7 +36,7 @@ public enum ItemType implements ByteValueEnum<ItemType> {
 	 * Retrieve the ItemType associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired ItemType as an {@code byte}
+	 *            The value of the desired ItemType as a {@code byte}
 	 * @return The ItemType associated with that value, {@code null} if no
 	 *         ItemType exists with that value
 	 */

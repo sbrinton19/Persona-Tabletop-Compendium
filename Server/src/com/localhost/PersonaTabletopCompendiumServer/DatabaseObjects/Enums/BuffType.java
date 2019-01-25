@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various types of buffs
+ * An enum for the various types of buffs represented as a byte
  * 
  * @author Stefan
  *
@@ -19,6 +19,35 @@ public enum BuffType implements ByteValueEnum<BuffType> {
 	public byte getValue() {
 		return value;
 	}
+	
+	/**
+	 * Retrieve the BuffType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired BuffType as an {@code int}
+	 * @return The BuffType associated with that value, {@code null} if no
+	 *         BuffType exists with that value
+	 */
+	public static BuffType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the BuffType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired BuffType as a {@code byte}
+	 * @return The BuffType associated with that value, {@code null} if no
+	 *         BuffType exists with that value
+	 */
+	public static BuffType fromByteStatic(byte value) {
+		for (BuffType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public BuffType fromInt(int value) {
@@ -30,19 +59,9 @@ public enum BuffType implements ByteValueEnum<BuffType> {
 		return fromByteStatic(value);
 	}
 
-	public static BuffType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static BuffType fromByteStatic(byte value) {
-		for (BuffType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * @return The display string representation of this BuffType
+	 */
 	public String asString() {
 		switch (this) {
 		case ATTACK:

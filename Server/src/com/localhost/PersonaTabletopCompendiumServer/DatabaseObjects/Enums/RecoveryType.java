@@ -1,7 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * An enum for representing the various types of recovery
+ * An enum for the various types of recovery represented with a byte
  * 
  * @author Stefan
  *
@@ -20,6 +20,35 @@ public enum RecoveryType implements ByteValueEnum<RecoveryType> {
 		return value;
 	}
 
+	/**
+	 * Retrieve the RecoveryType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired RecoveryType as an {@code int}
+	 * @return The RecoveryType associated with that value, {@code null} if no
+	 *         RecoveryType exists with that value
+	 */
+	public static RecoveryType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the RecoveryType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired RecoveryType as a {@code byte}
+	 * @return The RecoveryType associated with that value, {@code null} if no
+	 *         RecoveryType exists with that value
+	 */
+	public static RecoveryType fromByteStatic(byte value) {
+		for (RecoveryType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public RecoveryType fromInt(int value) {
 		return fromByteStatic((byte) value);
@@ -30,19 +59,9 @@ public enum RecoveryType implements ByteValueEnum<RecoveryType> {
 		return fromByteStatic(value);
 	}
 
-	public static RecoveryType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static RecoveryType fromByteStatic(byte value) {
-		for (RecoveryType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
-	}
-	
+	/**
+	 * @return The display string representation of this RecoveryType
+	 */
 	public String asString() {
 		switch (this) {
 		case HP:

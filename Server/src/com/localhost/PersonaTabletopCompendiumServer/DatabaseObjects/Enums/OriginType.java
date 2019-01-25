@@ -3,7 +3,8 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 import java.util.ArrayList;
 
 /**
- * This enum represents places where an item can be found
+ * An enum for the places where an item can be found
+ * represented by a byte
  * 
  * @author Stefan
  *
@@ -57,7 +58,7 @@ public enum OriginType implements ByteValueEnum<OriginType> {
 	 * Retrieve the OriginType associated with the given value
 	 * 
 	 * @param value
-	 *            The value of the desired OriginType as an {@code byte}
+	 *            The value of the desired OriginType as a {@code byte}
 	 * @return The OriginType associated with that value, {@code null} if no
 	 *         OriginType exists with that value
 	 */

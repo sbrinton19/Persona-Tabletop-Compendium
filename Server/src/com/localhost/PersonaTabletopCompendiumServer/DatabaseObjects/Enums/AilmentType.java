@@ -2,7 +2,7 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
  * An enum for representing the various ailment types incl. Instakill/Instadeath
- * 
+ * represented with a byte
  * @author Stefan
  *
  */
@@ -20,6 +20,35 @@ public enum AilmentType implements ByteValueEnum<AilmentType> {
 	public byte getValue() {
 		return value;
 	}
+	
+	/**
+	 * Retrieve the AilmentType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired AilmentType as an {@code int}
+	 * @return The AilmentType associated with that value, {@code null} if no
+	 *         AilmentType exists with that value
+	 */
+	public static AilmentType fromIntStatic(int value) {
+		return fromByteStatic((byte) value);
+	}
+
+	/**
+	 * Retrieve the AilmentType associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired AilmentType as a {@code byte}
+	 * @return The AilmentType associated with that value, {@code null} if no
+	 *         AilmentType exists with that value
+	 */
+	public static AilmentType fromByteStatic(byte value) {
+		for (AilmentType type : values()) {
+			if (type.getValue() == value) {
+				return type;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public AilmentType fromInt(int value) {
@@ -31,19 +60,9 @@ public enum AilmentType implements ByteValueEnum<AilmentType> {
 		return fromByteStatic(value);
 	}
 
-	public static AilmentType fromIntStatic(int value) {
-		return fromByteStatic((byte) value);
-	}
-
-	public static AilmentType fromByteStatic(byte value) {
-		for (AilmentType type : values()) {
-			if (type.getValue() == value) {
-				return type;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * @return The display string representation of this AilmentType
+	 */
 	public String asString() {
 		switch (this) {
 		case PHYSICAL:

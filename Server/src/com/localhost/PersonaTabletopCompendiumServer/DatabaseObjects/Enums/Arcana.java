@@ -1,8 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
 
 /**
- * Am emumerator for the Major Tarot Arcana for personae with a byte value
- * representation
+ * Am enum for the Major Tarot Arcana for personae represented with a byte
  * 
  * @author Stefan
  *
@@ -23,10 +22,26 @@ public enum Arcana implements ByteValueEnum<Arcana> {
 		return value;
 	}
 
+	/**
+	 * Retrieve the Arcana associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired Arcana as an {@code int}
+	 * @return The Arcana associated with that value, {@code null} if no
+	 *         Arcana exists with that value
+	 */
 	public static Arcana fromIntStatic(int value) {
 		return Arcana.fromByteStatic((byte) value);
 	}
 
+	/**
+	 * Retrieve the Arcana associated with the given value
+	 * 
+	 * @param value
+	 *            The value of the desired Arcana as a {@code byte}
+	 * @return The Arcana associated with that value, {@code null} if no
+	 *         Arcana exists with that value
+	 */
 	public static Arcana fromByteStatic(byte value) {
 		for (Arcana type : values()) {
 			if (type.getValue() == value) {
@@ -46,6 +61,9 @@ public enum Arcana implements ByteValueEnum<Arcana> {
 		return Arcana.fromByteStatic(value);
 	}
 
+	/**
+	 * @return The display string representation of this Arcana
+	 */
 	public String asString() {
 		switch (this) {
 		case PRIESTESS:
