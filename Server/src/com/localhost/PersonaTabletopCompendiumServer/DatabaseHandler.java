@@ -43,7 +43,8 @@ public class DatabaseHandler {
 	public void refreshConnection() {
 		try {
 			this.conn.prepareStatement("SELECT 1 FROM item");
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			this.conn = null;
 			while (this.conn == null) {
 				MysqlDataSource ds = new MysqlDataSource();
 				ds.setUser(this.user);
@@ -313,6 +314,7 @@ public class DatabaseHandler {
 			return false;
 		}
 	}
+	
 
 	/**
 	 * Get the given ids as the given item class
@@ -369,6 +371,16 @@ public class DatabaseHandler {
 				sb.append("item WHERE item.type = ");
 				sb.append(ItemType.SKILLCARD.getValue());
 			}
+		} else if (clazz == FlatStatBoostItem.class) {
+			if (ids.length == 0) {
+				sb.append("item WHERE item.type = ");
+				sb.append(ItemType.STATBOOST.getValue());
+			}
+		} else if (clazz == FlatTraitBoostItem.class) {
+			if (ids.length == 0) {
+				sb.append("item WHERE item.type = ");
+				sb.append(ItemType.TRAITBOOST.getValue());
+			}
 		}
 		try {
 			PreparedStatement search = conn.prepareStatement(sb.toString());
@@ -380,53 +392,6 @@ public class DatabaseHandler {
 			T[] temp = (T[]) Array.newInstance(clazz, itemList.size());
 			itemList.toArray(temp);
 			return temp;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * Get the transmutes of a persona
-	 * 
-	 * @param personaid
-	 *            The id of the persona to get the transmutes of
-	 * @return An array of size 4 containing the transmutes of the requested
-	 *         persona of the order [Weapon, Armor, Accessory, SkillCard]. If
-	 *         one does not exist for the persona, it uses a dummy entry to fill
-	 *         out the array
-	 */
-	public ItemReference[] getTransmutes(int personaid) {
-		ItemReference empty = new ItemReference(0, "-");
-		ItemReference[] transmutes = new ItemReference[] { empty, empty, empty, empty };
-		try {
-			PreparedStatement search = conn
-					.prepareStatement("SELECT item.id, item.name, item.type FROM item WHERE item.transmuteId=?");
-			search.setInt(1, personaid);
-			ResultSet rs = search.executeQuery();
-			while (rs.next()) {
-				ItemType type = ItemType.fromByteStatic(rs.getByte("type"));
-				ItemReference item = new ItemReference(rs);
-				switch (type) {
-				case WEAPON:
-					transmutes[0] = item;
-					break;
-				case ARMOR:
-					transmutes[1] = item;
-					break;
-				case ACCESSORY:
-					transmutes[2] = item;
-					break;
-				case SKILLCARD:
-					transmutes[3] = item;
-					break;
-				default:
-					System.err.println("When attempting to retreive transmutes for " + personaid
-							+ " found a transmute of unexpected type " + type.toString());
-					break;
-				}
-			}
-			return transmutes;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -456,62 +421,61 @@ public class DatabaseHandler {
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Get the drops and negotiates for a persona
+	 * Get the given ids as the given activity class
 	 * 
-	 * @param personaid
-	 *            The id of the persona to get drops and negotiates for
-	 * @return A double-array, outer array index 0 is drops, outer array index 1
-	 *         is negotiates
+	 * @param clazz
+	 *            The class of activities to get
+	 * @param ids
+	 *            The ids of activities to retrieve, if the array is null or empty
+	 *            retrieve all activities of the given class
+	 * @return An array of the given activity class
 	 */
-	public DropReference[][] getBothDrops(int personaid) {
-		DropReference[][] bothDrops = new DropReference[2][];
-		ArrayList<DropReference> dropList = new ArrayList<DropReference>();
-		ArrayList<DropReference> negotList = new ArrayList<DropReference>();
+	public <T> T[] getActivities(Class<T> clazz, int[] ids) {
+		if (ids == null) {
+			ids = new int[0];
+		}
+		ArrayList<T> activityList = new ArrayList<T>();
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM activity");
+		if (ids.length != 0) {
+			sb.append(" WHERE activity.id ");
+			idsToInClause(ids, sb);
+		}
 		try {
-			PreparedStatement search = conn.prepareStatement(
-					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.personaid=?) drop_table INNER JOIN item ON drop_table.itemid=item.id ORDER BY drop_table.low ASC");
-			search.setInt(1, personaid);
+			PreparedStatement search = conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
-				boolean isDrop = rs.getBoolean("isDrop");
-				if (isDrop) {
-					dropList.add(new DropReference(rs));
-				} else {
-					negotList.add(new DropReference(rs));
-				}
+				activityList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
 			}
-			DropReference[] temp = new DropReference[dropList.size()];
-			dropList.toArray(temp);
-			bothDrops[0] = temp;
-			temp = new DropReference[negotList.size()];
-			negotList.toArray(temp);
-			bothDrops[1] = temp;
-			return bothDrops;
+			@SuppressWarnings("unchecked")
+			T[] temp = (T[]) Array.newInstance(clazz, activityList.size());
+			activityList.toArray(temp);
+			return temp;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
 	/**
-	 * Add a {@link Drop} to the database
+	 * Add {@link FlatActivity} or any of its valid subclasses to the database
 	 * 
-	 * @param drop
-	 *            The drop to add
-	 * @return True if the operation succeeded; false otherwise
+	 * @param activity
+	 *            The activity to add to the database
+	 * @return True if the operation succeeds; false otherwise
 	 */
-	public boolean addDrop(Drop drop) {
-		if (drop == null)
+	public boolean addActivity(FlatActivity activity) {
+		if (activity == null)
 			return false;
 		try {
-			ResultSet rs = drop.databaseSelectDrop(conn);
+			ResultSet rs = activity.databaseSelectActivity(conn);
 			if (!rs.isBeforeFirst()) {
 				// No data so blind insert
-				return drop.databaseInsert(conn);
+				return activity.databaseInsert(conn);
 			} else {
-				return drop.databaseUpdate(conn);
+				return activity.databaseUpdate(conn);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -519,6 +483,235 @@ public class DatabaseHandler {
 		}
 	}
 
+	/**
+	 * Add {@link FlatVendor} or any of its valid subclasses to the database
+	 * 
+	 * @param vendor
+	 *            The vendor to add to the database
+	 * @return True if the operation succeeds; false otherwise
+	 */
+	public boolean addVendor(FlatVendor vendor) {
+		if (vendor == null)
+			return false;
+		try {
+			ResultSet rs = vendor.databaseSelectVendor(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return vendor.databaseInsert(conn);
+			} else {
+				return vendor.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Add {@link FlatVendorItem} or any of its valid subclasses to the database
+	 * 
+	 * @param vendor
+	 *            The vendorItem to add to the database
+	 * @return True if the operation succeeds; false otherwise
+	 */
+	public boolean addVendorItem(FlatVendorItem vendorItem) {
+		if (vendorItem == null)
+			return false;
+		try {
+			ResultSet rs = vendorItem.databaseSelectVendorItem(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return vendorItem.databaseInsert(conn);
+			} else {
+				return vendorItem.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Get the given ids as the given restriction class
+	 * 
+	 * @param clazz
+	 *            The class of restriction to get
+	 * @param ids
+	 *            The ids of restrictions to retrieve, if the array is null or empty
+	 *            retrieve all restrictions of the given class
+	 * @return An array of the given restriction class
+	 */
+	public <T> T[] getRestrictions(Class<T> clazz, int[] ids) {
+		if (ids == null) {
+			ids = new int[0];
+		}
+		ArrayList<T> restrictionList = new ArrayList<T>();
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM restriction");
+		if (ids.length != 0) {
+			sb.append(" WHERE restriction.id ");
+			idsToInClause(ids, sb);
+		}
+		try {
+			PreparedStatement search = conn.prepareStatement(sb.toString());
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				restrictionList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
+			}
+			@SuppressWarnings("unchecked")
+			T[] temp = (T[]) Array.newInstance(clazz, restrictionList.size());
+			restrictionList.toArray(temp);
+			return temp;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Get the restrictions for the given activityId
+	 * 
+	 * @param activityId
+	 *            The id of the activity to get the restrictions of
+	 * @return An array of restrictions
+	 */
+	public Restriction[] getRestrictionsForActivity(int activityId) {
+		return getBoundRestrictionsAsRestrictions(activityId, BoundType.ACTIVITY);
+	}
+	
+	/**
+	 * Get the restrictions for the given vendorItem id
+	 * 
+	 * @param itemId
+	 *            The id of the vendorItem to get the restrictions of
+	 * @return An array of restrictions
+	 */
+	public Restriction[] getRestrictionsForItem(int vendorItemId) {
+		return getBoundRestrictionsAsRestrictions(vendorItemId, BoundType.ITEM);
+	}
+	
+	/**
+	 * Get the bound restrictions of an object as simple restrictions
+	 * 
+	 * @param bindingId
+	 * 			The id of the object the restrictions are bound to
+	 * @param bindingType
+	 * 			The type of object the id belongs to
+	 * @return An array of Restrictions
+	 */
+	private Restriction[] getBoundRestrictionsAsRestrictions(int bindingId, BoundType bindingType) {
+		ArrayList<Restriction> restrictionList = new ArrayList<Restriction>();
+		try {
+			PreparedStatement search = conn
+					.prepareStatement("SELECT * FROM (SELECT restrictionid FROM bound_restriction WHERE boundid=? AND type=?) binded INNER JOIN restriction ON binded.restrictionid=restriction.id");
+			search.setInt(1, bindingId);
+			search.setByte(2, bindingType.getValue());
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				restrictionList.add(new Restriction(rs));
+			}
+			Restriction[] temp = new Restriction[restrictionList.size()];
+			restrictionList.toArray(temp);
+			return temp;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;		
+	}
+	
+	/**
+	 * Add a {@link Restriction} to the database
+	 * 
+	 * @param restriction
+	 *            The restriction to add
+	 * @return True if the operation succeeded; false otherwise
+	 */
+	public boolean addRestriction(Restriction restriction) {
+		if (restriction == null)
+			return false;
+		try {
+			ResultSet rs = restriction.databaseSelectRestriction(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return restriction.databaseInsert(conn);
+			} else {
+				return restriction.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Add a {@link BoundRestriction} to the database
+	 * 
+	 * @param boundRestriction
+	 *            The bound restriction to add
+	 * @return True if the operation succeeded; false otherwise
+	 */
+	public boolean addBoundRestriction(BoundRestriction boundRestriction) {
+		if (boundRestriction == null)
+			return false;
+		try {
+			ResultSet rs = boundRestriction.databaseSelectBoundRestriction(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return boundRestriction.databaseInsert(conn);
+			} else {
+				return boundRestriction.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @return Get all of the special recipes from the database
+	 */
+	public Recipe[] getSpecialRecipes() {
+		ArrayList<Recipe> special = new ArrayList<Recipe>();
+		try {
+			PreparedStatement findRecipe = conn.prepareStatement("SELECT * FROM recipe");
+			ResultSet recipes = findRecipe.executeQuery();
+			while (recipes.next()) {
+				PreparedStatement getPersonaRef = conn.prepareStatement(
+						"SELECT persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
+				int resultid = recipes.getInt("result");
+				getPersonaRef.setInt(1, resultid);
+				ResultSet resultResult = getPersonaRef.executeQuery();
+				resultResult.next();
+				String resultName = resultResult.getString("name");
+				byte resultLevel = resultResult.getByte("level");
+				byte resultArcana = resultResult.getByte("arcana");
+				PersonaReference result = new PersonaReference(resultid, resultName, resultLevel, resultArcana);
+				PersonaReference[] source = new PersonaReference[7];
+				for (int i = 1; i < 8; i++) {
+					int personaid = recipes.getInt("sources" + i);
+					if (recipes.wasNull()) {
+						break;
+					} else {
+						getPersonaRef.setInt(1, personaid);
+						ResultSet nameResult = getPersonaRef.executeQuery();
+						nameResult.next();
+						String personaname = nameResult.getString("name");
+						byte personalevel = nameResult.getByte("level");
+						byte personaArcana = nameResult.getByte("arcana");
+						source[i - 1] = new PersonaReference(personaid, personaname, personalevel, personaArcana);
+					}
+				}
+				special.add(new Recipe(result, source));
+			}
+			Recipe[] temp = new Recipe[special.size()];
+			special.toArray(temp);
+			return temp;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * Get the {@link LeveledSkill LevelSkills} for a specified persona
 	 * 
@@ -581,7 +774,140 @@ public class DatabaseHandler {
 		}
 		return null;
 	}
+	
+	/**
+	 * Add a {@link PersonaSkill} to the database
+	 * 
+	 * @param personaSkill
+	 *            The PersonaSkill to add
+	 * @return True if the operation succeeds; false otherwise
+	 */
+	public boolean addPersonaSkill(PersonaSkill personaSkill) {
+		if (personaSkill == null)
+			return false;
+		try {
+			ResultSet rs = personaSkill.databaseSelectPersonaSkill(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return personaSkill.databaseInsert(conn);
+			} else {
+				return personaSkill.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Get the drops and negotiates for a persona
+	 * 
+	 * @param personaid
+	 *            The id of the persona to get drops and negotiates for
+	 * @return A double-array, outer array index 0 is drops, outer array index 1
+	 *         is negotiates
+	 */
+	public DropReference[][] getBothDrops(int personaid) {
+		DropReference[][] bothDrops = new DropReference[2][];
+		ArrayList<DropReference> dropList = new ArrayList<DropReference>();
+		ArrayList<DropReference> negotList = new ArrayList<DropReference>();
+		try {
+			PreparedStatement search = conn.prepareStatement(
+					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.personaid=?) drop_table INNER JOIN item ON drop_table.itemid=item.id ORDER BY drop_table.low ASC");
+			search.setInt(1, personaid);
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				boolean isDrop = rs.getBoolean("isDrop");
+				if (isDrop) {
+					dropList.add(new DropReference(rs));
+				} else {
+					negotList.add(new DropReference(rs));
+				}
+			}
+			DropReference[] temp = new DropReference[dropList.size()];
+			dropList.toArray(temp);
+			bothDrops[0] = temp;
+			temp = new DropReference[negotList.size()];
+			negotList.toArray(temp);
+			bothDrops[1] = temp;
+			return bothDrops;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
+	/**
+	 * Add a {@link Drop} to the database
+	 * 
+	 * @param drop
+	 *            The drop to add
+	 * @return True if the operation succeeded; false otherwise
+	 */
+	public boolean addDrop(Drop drop) {
+		if (drop == null)
+			return false;
+		try {
+			ResultSet rs = drop.databaseSelectDrop(conn);
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return drop.databaseInsert(conn);
+			} else {
+				return drop.databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Get the transmutes of a persona
+	 * 
+	 * @param personaid
+	 *            The id of the persona to get the transmutes of
+	 * @return An array of size 4 containing the transmutes of the requested
+	 *         persona of the order [Weapon, Armor, Accessory, SkillCard]. If
+	 *         one does not exist for the persona, it uses a dummy entry to fill
+	 *         out the array
+	 */
+	public ItemReference[] getTransmutes(int personaid) {
+		ItemReference empty = new ItemReference(0, "-");
+		ItemReference[] transmutes = new ItemReference[] { empty, empty, empty, empty };
+		try {
+			PreparedStatement search = conn
+					.prepareStatement("SELECT item.id, item.name, item.type FROM item WHERE item.transmuteId=?");
+			search.setInt(1, personaid);
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				ItemType type = ItemType.fromByteStatic(rs.getByte("type"));
+				ItemReference item = new ItemReference(rs);
+				switch (type) {
+				case WEAPON:
+					transmutes[0] = item;
+					break;
+				case ARMOR:
+					transmutes[1] = item;
+					break;
+				case ACCESSORY:
+					transmutes[2] = item;
+					break;
+				case SKILLCARD:
+					transmutes[3] = item;
+					break;
+				default:
+					System.err.println("When attempting to retreive transmutes for " + personaid
+							+ " found a transmute of unexpected type " + type.toString());
+					break;
+				}
+			}
+			return transmutes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * Get the full version of the requested skills
 	 * 
@@ -655,71 +981,56 @@ public class DatabaseHandler {
 		}
 		return null;
 	}
-
+	
 	/**
-	 * Add a {@link PersonaSkill} to the database
+	 * Get the vendors for a shopping activity
 	 * 
-	 * @param personaSkill
-	 *            The PersonaSkill to add
-	 * @return True if the operation succeeds; false otherwise
+	 * @param activityId
+	 *            The id of the activity to get the vendors for
+	 * @return An array of FullVendors
 	 */
-	public boolean addPersonaSkill(PersonaSkill personaSkill) {
-		if (personaSkill == null)
-			return false;
+	public FullVendor[] getShoppingVendors(int activityId) {
+		ArrayList<FullVendor> vendors = new ArrayList<FullVendor>();
 		try {
-			ResultSet rs = personaSkill.databaseSelectPersonaSkill(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return personaSkill.databaseInsert(conn);
-			} else {
-				return personaSkill.databaseUpdate(conn);
+			PreparedStatement search = conn
+					.prepareStatement("SELECT * FROM vendor WHERE activityId=?");
+			search.setInt(1, activityId);
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				vendors.add(new FullVendor(rs));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * @return Get all of the special recipes from the database
-	 */
-	public Recipe[] getSpecialRecipes() {
-		ArrayList<Recipe> special = new ArrayList<Recipe>();
-		try {
-			PreparedStatement findRecipe = conn.prepareStatement("SELECT * FROM recipe");
-			ResultSet recipes = findRecipe.executeQuery();
-			while (recipes.next()) {
-				PreparedStatement getPersonaRef = conn.prepareStatement(
-						"SELECT persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
-				int resultid = recipes.getInt("result");
-				getPersonaRef.setInt(1, resultid);
-				ResultSet resultResult = getPersonaRef.executeQuery();
-				resultResult.next();
-				String resultName = resultResult.getString("name");
-				byte resultLevel = resultResult.getByte("level");
-				byte resultArcana = resultResult.getByte("arcana");
-				PersonaReference result = new PersonaReference(resultid, resultName, resultLevel, resultArcana);
-				PersonaReference[] source = new PersonaReference[7];
-				for (int i = 1; i < 8; i++) {
-					int personaid = recipes.getInt("sources" + i);
-					if (recipes.wasNull()) {
-						break;
-					} else {
-						getPersonaRef.setInt(1, personaid);
-						ResultSet nameResult = getPersonaRef.executeQuery();
-						nameResult.next();
-						String personaname = nameResult.getString("name");
-						byte personalevel = nameResult.getByte("level");
-						byte personaArcana = nameResult.getByte("arcana");
-						source[i - 1] = new PersonaReference(personaid, personaname, personalevel, personaArcana);
-					}
-				}
-				special.add(new Recipe(result, source));
-			}
-			Recipe[] temp = new Recipe[special.size()];
-			special.toArray(temp);
+			FullVendor[] temp = new FullVendor[vendors.size()];
+			vendors.toArray(temp);
 			return temp;
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Get the items sold for a vendor
+	 * 
+	 * @param vendorId
+	 *            The id of the vendor to get the list of items sold
+	 * @return An array of VendorItemReferences
+	 */
+	public VendorItemReference[] getItemsForVendor(int vendorId) {
+		ArrayList<VendorItemReference> vendorItems = new ArrayList<VendorItemReference>();
+		try {
+			PreparedStatement search = conn
+					.prepareStatement("SELECT vendorItem.id as vendorItemId, vendorItem.cost as cost, item.id as id, item.name as name FROM (SELECT * FROM vendor_item WHERE vendor_item.vendorId=?) vendorItem INNER JOIN item ON vendorItem.itemId= item.id");
+			search.setInt(1, vendorId);
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				int vendorItemId = rs.getInt("vendorItemId");
+				Restriction[] restricts = this.getRestrictionsForItem(vendorItemId);
+				vendorItems.add(new VendorItemReference(rs, restricts));
+			}
+			VendorItemReference[] temp = new VendorItemReference[vendorItems.size()];
+			vendorItems.toArray(temp);
+			return temp;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

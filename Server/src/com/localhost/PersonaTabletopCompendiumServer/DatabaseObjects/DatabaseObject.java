@@ -177,6 +177,12 @@ public abstract class DatabaseObject {
 			field.set(this, SupportType.fromIntStatic(in.nextInt()));
 		} else if (clazz.equals(PassiveType.class)) {
 			field.set(this, PassiveType.fromIntStatic(in.nextInt()));
+		} else if (clazz.equals(ActivityType.class)) {
+			field.set(this, ActivityType.fromIntStatic(in.nextInt()));
+		} else if (clazz.equals(BoundType.class)) {
+			field.set(this, BoundType.fromIntStatic(in.nextInt()));
+		} else if (clazz.equals(RestrictionType.class)) {
+			field.set(this, RestrictionType.fromIntStatic(in.nextInt()));
 		}
 	}
 
@@ -277,6 +283,12 @@ public abstract class DatabaseObject {
 						field.set(this, SupportType.fromIntStatic(rs.getInt(field.getName())));
 					} else if (fieldClass.equals(PassiveType.class)) {
 						field.set(this, PassiveType.fromIntStatic(rs.getInt(field.getName())));
+					} else if (fieldClass.equals(ActivityType.class)) {
+						field.set(this, ActivityType.fromIntStatic(rs.getInt(field.getName())));
+					} else if (fieldClass.equals(BoundType.class)) {
+						field.set(this, BoundType.fromIntStatic(rs.getInt(field.getName())));
+					} else if (fieldClass.equals(RestrictionType.class)) {
+						field.set(this, RestrictionType.fromIntStatic(rs.getInt(field.getName())));
 					}
 				}
 			} catch (IllegalArgumentException | IllegalAccessException | IOException | SQLException e) {
@@ -384,7 +396,9 @@ public abstract class DatabaseObject {
 		if (questions.length() > 0) {
 			dbTableValues.deleteCharAt(dbTableValues.length() - 1);
 			questions.deleteCharAt(questions.length() - 1);
-			updateValues.deleteCharAt(updateValues.length() - 2);
+			if (updateValues.length() > 1) {
+				updateValues.deleteCharAt(updateValues.length() - 2);
+			}
 		}
 		String[] ret = { dbTableValues.toString(), questions.toString(), updateValues.toString() };
 		return ret;

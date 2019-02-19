@@ -2,86 +2,87 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Element;
 
 /**
- * The LeveledSkill class extends DatabaseObject to leverage the JSON
- * serialization. This class should not be used to perform any database
- * operations itself or to deserialize JSON. This also means this class
- * does not need a TypeAdapater as it it will be "seamlessly" handled
- * during the serialization of its parent since it extends
- * DatabaseObject
+ * The VendorItemReference class extends {@link ItemReference} and comes with the same
+ * caveats about its use. Additionally this class will be "owned" by a parent object.
+ * If it is an item object, the name will be a vendor & the id will be the activity the vendor belongs to.
+ * If it is a vendor object, the name & id will be that of an item being sold by the vendor 
  * 
  * @author Stefan
  *
  */
-public class LeveledSkill extends FlatSkill {
-	protected byte level;
+public class VendorItemReference extends ItemReference {
+	protected int cost;
+	protected Restriction[] restrictions;
 
 	/**
-	 * Full Constructor for {@link LeveledSkill}
+	 * Full Constructor for {@link VendorItemReference}
 	 * 
 	 * @param id
-	 *            The Unique id for this skill
+	 *            The unique id of either the activity the vendor that sells
+	 *            this item belongs to or the the id of the item being sold
+	 *            by this vendor
 	 * @param name
-	 *            The name of this skill
+	 *            The name of either the vendor selling this item or
+	 *            the item being sold by this vendor
 	 * @param cost
-	 *            The cost in HP percentage or absolute SP for this skill
-	 * @param element
-	 *            The element of this skill as an {@link Element} enum
-	 * @param minlevel
-	 *            The recommended minimum level to learn this skill
-	 * @param description
-	 *            Additional description of this skill's effects
-	 * @param allyCardId
-	 *            The item id for the ally skill card for this skill
-	 * @param mainCardId
-	 *            The item id for the main skill card for this skill
-	 * @param aoe
-	 *            The size of this skill's area of effect
-	 * @param level
-	 *            The level this skill is learned at
+	 *            The cost the item is being sold for at the given vendor
+	 * @param restrictions
+	 *            The restrictions for when the item is being sold at the given vendor
 	 */
-	public LeveledSkill(int id, String name, byte cost, Element element, byte minlevel, String description,
-			int allyCardId, int mainCardId, byte aoe, byte level) {
-		super(id, name, cost, element, minlevel, description, allyCardId, mainCardId, aoe);
-		this.level = level;
+	public VendorItemReference(int id, String name, int cost, Restriction[] restrictions) {
+		super(id, name);
+		this.cost = cost;
+		this.restrictions = restrictions;
 	}
 
 	/**
-	 * Empty Constructor for Reflection invocation
+	 * Empty Constructor for instantiating this object via reflection
 	 */
-	public LeveledSkill() {
+	public VendorItemReference() {
 	}
 
 	/**
-	 * Copy-like Constructor for {@link LeveledSkill}
+	 * Used to read in a VendorItemReference from a {@link ResultSet} &
+	 * array of restrictions passed in via a different {@link DatabaseObject}
+	 * subclass to populate its own fields, primarily {@link FullVendor} & {@link FullItem}
 	 * 
-	 * @param fs
-	 *            The {@link FlatSkill} to copy into a new LeveledSkill
-	 * @param level
-	 *            The level this skill is learned at
+	 * @param rs
+	 *            The ResultSet to build this VendorItemReference form
+	 * @param restrictions
+	 *            The restrictions for this VendorItemReference            
 	 */
-	public LeveledSkill(FlatSkill fs, byte level) {
-		super(fs);
-		this.level = level;
+	public VendorItemReference(ResultSet rs, Restriction[] restrictions) {
+		super(rs);
+		fieldReader(rs, VendorItemReference.class);
+		this.restrictions = restrictions;
 	}
 	
 	/**
-	 * @return the level this skill is learned at
+	 * @return The cost the item is being sold at from the given vendor
 	 */
-	public byte getLevel() {
-		return level;
+	public int getCost() {
+		return cost;
+	}
+
+	/**
+	 * @return The restrictions for when the item is being sold at from the given vendor
+	 */
+	public Restriction[] getRestrictions() {
+		return restrictions;
 	}
 	
 	/**
 	 * This method is an intentionally incomplete implementation of
 	 * {@link DatabaseObject#write(JsonWriter)} for JSON Serialization. It calls
 	 * {@link JsonWriter#beginObject() out.beginObject()} via
-	 * {@link FlatSkill#write(JsonWriter) super.write(out)} but does not call
-	 * {@link JsonWriter#endObject() out.endObject()}. This is to enable
+	 * {@link ItemReference#write(JsonWriter) super.write(out)} but does not
+	 * call {@link JsonWriter#endObject() out.endObject()}. This is to enable
 	 * subclasses to call this method to serialize their common fields. The
 	 * top-level caller should be the only method to call the "closing brace"
 	 * {@link JsonWriter#endObject()}
@@ -96,7 +97,7 @@ public class LeveledSkill extends FlatSkill {
 	public void write(JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
-		write(out, LeveledSkill.class);
+		write(out, VendorItemReference.class);
 	}
 
 	/**
@@ -130,8 +131,8 @@ public class LeveledSkill extends FlatSkill {
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
 	protected boolean isJsonOnly(String name) {
-		// All of these fields should only be written to JSON
-		return true;
+		// restrictions is not read in using a single ResultSet
+		return name.equals("restrictions");
 	}
 
 	/**

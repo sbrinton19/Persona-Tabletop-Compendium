@@ -5,20 +5,20 @@ import java.io.IOException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Recipe;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Restriction;
 
 /**
- * A custom JSON adapter for the Recipe Class
+ * A custom JSON adapter for the Restriction Class
  * 
  * @author Stefan
  *
  */
-public class RecipeTypeAdapter extends TypeAdapter<Recipe> {
+public class RestrictionTypeAdapter extends TypeAdapter<Restriction> {
 
 	@Override
-	public void write(JsonWriter out, Recipe recipe) throws IOException {
+	public void write(JsonWriter out, Restriction restriction) throws IOException {
 		try {
-			recipe.write(out);
+			restriction.write(out);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
 		}
@@ -26,18 +26,18 @@ public class RecipeTypeAdapter extends TypeAdapter<Recipe> {
 	}
 
 	@Override
-	public Recipe read(JsonReader in) throws IOException {
-		Recipe recipe = new Recipe();
+	public Restriction read(JsonReader in) throws IOException {
+		Restriction restriction = new Restriction();
 		in.beginObject();
 		while (in.hasNext()) {
 			try {
-				recipe.read(in, in.nextName());
+				restriction.read(in, in.nextName());
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
 		in.endObject();
-		return recipe;
+		return restriction;
 	}
 
 }

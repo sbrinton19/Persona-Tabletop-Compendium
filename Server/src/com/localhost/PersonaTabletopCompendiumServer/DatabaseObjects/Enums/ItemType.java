@@ -7,7 +7,7 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums;
  *
  */
 public enum ItemType implements ByteValueEnum<ItemType> {
-	WEAPON(1), ARMOR(2), ACCESSORY(3), CONSUMABLE(4), SKILLCARD(5), LOOT(6), NONE(7);
+	WEAPON(1), ARMOR(2), ACCESSORY(3), CONSUMABLE(4), SKILLCARD(5), LOOT(6), TRAITBOOST(7), STATBOOST(8), NONE(9);
 
 	private final byte value;
 

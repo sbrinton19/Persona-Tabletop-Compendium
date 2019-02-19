@@ -2,85 +2,53 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Element;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseHandler;
 
 /**
- * The LeveledSkill class extends DatabaseObject to leverage the JSON
+ * The FullVendor class extends FlatVendor to leverage its field & the JSON
  * serialization. This class should not be used to perform any database
  * operations itself or to deserialize JSON. This also means this class
  * does not need a TypeAdapater as it it will be "seamlessly" handled
  * during the serialization of its parent since it extends
- * DatabaseObject
+ * DatabaseObject via FlatVendor
  * 
  * @author Stefan
  *
  */
-public class LeveledSkill extends FlatSkill {
-	protected byte level;
+public class FullVendor extends FlatVendor {
+	protected VendorItemReference[] vendorItems;
 
 	/**
-	 * Full Constructor for {@link LeveledSkill}
+	 * Empty constructor for instantiation via reflection
+	 */
+	public FullVendor() {
+	}
+
+	/**
+	 * This is for reading a {@link FullVendor} from the database
 	 * 
-	 * @param id
-	 *            The Unique id for this skill
-	 * @param name
-	 *            The name of this skill
-	 * @param cost
-	 *            The cost in HP percentage or absolute SP for this skill
-	 * @param element
-	 *            The element of this skill as an {@link Element} enum
-	 * @param minlevel
-	 *            The recommended minimum level to learn this skill
-	 * @param description
-	 *            Additional description of this skill's effects
-	 * @param allyCardId
-	 *            The item id for the ally skill card for this skill
-	 * @param mainCardId
-	 *            The item id for the main skill card for this skill
-	 * @param aoe
-	 *            The size of this skill's area of effect
-	 * @param level
-	 *            The level this skill is learned at
+	 * @param rs
+	 *            The {@link ResultSet} pointing to the row to make a
+	 *            FullVendor from
 	 */
-	public LeveledSkill(int id, String name, byte cost, Element element, byte minlevel, String description,
-			int allyCardId, int mainCardId, byte aoe, byte level) {
-		super(id, name, cost, element, minlevel, description, allyCardId, mainCardId, aoe);
-		this.level = level;
+	public FullVendor(ResultSet rs) {
+		/**
+		 * This is used to get the FlatVendor fields that this class inherits
+		 */
+		super(rs);
+		// Once we get the vendor data, get all of the dependent data
+		DatabaseHandler dbh = DatabaseHandler.getHandler();
+		this.vendorItems = dbh.getItemsForVendor(this.getId());
 	}
 
-	/**
-	 * Empty Constructor for Reflection invocation
-	 */
-	public LeveledSkill() {
-	}
-
-	/**
-	 * Copy-like Constructor for {@link LeveledSkill}
-	 * 
-	 * @param fs
-	 *            The {@link FlatSkill} to copy into a new LeveledSkill
-	 * @param level
-	 *            The level this skill is learned at
-	 */
-	public LeveledSkill(FlatSkill fs, byte level) {
-		super(fs);
-		this.level = level;
-	}
-	
-	/**
-	 * @return the level this skill is learned at
-	 */
-	public byte getLevel() {
-		return level;
-	}
-	
 	/**
 	 * This method is an intentionally incomplete implementation of
 	 * {@link DatabaseObject#write(JsonWriter)} for JSON Serialization. It calls
-	 * {@link JsonWriter#beginObject() out.beginObject()} via
-	 * {@link FlatSkill#write(JsonWriter) super.write(out)} but does not call
+	 * {@link JsonWriter#beginObject() out.beginObject()} but does not call
 	 * {@link JsonWriter#endObject() out.endObject()}. This is to enable
 	 * subclasses to call this method to serialize their common fields. The
 	 * top-level caller should be the only method to call the "closing brace"
@@ -93,10 +61,10 @@ public class LeveledSkill extends FlatSkill {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
-	public void write(JsonWriter out)
+	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
-		write(out, LeveledSkill.class);
+		write(out, FullVendor.class);
 	}
 
 	/**
@@ -113,8 +81,8 @@ public class LeveledSkill extends FlatSkill {
 	 * 
 	 * @param name
 	 *            Name of the field to be checked
-	 * @return false if the field is one to write, true if it should be
-	 *         ignored when writing
+	 * @return false if the field is one to write, true if it should be ignored
+	 *         when writing
 	 */
 	protected boolean isIgnoredField(String name) {
 		// No ignored fields
@@ -147,14 +115,14 @@ public class LeveledSkill extends FlatSkill {
 		// No database unique fields
 		return false;
 	}
-	
+
 	/**
 	 * This function should never be used
 	 */
 	protected boolean isIgnoredUpdateField(String name) {
 		return true;
 	}
-	
+
 	/**
 	 * Never call this method under any circumstances
 	 */

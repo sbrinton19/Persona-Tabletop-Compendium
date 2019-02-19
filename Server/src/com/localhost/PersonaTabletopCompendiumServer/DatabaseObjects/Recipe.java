@@ -6,9 +6,12 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * The Recipe class represents the combination of personae to generate another
- * by fusion using {@link PersonaReference PersonaReferences}. class. It should
- * not be used to update, insert, or read in JSOM
+ * The Recipe class extends DatabaseObject to leverage the JSON
+ * serialization. This class should not be used to perform any database
+ * operations itself or to deserialize JSON. This also means this class
+ * does not need a TypeAdapater as it it will be "seamlessly" handled
+ * during the serialization of its parent since it extends
+ * DatabaseObject
  * 
  * @author Stefan
  *

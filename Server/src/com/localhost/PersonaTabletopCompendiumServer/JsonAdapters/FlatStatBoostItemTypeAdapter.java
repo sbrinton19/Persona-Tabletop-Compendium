@@ -5,20 +5,19 @@ import java.io.IOException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FullPersona;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.FlatStatBoostItem;
 
 /**
- * A custom JSON adapter for the FullPersona Class
+ * A custom JSON adapter for the FlatStatBoostItem Class
  * 
  * @author Stefan
  *
  */
-public class FullPersonaTypeAdapter extends TypeAdapter<FullPersona> {
-
+public class FlatStatBoostItemTypeAdapter extends TypeAdapter<FlatStatBoostItem> {
 	@Override
-	public void write(JsonWriter out, FullPersona fullPersona) throws IOException {
+	public void write(JsonWriter out, FlatStatBoostItem statBoostItem) throws IOException {
 		try {
-			fullPersona.write(out);
+			statBoostItem.write(out);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
 		}
@@ -26,18 +25,17 @@ public class FullPersonaTypeAdapter extends TypeAdapter<FullPersona> {
 	}
 
 	@Override
-	public FullPersona read(JsonReader in) throws IOException {
-		FullPersona fullPersona = new FullPersona();
+	public FlatStatBoostItem read(JsonReader in) throws IOException {
+		FlatStatBoostItem statBoostItem = new FlatStatBoostItem();
 		in.beginObject();
 		while (in.hasNext()) {
 			try {
-				fullPersona.read(in, in.nextName());
+				statBoostItem.read(in, in.nextName());
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
 		in.endObject();
-		return fullPersona;
+		return statBoostItem;
 	}
-
 }
