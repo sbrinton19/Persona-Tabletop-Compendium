@@ -23,6 +23,10 @@ import { SkillComponent } from './skill/skill.component';
 import { WebsocketService } from './websocket.service';
 import { ItemComponent } from './item/item.component';
 import { FilterComponent } from './filter/filter.component';
+import { ActivitiesComponent } from './activities/activities.component';
+import { ActivityService } from './activity.service';
+import { RestrictionService } from './restriction.service';
+import { ActivityComponent } from './activity/activity.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +43,9 @@ import { FilterComponent } from './filter/filter.component';
     PaginationComponent,
     SkillComponent,
     ItemComponent,
-    FilterComponent
+    FilterComponent,
+    ActivitiesComponent,
+    ActivityComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +55,8 @@ import { FilterComponent } from './filter/filter.component';
     PersonaService,
     ItemService,
     SkillService,
+    ActivityService,
+    RestrictionService,
     WebsocketService,
     PersonaResolver,
     SkillResolver

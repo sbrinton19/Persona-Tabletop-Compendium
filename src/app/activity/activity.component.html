@@ -1,0 +1,54 @@
+<div id="activityPage" *ngIf="activity; else notFound" style="margin-top:10px">
+  <h1 id="activityTitle">{{activity.activityName}}</h1>
+  <h2 id="activitySubtitle">({{activity.getTypeName()}} / {{activity.locationName}})</h2>
+  <div id="confidantDetails" *ngIf="activity.isConfidant()">
+    <h2>{{activity.getConfidantDescription()}}</h2>    
+  </div>
+  <div id="statBoostDetails" *ngIf="activity.isStatBoost()">
+    <h2>{{activity.getStatBoost()}}</h2>
+  </div>
+  <div id="traitBoostDetails" *ngIf="activity.isTraitBoost()">
+    <h3>{{activity.getTraitBoost()}}</h3>
+  </div>
+  <div id="minigameDetails" *ngIf="activity.isMinigame()">
+    <h2>{{activity.description}}</h2>
+  </div>
+  <h3 id="activityDaysTimes">Available {{activity.getAvailableTimesDisplayString()}}<br>Available {{activity.getAvailableWeekDaysDisplayString()}}</h3> 
+  <div id="jobDetails" *ngIf="activity.isJob()">
+    <h2>{{activity.getJobDescription()}}</h2>    
+  </div>
+  <div id="activityRestrictions">
+    <h5 *ngFor="let restriction of activity.restrictions">
+      {{restriction.getComposedRestriction()}}
+    </h5>
+  </div>
+  <div id="vendorList">
+    <div *ngFor="let vendor of activity.vendors; let i = index" [id]="'vendor_'+i">
+      <br>
+      <h3>
+        {{vendor.name}}
+      </h3>
+      <table cellspacing="0" class="ui table striped sortable unstackable">
+        <thead>
+          <tr>
+            <th class="mobile-hidden-1" (click)="orderBy('id', i)">ID</th>
+            <th (click)="orderBy('name', i)">Name</th>
+            <th (click)="orderBy('cost', i)">Cost</th>
+            <th>Restrictions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let itemRef of vendor.vendorItems">
+            <td class="mobile-hidden-1">{{itemRef.id}}</td>
+            <td class="left-border"><a href='/item/{{itemRef.id}}'>{{itemRef.name}}</a></td>
+            <td class="left-border">{{itemRef.cost}}</td>
+            <td class="left-border">
+              <label *ngFor="let restriction of itemRef.restrictions">{{restriction.getComposedRestriction()}}<ng-container *ngIf="!isLast"><br></ng-container></label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<ng-template #notFound>"{{activity.activityName}}" not found!</ng-template>

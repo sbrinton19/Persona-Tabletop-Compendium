@@ -14,11 +14,13 @@ export class SkillComponent implements OnInit, OnDestroy {
   private skill: FullSkill;
   private Math = Math;
   private subscription: ISubscription;
-  private baseDetail: string[] = ['Minimum Level', 'Area of Effect'];
-  private damageDetail: string[] = ['Max Damage Dice', 'Damage Multiplier', 'Damage Bonus', 'Damage Die'];
-  private ailmentDetail: string[] = ['Ailment', 'Ailment Failure Value'];
-  private supportDetail: string[] = ['Support Type', 'Support Details'];
-  private passiveDetail: string[] = ['Passive Type', 'Passive Skill Type', 'Passive Value', 'Passive Second Value'];
+  private readonly baseDetail: string[] = ['Minimum Level', 'Area of Effect'];
+  private readonly damageDetail: string[] = ['Max Damage Dice', 'Damage Multiplier', 'Damage Bonus', 'Damage Die'];
+  private readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
+  private standardDamage: number[] = [];
+  private readonly ailmentDetail: string[] = ['Ailment', 'Ailment Failure Value'];
+  private readonly supportDetail: string[] = ['Support Type', 'Support Details'];
+  private readonly passiveDetail: string[] = ['Passive Type', 'Passive Skill Type', 'Passive Value', 'Passive Second Value'];
   private detailTableHeader: string[] = [];
   private detailTableValues: any[] = [];
   constructor(private route: ActivatedRoute, private skillService: SkillService) { }
@@ -53,6 +55,9 @@ export class SkillComponent implements OnInit, OnDestroy {
         this.detailTableValues.push(temp.getDamageMultiplierString());
         this.detailTableValues.push(temp.damageBonus);
         this.detailTableValues.push(temp.damageDie);
+        this.standardDamage.push(temp.minDamage);
+        this.standardDamage.push(temp.avgDamage);
+        this.standardDamage.push(temp.maxDamage);
       }
     }
     if (this.skill.skillClass === 'FlatDamageAilmentSkill' || this.skill.skillClass === 'FlatAilmentSkill') {

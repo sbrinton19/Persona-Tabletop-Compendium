@@ -1,0 +1,29 @@
+#activityTitle {
+    margin-bottom: 0em;
+    padding-bottom: 0em;
+}
+
+#activitySubtitle {
+    margin-top: 0em;
+    padding-top: 0em;
+}
+
+#confidantDetails {
+    margin-bottom: 0em;
+    padding-bottom: 0em;
+}
+
+#activityDaysTimes {
+    margin-top: 0em;
+}
+
+h5 {
+    margin: 0em;
+}
+
+.table {
+    margin: auto;
+    margin-top: 1em;
+    text-align: center;
+    width: 90%;
+}

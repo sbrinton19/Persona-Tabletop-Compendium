@@ -3,24 +3,28 @@ import { FlatPersona } from '../Classes/FlatPersona';
 import { Recipe } from '../Classes/Recipe';
 import { FlatItem } from '../Classes/FlatItem';
 import { FlatSkill } from '../Classes/FlatSkill';
+import { FlatActivity } from '../Classes/FlatActivity';
+import { getAvailableTimes, getAvailableTimeName } from '../Enums/AvailableTime';
 @Pipe({
   name: 'filterStr'
 })
 
 
 export class FilterPipe implements PipeTransform {
-  transform(array: Array<any>, filter: string, personaName?: string): Array<any> {
+  transform(array: Array<any>, filter: string, fieldInfo?: string): Array<any> {
     if (array.length === 0) {
       return array;
     }
     if (array[0] instanceof FlatPersona) {
       return this.transformPersona(array, filter);
     } else if (array[0] instanceof Recipe) {
-      return this.transformRecipe(array, filter, personaName);
+      return this.transformRecipe(array, filter, fieldInfo);
     } else if (array[0] instanceof FlatItem) {
       return this.transformItem(array, filter);
     } else if (array[0] instanceof FlatSkill) {
       return this.transformSkill(array, filter);
+    } else if (array[0] instanceof FlatActivity) {
+      return this.transformActivity(array, filter, fieldInfo);
     } else {
       console.warn('Filtering an unexpected array type return unmodified array');
       return array;
@@ -52,5 +56,20 @@ export class FilterPipe implements PipeTransform {
 
   private transformSkill(array: Array<FlatSkill>, filter: string): Array<FlatSkill> {
     return array.filter(s => s.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1);
+  }
+
+  private transformActivity(array: Array<FlatActivity>, filter: string, fieldInfo: string): Array<FlatActivity> {
+    return array.filter(activity => {
+      if (fieldInfo === 'Location') {
+        return activity.locationName.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
+      } else { // Available Time
+        const availTimes = getAvailableTimes(activity.availableTimes);
+        let stringTimes = '';
+        availTimes.forEach(time => {
+          stringTimes += getAvailableTimeName(time) + ' ';
+        });
+        return stringTimes.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
+      }
+    });
   }
 }

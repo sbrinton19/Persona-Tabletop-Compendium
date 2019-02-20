@@ -28,7 +28,7 @@ export class PersonaeComponent implements OnInit, OnDestroy {
   }
 
   getFlatPersonae(): void {
-    this.subscriptions = this.personaService.getFlatPersonaeList().subscribe(resp => {
+    this.subscriptions = this.personaService.getFlatPersonaList().subscribe(resp => {
       this.flatPersonaeList = resp;
       this.displayList = this.flatPersonaeList;
     });

@@ -5,13 +5,7 @@ import { GearPool, getGearPoolName } from '../Enums/GearPool';
 import { ItemType, getItemTypeName } from '../Enums/ItemType';
 import { ArmorClass, getArmorClassName } from '../Enums/ArmorClass';
 import { SkillCardType, getSkillCardTypeName } from '../Enums/SkillCardType';
-
-export enum ConsumableType {
-    Battle = 1,
-    Roam,
-    Both,
-    None
-}
+import { ConsumableType, getConsumableTypeName } from '../Enums/ConsumableType';
 
 export class FlatItem {
     readonly id: number;
@@ -46,6 +40,10 @@ export class FlatItem {
         return getItemTypeName(this.type);
     }
 
+    public getConsumableTypeName(): string {
+        return getConsumableTypeName(this.consumableType);
+    }
+
     public getOrigins(): OriginType[] {
         return getOrigins(this.origins);
     }
@@ -67,9 +65,9 @@ export class FlatItem {
 export class FullItem {
     readonly item: FlatItem;
     readonly personaSources: PersonaReference[];
-    readonly itemClass: String;
+    readonly itemClass: string;
 
-    public constructor(item: FlatItem, personaSources: PersonaReference[], itemClass: String) {
+    public constructor(item: FlatItem, personaSources: PersonaReference[], itemClass: string) {
         this.item = item;
         this.personaSources = personaSources;
         this.itemClass = itemClass;
@@ -130,7 +128,7 @@ export class FlatWeapon extends FlatItem {
             source.baseDamage, source.maxDamageDice, source.damageDie, source.minRange, source.maxRange, source.failValue);
     }
 
-    public getRangeString(): String {
+    public getRangeString(): string {
         if (this.minRange === this.maxRange) {
             return this.minRange.toString();
         }
@@ -300,9 +298,9 @@ export class FlatLoot extends FlatItem {
 
     public static copyConstructor(source: FlatLoot): FlatLoot {
         if (source.type !== ItemType.Loot) {
-            console.warn(`The skill card ${source.name} with id ${source.id} does not have the type loot, check its source data`);
+            console.warn(`The loot ${source.name} with id ${source.id} does not have the type loot, check its source data`);
         } else if (source.consumableType !== ConsumableType.None) {
-            console.warn(`The skill card ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
+            console.warn(`The loot ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
         return new FlatLoot(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.arcanaSources);
@@ -324,6 +322,52 @@ export class FlatLoot extends FlatItem {
             return false;
         }
 
+        return super.isEqual(other);
+    }
+}
+
+export class FlatTraitBoostItem extends FlatItem {
+
+    public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number) {
+        super(id, name, schedule, origins, description, special, ItemType.TraitBoost, transmuteId, ConsumableType.None);
+    }
+
+    public static copyConstructor(source: FlatTraitBoostItem): FlatTraitBoostItem {
+        if (source.type !== ItemType.TraitBoost) {
+            console.warn(`The trait boost item ${source.name} with id ${source.id} does not have the type trait boost, check its source data`);
+        } else if (source.consumableType !== ConsumableType.None) {
+            console.warn(`The trait boost item ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
+        }
+        return new FlatTraitBoostItem(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId);
+    }
+
+    public isEqual(other: FlatTraitBoostItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return super.isEqual(other);
+    }
+}
+
+export class FlatStatBoostItem extends FlatItem {
+
+    public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number) {
+        super(id, name, schedule, origins, description, special, ItemType.StatBoost, transmuteId, ConsumableType.None);
+    }
+
+    public static copyConstructor(source: FlatStatBoostItem): FlatStatBoostItem {
+        if (source.type !== ItemType.TraitBoost) {
+            console.warn(`The stat boost item ${source.name} with id ${source.id} does not have the type trait boost, check its source data`);
+        } else if (source.consumableType !== ConsumableType.None) {
+            console.warn(`The stat boost item ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
+        }
+        return new FlatStatBoostItem(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId);
+    }
+
+    public isEqual(other: FlatStatBoostItem): boolean {
+        if (!other) {
+            return false;
+        }
         return super.isEqual(other);
     }
 }

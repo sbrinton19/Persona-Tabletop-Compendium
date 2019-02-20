@@ -17,3 +17,18 @@ export function getMasterTypeName(masterType: MasterType) {
             return MasterType[masterType];
     }
 }
+
+export function getAsStatName(masterType: MasterType) {
+    switch (masterType) {
+        case MasterType.Tarukaja:
+            return 'Strength';
+        case MasterType.Rakukaja:
+            return 'Endurance';
+        case MasterType.Sukukaja:
+            return 'Agility';
+        case MasterType.HP:
+        case MasterType.SP:
+        default:
+            return MasterType[masterType];
+    }
+}

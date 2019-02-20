@@ -1,8 +1,10 @@
+import { Restriction } from './Restriction';
+
 export class ItemReference {
     readonly id: number;
-    readonly name: String;
+    readonly name: string;
 
-    public constructor(id: number, name: String) {
+    public constructor(id: number, name: string) {
         this.id = id;
         this.name = name;
     }
@@ -19,11 +21,49 @@ export class ItemReference {
     }
 }
 
+export class VendorItemReference extends ItemReference {
+    // VendorItemReference is unique in that id & name
+    // could be for a vendor or an item depending on what
+    // is the owner of the reference
+    readonly cost: number;
+    restrictions: Restriction[];
+
+    public constructor(id: number, name: string, cost: number, restrictions: Restriction[]) {
+        super(id, name);
+        this.cost = cost;
+        this.restrictions = restrictions;
+    }
+
+    public static copyConstructor(source: VendorItemReference): VendorItemReference {
+        const realRestrict: Restriction[] = [];
+        source.restrictions.forEach(rest => realRestrict.push(Restriction.copyConstructor(rest)));
+        return new VendorItemReference(source.id, source.name, source.cost, realRestrict);
+    }
+
+    public isEqual(other: VendorItemReference) {
+        if (!other) {
+            return false;
+        }
+
+        if (this.restrictions.length !== other.restrictions.length) {
+            return false;
+        }
+        const sourcesMatch = this.restrictions.every(source => {
+            const matcher = other.restrictions.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!sourcesMatch) {
+            return false;
+        }
+        return (super.isEqual(other) && this.cost === other.cost);
+    }
+}
+
 export class DropReference extends ItemReference {
     readonly low: number;
     readonly high: number;
 
-    public constructor(id: number, name: String, low: number, high: number) {
+    public constructor(id: number, name: string, low: number, high: number) {
         super(id, name);
         this.low = low;
         this.high = high;
@@ -33,7 +73,7 @@ export class DropReference extends ItemReference {
         return new DropReference(source.id, source.name, source.low, source.high);
     }
 
-    public getRollWinDisplay(): String {
+    public getRollWinDisplay(): string {
         if (this.id !== 0) {
             if (this.low === this.high) {
                 return `${this.high}`;

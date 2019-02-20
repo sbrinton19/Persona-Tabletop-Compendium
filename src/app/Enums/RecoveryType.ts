@@ -16,7 +16,7 @@ export function getRecoveryTypeName(recoveryType: RecoveryType): string {
     }
 }
 
-export function getRecoveryTypeFormatString(recoveryType: RecoveryType): string {
+export function getRecoveryTypeFormatstring(recoveryType: RecoveryType): string {
     switch (recoveryType) {
         case RecoveryType.HP:
             return '% max health';

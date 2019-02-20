@@ -8,7 +8,7 @@ import { getArcanaName } from '../Enums/Arcana';
 // functionality
 
 export class OrderByPipe implements PipeTransform {
-  transform(array: Array<any>, orderField, orderType: boolean, idx?: number): Array<any> {
+  transform(array: Array<any>, orderField: any, orderType: boolean, idx?: number): Array<any> {
     array.sort( ( a: any, b: any ) => {
       let ae = a[ orderField ];
       let be = b[ orderField ];

@@ -39,11 +39,11 @@ export class FlatSkill {
             source.aoe, source.minLevel);
     }
 
-    public getAllyCardName(): String {
+    public getAllyCardName(): string {
         return `${this.name} Ally`;
     }
 
-    public geMainCardName(): String {
+    public geMainCardName(): string {
         return `${this.name} Main`;
     }
 
@@ -86,6 +86,9 @@ export class FlatDamageSkill extends FlatSkill {
     readonly maxDamageDice: number;
     readonly damageDie: number;
     readonly damageBonus: number;
+    minDamage: number;
+    avgDamage: number;
+    maxDamage: number;
 
     public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number,
         aoe: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number) {
@@ -94,6 +97,16 @@ export class FlatDamageSkill extends FlatSkill {
             this.maxDamageDice = maxDamageDice;
             this.damageDie = damageDie;
             this.damageBonus = damageBonus;
+        if (this.element === Element.Healing) {
+            return;
+        }
+        minLevel = minLevel > 80 ? 80 : minLevel;
+        const dmgBonus = this.element === Element.Gun ? 0 :
+            (this.element === Element.Physical || this.element === Element.Curse || this.element === Element.Bless ? 10 * (minLevel + 20) / 20 :
+            10 * (minLevel + 20) / 40);
+        this.minDamage = this.multiplier * (this.maxDamageDice + dmgBonus + this.damageBonus);
+        this.avgDamage = this.multiplier * ((this.maxDamageDice + this.maxDamageDice * this.damageDie) / 2 + dmgBonus + this.damageBonus);
+        this.maxDamage = this.multiplier * (this.maxDamageDice * this.damageDie + dmgBonus + this.damageBonus);
     }
 
     public static copyConstructor(source: FlatDamageSkill): FlatDamageSkill {
@@ -359,21 +372,23 @@ export class FullSkill {
     public static copyConstructor(source: FullSkill): FullSkill {
         let realSkill: FlatSkill;
         switch (source.skillClass) {
-          case 'FlatDamageSkill':
-            realSkill = FlatDamageSkill.copyConstructor(<FlatDamageSkill> source.skill);
-            break;
-          case 'FlatDamageAilmentSkill':
-            realSkill = FlatDamageAilmentSkill.copyConstructor(<FlatDamageAilmentSkill> source.skill);
-            break;
-          case 'FlatSupportSkill':
-            realSkill = FlatSupportSkill.copyConstructor(<FlatSupportSkill> source.skill);
-            break;
-          case 'FlatAilmentSkill':
-            realSkill = FlatAilmentSkill.copyConstructor(<FlatAilmentSkill> source.skill);
-            break;
-          case 'FlatPassiveSkill':
-            realSkill = FlatPassiveSkill.copyConstructor(<FlatPassiveSkill> source.skill);
-            break;
+            case 'FlatDamageSkill':
+                realSkill = FlatDamageSkill.copyConstructor(<FlatDamageSkill> source.skill);
+                break;
+            case 'FlatDamageAilmentSkill':
+                realSkill = FlatDamageAilmentSkill.copyConstructor(<FlatDamageAilmentSkill> source.skill);
+                break;
+            case 'FlatSupportSkill':
+                realSkill = FlatSupportSkill.copyConstructor(<FlatSupportSkill> source.skill);
+                break;
+            case 'FlatAilmentSkill':
+                realSkill = FlatAilmentSkill.copyConstructor(<FlatAilmentSkill> source.skill);
+                break;
+            case 'FlatPassiveSkill':
+                realSkill = FlatPassiveSkill.copyConstructor(<FlatPassiveSkill> source.skill);
+                break;
+            default:
+                console.error(`Failed to reconstruct FlatSkill for FullSkill ${source.skill.name}`);
         }
         const sourceArray: PersonaReference[] = [];
         source.personaSources.forEach(personaSource => sourceArray.push(PersonaReference.copyConstructor(personaSource)));
@@ -394,11 +409,11 @@ export class FullSkill {
         return getElementName(this.skill.element);
     }
 
-    public getAllyCardName(): String {
+    public getAllyCardName(): string {
         return `${this.skill.name} Ally`;
     }
 
-    public geMainCardName(): String {
+    public geMainCardName(): string {
         return `${this.skill.name} Main`;
     }
 

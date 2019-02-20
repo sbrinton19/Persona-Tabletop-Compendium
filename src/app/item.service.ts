@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatItem, FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard, FlatRangedWeapon } from './Classes/FlatItem';
+import { FlatItem, FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
+  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem } from './Classes/FlatItem';
 import { Drop } from './Classes/Drop';
 import { SkillCardType } from './Enums/SkillCardType';
 import { WebsocketService } from './websocket.service';
@@ -13,6 +14,8 @@ export class ItemService implements OnDestroy {
   private flatArmorList: Subject<FlatArmor[]> = new Subject<FlatArmor[]>();
   private flatConsumableList: Subject<FlatConsumable[]> = new Subject<FlatConsumable[]>();
   private flatLootList: Subject<FlatLoot[]> = new Subject<FlatLoot[]>();
+  private flatStatBoostList: Subject<FlatStatBoostItem[]> = new Subject<FlatStatBoostItem[]>();
+  private flatTraitBoostList: Subject<FlatTraitBoostItem[]> = new Subject<FlatTraitBoostItem[]>();
   private flatSkillCardList: Subject<FlatSkillCard[]> = new Subject<FlatSkillCard[]>();
   private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
   private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
@@ -62,6 +65,22 @@ export class ItemService implements OnDestroy {
         returnData.push(loot);
       });
       this.flatLootList.next(returnData);
+    } else if (data.PayloadType === 'FlatStatBoostItem[]') {
+      const payload = <FlatStatBoostItem[]> data.Payload;
+      const returnData: FlatStatBoostItem[] = [];
+      payload.forEach(element => {
+        const statBoost: FlatStatBoostItem = FlatStatBoostItem.copyConstructor(element);
+        returnData.push(statBoost);
+      });
+      this.flatStatBoostList.next(returnData);
+    } else if (data.PayloadType === 'FlatTraitBoostItem[]') {
+      const payload = <FlatTraitBoostItem[]> data.Payload;
+      const returnData: FlatTraitBoostItem[] = [];
+      payload.forEach(element => {
+        const traitBoost: FlatTraitBoostItem = FlatTraitBoostItem.copyConstructor(element);
+        returnData.push(traitBoost);
+      });
+      this.flatTraitBoostList.next(returnData);
     } else if (data.PayloadType === 'FlatSkillCard[]') {
       const payload = <FlatSkillCard[]> data.Payload;
       const returnData: FlatSkillCard[] = [];
@@ -163,6 +182,24 @@ export class ItemService implements OnDestroy {
 
   addFlatSkillCard(skillCard: FlatSkillCard): void {
     this.sockService.sendMessage('add|FlatSkillCard|' + JSON.stringify(skillCard));
+  }
+
+  getFlatTraitBoostItemList(): Subject<FlatTraitBoostItem[]> {
+    this.sockService.sendMessage('get|FlatTraitBoostItem|[]');
+    return this.flatTraitBoostList;
+  }
+
+  addFlatTraitBoostItem(traitBoostItem: FlatTraitBoostItem): void {
+    this.sockService.sendMessage('add|FlatTraitBoostItem|' + JSON.stringify(traitBoostItem));
+  }
+
+  getFlatStatBoostItemList(): Subject<FlatStatBoostItem[]> {
+    this.sockService.sendMessage('get|FlatStatBoostItem|[]');
+    return this.flatStatBoostList;
+  }
+
+  addFlatStatBoostItem(StatBoostItem: FlatStatBoostItem): void {
+    this.sockService.sendMessage('add|FlatStatBoostItem|' + JSON.stringify(StatBoostItem));
   }
 
   getFlatLootList(): Observable<FlatLoot[]> {

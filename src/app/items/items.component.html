@@ -12,6 +12,7 @@
       <th class="mobile-hidden-3" (click)="orderBy('type')">Item Type</th>
       <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
       <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
+      <th class="mobile-hidden-3" (click)="orderBy('consumableType')">Consumable Type</th>
       <th (click)="orderBy('special')">Special</th>
     </tr>
   </thead>
@@ -24,6 +25,7 @@
     <td class="left-border mobile-hidden-2">
       <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
     </td>
+    <td class="left-border mobile-hidden-3">{{item.getConsumableTypeName()}}</td>
     <td class="left-border">{{item.special}}</td>
   </tr>
   </tbody>

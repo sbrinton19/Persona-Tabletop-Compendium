@@ -2,6 +2,7 @@
     <li><a routerLink="/personae">Personae</a></li>
     <li><a routerLink="/skills">Skills</a></li>
     <li id="itens" [ngStyle]="{'background': color}" (click)="openCloseSubNav()"><a>Items</a></li>
+    <li><a routerLink="/activities">Activities</a></li>
 </ul>
 <ul id="itemSubNav" class="sub-nav" *ngIf="opened">
     <li><a routerLink="/weapons">Weapons</a></li>

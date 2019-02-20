@@ -1,4 +1,4 @@
 export class Payload {
-    PayloadType: String;
+    PayloadType: string;
     Payload: any;
 }

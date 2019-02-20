@@ -44,7 +44,7 @@ export class PersonaService implements OnDestroy {
     }
   }
 
-  getFlatPersonaeList(): Subject<FlatPersona[]> {
+  getFlatPersonaList(): Subject<FlatPersona[]> {
     this.sockService.sendMessage('get|FlatPersona|[]');
     return this.flatPersonaeList;
   }

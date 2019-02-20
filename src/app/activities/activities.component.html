@@ -1,0 +1,40 @@
+<app-filter id="activityLocationFilter"
+  [displayList]="displayList"
+  [masterList]="flatActivityList"
+  [fieldInfo]="'Location'"
+  (filtered)="onFiltered($event)">
+</app-filter>
+
+<app-filter id="activityTimeFilter"
+  [displayList]="displayList"
+  [masterList]="flatActivityList"
+  [fieldInfo]="'Available Time'"
+  (filtered)="onFiltered($event)">
+</app-filter>
+
+<table id="activityTable" cellspacing="0" class="ui table striped sortable unstackable">
+  <thead>
+    <tr>
+      <th class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
+      <th (click)="orderBy('activityName')">Name</th>
+      <th (click)="orderBy('locationName')">Location</th>
+      <th (click)="orderBy('availableTimes')">Available<br>Times</th>
+      <th (click)="orderBy('availableWeekDays')">Available<br>Weekdays</th>
+      <th class="mobile-hidden-1" (click)="orderBy('type')">Activity<br>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let activity of displayList">
+      <td class="mobile-hidden-1">{{activity.id}}</td>
+      <td class="left-border"><a href='/activity/{{activity.id}}'>{{activity.activityName}}</a></td>
+      <td class="left-border">{{activity.locationName}}</td>
+      <td class="left-border">
+        <label *ngFor="let availTime of activity.getAvailableTimes(); last as isLast">{{activity.getAvailableTimeName(availTime)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      </td>
+      <td class="left-border">
+        <label *ngFor="let availWeekDay of activity.getAvailableWeekDays(); last as isLast">{{activity.getAvailableWeekDayName(availWeekDay)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+      </td>
+      <td class="left-border mobile-hidden-1">{{activity.getTypeName()}}</td>
+    </tr>
+  </tbody>
+</table>

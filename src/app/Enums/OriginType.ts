@@ -16,6 +16,7 @@ export function getOrigins(orig: number): OriginType[] {
         if (Number(origin)) {
             if ((orig & +origin) === +origin) {
                 origins.push(+origin);
+                orig -= +origin;
             }
         }
     }
