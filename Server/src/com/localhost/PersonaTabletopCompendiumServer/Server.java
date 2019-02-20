@@ -36,29 +36,35 @@ public class Server extends WebSocketServer {
 		super(address);
 		dbh = DatabaseHandler.getHandler();
 		GsonBuilder gsonB = new GsonBuilder();
-		gsonB.registerTypeAdapter(FlatPersona.class, new FlatPersonaTypeAdapter())
-				.registerTypeAdapter(FlatItem.class, new FlatItemTypeAdapter())
-				.registerTypeAdapter(FlatWeapon.class, new FlatWeaponTypeAdapter())
-				.registerTypeAdapter(FlatRangedWeapon.class, new FlatRangedWeaponTypeAdapter())
-				.registerTypeAdapter(FlatArmor.class, new FlatArmorTypeAdapter())
-				.registerTypeAdapter(FlatAccessory.class, new FlatAccessoryTypeAdapter())
-				.registerTypeAdapter(FlatConsumable.class, new FlatConsumableTypeAdapter())
-				.registerTypeAdapter(FlatLoot.class, new FlatLootTypeAdapter())
-				.registerTypeAdapter(FlatSkillCard.class, new FlatSkillCardTypeAdapter())
-				.registerTypeAdapter(FlatSkill.class, new FlatSkillTypeAdapter())
-				.registerTypeAdapter(FlatDamageSkill.class, new FlatDamageSkillTypeAdapter())
-				.registerTypeAdapter(FlatDamageAilmentSkill.class, new FlatDamageAilmentSkillTypeAdapter())
-				.registerTypeAdapter(FlatSupportSkill.class, new FlatSupportSkillTypeAdapter())
-				.registerTypeAdapter(FlatAilmentSkill.class, new FlatAilmentSkillTypeAdapter())
-				.registerTypeAdapter(FlatPassiveSkill.class, new FlatPassiveSkillTypeAdapter())
-				.registerTypeAdapter(Drop.class, new DropTypeAdapter())
-				.registerTypeAdapter(PersonaSkill.class, new PersonaSkillTypeAdapter())
-				.registerTypeAdapter(ItemReference.class, new ItemReferenceTypeAdapter())
-				.registerTypeAdapter(DropReference.class, new DropReferenceTypeAdapter())
-				.registerTypeAdapter(FullPersona.class, new FullPersonaTypeAdapter())
-				.registerTypeAdapter(FullSkill.class, new FullSkillTypeAdapter())
-				.registerTypeAdapter(Recipe.class, new RecipeTypeAdapter())
-				.setPrettyPrinting();
+		gsonB
+			.registerTypeAdapter(FlatPersona.class, new FlatPersonaTypeAdapter())
+			.registerTypeAdapter(FlatSkill.class, new FlatSkillTypeAdapter())
+			.registerTypeAdapter(FlatDamageSkill.class, new FlatDamageSkillTypeAdapter())
+			.registerTypeAdapter(FlatDamageAilmentSkill.class, new FlatDamageAilmentSkillTypeAdapter())
+			.registerTypeAdapter(FlatSupportSkill.class, new FlatSupportSkillTypeAdapter())
+			.registerTypeAdapter(FlatAilmentSkill.class, new FlatAilmentSkillTypeAdapter())
+			.registerTypeAdapter(FlatPassiveSkill.class, new FlatPassiveSkillTypeAdapter())
+			.registerTypeAdapter(FlatItem.class, new FlatItemTypeAdapter())
+			.registerTypeAdapter(FlatWeapon.class, new FlatWeaponTypeAdapter())
+			.registerTypeAdapter(FlatRangedWeapon.class, new FlatRangedWeaponTypeAdapter())
+			.registerTypeAdapter(FlatArmor.class, new FlatArmorTypeAdapter())
+			.registerTypeAdapter(FlatAccessory.class, new FlatAccessoryTypeAdapter())
+			.registerTypeAdapter(FlatConsumable.class, new FlatConsumableTypeAdapter())
+			.registerTypeAdapter(FlatLoot.class, new FlatLootTypeAdapter())
+			.registerTypeAdapter(FlatSkillCard.class, new FlatSkillCardTypeAdapter())
+			.registerTypeAdapter(FlatStatBoostItem.class, new FlatStatBoostItemTypeAdapter())
+			.registerTypeAdapter(FlatTraitBoostItem.class, new FlatTraitBoostItemTypeAdapter())
+			.registerTypeAdapter(FlatActivity.class, new FlatActivityTypeAdapter())
+			.registerTypeAdapter(FlatVendor.class, new FlatVendorTypeAdapter())
+			.registerTypeAdapter(FlatVendorItem.class, new FlatVendorItemTypeAdapter())
+			.registerTypeAdapter(Restriction.class, new RestrictionTypeAdapter())
+			.registerTypeAdapter(BoundRestriction.class, new BoundRestrictionTypeAdapter())
+			.registerTypeAdapter(FullPersona.class, new FullPersonaTypeAdapter())
+			.registerTypeAdapter(PersonaSkill.class, new PersonaSkillTypeAdapter())
+			.registerTypeAdapter(Drop.class, new DropTypeAdapter())
+			.registerTypeAdapter(FullSkill.class, new FullSkillTypeAdapter())
+			.registerTypeAdapter(FullActivity.class, new FullActivityTypeAdapter())
+			.setPrettyPrinting();
 		gson = gsonB.create();
 		FusionCalculator.getCalculator();
 	}
@@ -148,8 +154,35 @@ public class Server extends WebSocketServer {
 							gson.toJson(result));
 				}
 				return;
+			} else if (FlatActivity.class.isAssignableFrom(pMess.getResolvedClass())) {
+				int retry = 0;
+				Object[] result = null;
+				while (result == null && retry++ < 5) {
+					result = dbh.getActivities(pMess.getResolvedClass(), ids);
+				}
+				if (result == null) {
+					conn.send("Failed to read database");
+				} else {
+					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
+							gson.toJson(result));
+				}
+				return;
+			} else if (Restriction.class == pMess.getResolvedClass()) {
+				int retry = 0;
+				Object[] result = null;
+				while (result == null && retry++ < 5) {
+					result = dbh.getRestrictions(pMess.getResolvedClass(), ids);
+				}
+				if (result == null) {
+					conn.send("Failed to read database");
+				} else {
+					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
+							gson.toJson(result));
+				}
+				return;
 			}
 		}
+		// Post Get
 		if (pMess.getResolvedClass() == FlatPersona.class) {
 			FlatPersona persona = gson.fromJson(pMess.getPayload(), FlatPersona.class);
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
@@ -164,6 +197,31 @@ public class Server extends WebSocketServer {
 			FlatItem item = (FlatItem) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
 				dbh.addItem(item);
+			}
+		} else if (FlatActivity.class.isAssignableFrom(pMess.getResolvedClass())) {
+			FlatActivity activity = (FlatActivity) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				dbh.addActivity(activity);
+			}
+		} else if (FlatVendor.class.isAssignableFrom(pMess.getResolvedClass())) {
+			FlatVendor vendor = (FlatVendor) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				dbh.addVendor(vendor);
+			}
+		} else if (FlatVendorItem.class.isAssignableFrom(pMess.getResolvedClass())) {
+			FlatVendorItem vendorItem = (FlatVendorItem) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				dbh.addVendorItem(vendorItem);
+			}
+		} else if (pMess.getResolvedClass() == Restriction.class) {
+			Restriction restriction = (Restriction) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				dbh.addRestriction(restriction);
+			}
+		} else if (pMess.getResolvedClass() == BoundRestriction.class) {
+			BoundRestriction boundRestriction = (BoundRestriction) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				dbh.addBoundRestriction(boundRestriction);
 			}
 		} else if (pMess.getResolvedClass() == Drop.class) {
 			Drop drop = (Drop) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
