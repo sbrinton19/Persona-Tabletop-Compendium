@@ -1,8 +1,8 @@
-<app-filter id="weaponFilter"
+<app-string-filter id="weaponFilter"
   [displayList]="displayList"
   [masterList]="flatWeaponList.concat(flatRangedWeaponList)"
   (filtered)="onFiltered($event)">
-</app-filter>
+</app-string-filter>
 
 <table id="weaponTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>

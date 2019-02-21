@@ -1,8 +1,8 @@
-<app-filter id="itemsFilter"
+<app-string-filter id="itemsFilter"
   [displayList]="displayList"
   [masterList]="flatConsumableList.concat(flatLootList)"
   (filtered)="onFiltered($event)">
-</app-filter>
+</app-string-filter>
 
 <table id="itemTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>

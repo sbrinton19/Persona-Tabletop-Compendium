@@ -5,6 +5,7 @@ import { FullActivity } from '../Classes/FlatActivity';
 import { SubscriptionLike } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
+import { ActivityType } from '../Enums/ActivityType';
 
 @Component({
   selector: 'app-activity',
@@ -18,6 +19,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private subscription: SubscriptionLike;
   private sortOrder = false;
   private readonly orderByPipe = new OrderByPipe();
+  private readonly ActivityType = ActivityType;
 
   constructor(private route: ActivatedRoute) { }
 

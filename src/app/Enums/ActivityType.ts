@@ -7,6 +7,13 @@ export enum ActivityType {
     StatBoost = 32,
 }
 
+const DisplayActivityTypes = [ActivityType.Shopping, ActivityType.Job, ActivityType.Minigame,
+    ActivityType.TraitBoost, ActivityType.Confidant, ActivityType.StatBoost];
+
+export function getDisplayActivityTypes(): ActivityType[] {
+    return DisplayActivityTypes;
+}
+
 export function getActivityTypeName(activityType: ActivityType): string {
     switch (activityType) {
         case ActivityType.TraitBoost:

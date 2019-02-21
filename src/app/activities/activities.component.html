@@ -1,40 +1,81 @@
-<app-filter id="activityLocationFilter"
-  [displayList]="displayList"
-  [masterList]="flatActivityList"
-  [fieldInfo]="'Location'"
-  (filtered)="onFiltered($event)">
-</app-filter>
-
-<app-filter id="activityTimeFilter"
-  [displayList]="displayList"
-  [masterList]="flatActivityList"
-  [fieldInfo]="'Available Time'"
-  (filtered)="onFiltered($event)">
-</app-filter>
-
 <table id="activityTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>
     <tr>
-      <th class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
-      <th (click)="orderBy('activityName')">Name</th>
-      <th (click)="orderBy('locationName')">Location</th>
+      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
+      <th (click)="orderBy('name')">Name</th>
+      <th (click)="orderBy('location')">Location</th>
       <th (click)="orderBy('availableTimes')">Available<br>Times</th>
       <th (click)="orderBy('availableWeekDays')">Available<br>Weekdays</th>
       <th class="mobile-hidden-1" (click)="orderBy('type')">Activity<br>Type</th>
     </tr>
+    <tr id="searchHeader">
+      <th class="filter-header left-border">
+        <app-string-filter
+        [displayList]="displayList"
+        [masterList]="flatActivityList"
+        [fieldInfo]="'name'"
+        [reapply]="reapplyNameFilter"
+        (filtered)="onFiltered($event)">
+        </app-string-filter>
+      </th>
+      <th class="filter-header">
+        <select (change)="filterBy('location', $event.target.value)">
+            <option [value]="-1">
+              Any Location
+            </option>
+            <option *ngFor="let option of Locations" [value]="option">
+              {{getLocationName(option)}}
+            </option>
+        </select>
+      </th>
+      <th class="filter-header">
+        <select (change)="filterBy('availableTimes', $event.target.value)">
+            <option [value]="-1">
+              Any Time
+            </option>
+            <option *ngFor="let option of AvailableTimes" [value]="option">
+              {{getAvailableTimeName(option)}}
+            </option>
+        </select>
+      </th>
+      <th class="filter-header">
+        <select (change)="filterBy('availableWeekDays', $event.target.value)">
+          <option [value]="-1">
+            Any Day
+          </option>
+          <option *ngFor="let option of AvailableWeekDays" [value]="option">
+            {{getAvailableWeekDayName(option)}}
+          </option>
+        </select>
+      </th>
+      <th class="mobile-hidden-1 filter-header">
+          <select (change)="filterBy('type', $event.target.value)">
+            <option [value]="-1">
+              Any Type
+            </option>
+            <option *ngFor="let option of ActivityTypes" [value]="option">
+              {{getTypeName(option)}}
+            </option>
+          </select>
+        </th>
+    </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let activity of displayList">
-      <td class="mobile-hidden-1">{{activity.id}}</td>
-      <td class="left-border"><a href='/activity/{{activity.id}}'>{{activity.activityName}}</a></td>
-      <td class="left-border">{{activity.locationName}}</td>
-      <td class="left-border">
-        <label *ngFor="let availTime of activity.getAvailableTimes(); last as isLast">{{activity.getAvailableTimeName(availTime)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-      </td>
-      <td class="left-border">
-        <label *ngFor="let availWeekDay of activity.getAvailableWeekDays(); last as isLast">{{activity.getAvailableWeekDayName(availWeekDay)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-      </td>
-      <td class="left-border mobile-hidden-1">{{activity.getTypeName()}}</td>
-    </tr>
+    <ng-container *ngFor="let tuple of displayList">
+      <ng-container *ngIf="tuple[0]; let activity">
+        <tr *ngIf="tuple[1]">
+          <td class="mobile-hidden-1">{{activity.id}}</td>
+          <td class="left-border"><a href='/activity/{{activity.id}}'>{{activity.name}}</a></td>
+          <td class="left-border">{{activity.getLocationName()}}</td>
+          <td class="left-border">
+            <label *ngFor="let availTime of activity.getAvailableTimes(); last as isLast">{{activity.getAvailableTimeName(availTime)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+          </td>
+          <td class="left-border">
+            <label *ngFor="let availWeekDay of activity.getAvailableWeekDays(); last as isLast">{{activity.getAvailableWeekDayName(availWeekDay)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+          </td>
+          <td class="left-border mobile-hidden-1">{{activity.getTypeName()}}</td>
+        </tr>
+      </ng-container>
+    </ng-container>
   </tbody>
 </table>

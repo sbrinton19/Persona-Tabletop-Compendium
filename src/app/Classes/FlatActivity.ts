@@ -6,11 +6,12 @@ import { getAvailableWeekDays, AvailableWeekDay, getAvailableWeekDayName } from 
 import { Trait, getTraitName } from '../Enums/Trait';
 import { getArcanaName } from '../Enums/Arcana';
 import { Stat, getStatName } from '../Enums/Stat';
+import { getLocationName, Location } from '../Enums/Location';
 
 export class FlatActivity {
     id: number;
-    activityName: string;
-    locationName: string;
+    name: string;
+    location: Location;
     availableTimes: number;
     availableWeekDays: number;
     type: ActivityType;
@@ -18,11 +19,11 @@ export class FlatActivity {
     secondValue: number;
     description: string;
 
-    public constructor(id: number, activityName: string, locationName: string, availableTimes: number, availableDays: number, type: ActivityType,
+    public constructor(id: number, name: string, location: Location, availableTimes: number, availableDays: number, type: ActivityType,
         value = -1, secondValue = -1, description = '') {
         this.id = id;
-        this.activityName = activityName;
-        this.locationName = locationName;
+        this.name = name;
+        this.location = location;
         this.availableTimes = availableTimes;
         this.availableWeekDays = availableDays;
         this.type = type;
@@ -32,8 +33,12 @@ export class FlatActivity {
     }
 
     public static copyConstructor(source: FlatActivity): FlatActivity {
-        return new FlatActivity(source.id, source.activityName, source.locationName, source.availableTimes, source.availableWeekDays,
+        return new FlatActivity(source.id, source.name, source.location, source.availableTimes, source.availableWeekDays,
             source.type, source.value, source.secondValue, source.description);
+    }
+
+    public getLocationName(): string {
+        return getLocationName(this.location);
     }
 
     public getTypeName(): string {
@@ -94,24 +99,8 @@ export class FlatActivity {
         return display;
     }
 
-    public isShopping() {
-        return this.type === ActivityType.Shopping;
-    }
-
-    public isJob() {
-        return this.type === ActivityType.Job;
-    }
-
     public getJobDescription() {
         return `Earn ${this.secondValue} Zenny${this.value === Trait.None ? '' : ` and +1 ${getTraitName(this.value)}`}`;
-    }
-
-    public isMinigame() {
-        return this.type === ActivityType.Minigame;
-    }
-
-    public isTraitBoost() {
-        return this.type === ActivityType.TraitBoost;
     }
 
     public getTraitBoost() {
@@ -120,16 +109,8 @@ export class FlatActivity {
             : `Gain +1d${this.secondValue} ${getTraitName(this.value)}`);
     }
 
-    public isConfidant() {
-        return this.type === ActivityType.Confidant;
-    }
-
     public getConfidantDescription() {
         return `Gain affinity with the ${getArcanaName(this.value)} Arcana`;
-    }
-
-    public isStatBoost() {
-        return this.type === ActivityType.StatBoost;
     }
 
     public getStatBoost() {
@@ -140,9 +121,9 @@ export class FlatActivity {
         if (!other) {
             return false;
         }
-        return (this.id === other.id && this.activityName === other.activityName && this.type === other.type &&
+        return (this.id === other.id && this.name === other.name && this.type === other.type &&
             this.availableTimes === other.availableTimes && this.availableWeekDays === other.availableWeekDays &&
-            this.locationName === other.locationName && this.value === other.value && this.secondValue === other.secondValue &&
+            this.location === other.location && this.value === other.value && this.secondValue === other.secondValue &&
             this.description === other.description);
     }
 }
@@ -150,9 +131,9 @@ export class FlatActivity {
 export class FullActivity extends FlatActivity {
     restrictions: Restriction[];
     vendors: FullVendor[];
-    public constructor(id: number, activityName: string, locationName: string, availableTimes: number, availableDays: number, type: ActivityType,
+    public constructor(id: number, name: string, location: Location, availableTimes: number, availableDays: number, type: ActivityType,
         value: number, secondValue: number, description: string, restrictions: Restriction[], vendorReferences: FullVendor[] = []) {
-        super(id, activityName, locationName, availableTimes, availableDays, type, value, secondValue, description);
+        super(id, name, location, availableTimes, availableDays, type, value, secondValue, description);
         this.restrictions = restrictions;
         this.vendors = vendorReferences;
     }
@@ -164,7 +145,7 @@ export class FullActivity extends FlatActivity {
         });
         const vendorReferences: FullVendor[] = [];
         source.vendors.forEach(vendorRef => vendorReferences.push(FullVendor.copyConstructor(vendorRef)));
-        return new FullActivity(source.id, source.activityName, source.locationName, source.availableTimes, source.availableWeekDays,
+        return new FullActivity(source.id, source.name, source.location, source.availableTimes, source.availableWeekDays,
             source.type, source.value, source.secondValue, source.description, realRestrictions, vendorReferences);
     }
 

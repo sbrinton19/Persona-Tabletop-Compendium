@@ -1,22 +1,24 @@
 <div id="activityPage" *ngIf="activity; else notFound" style="margin-top:10px">
   <h1 id="activityTitle">{{activity.activityName}}</h1>
   <h2 id="activitySubtitle">({{activity.getTypeName()}} / {{activity.locationName}})</h2>
-  <div id="confidantDetails" *ngIf="activity.isConfidant()">
-    <h2>{{activity.getConfidantDescription()}}</h2>    
-  </div>
-  <div id="statBoostDetails" *ngIf="activity.isStatBoost()">
-    <h2>{{activity.getStatBoost()}}</h2>
-  </div>
-  <div id="traitBoostDetails" *ngIf="activity.isTraitBoost()">
-    <h3>{{activity.getTraitBoost()}}</h3>
-  </div>
-  <div id="minigameDetails" *ngIf="activity.isMinigame()">
-    <h2>{{activity.description}}</h2>
-  </div>
-  <h3 id="activityDaysTimes">Available {{activity.getAvailableTimesDisplayString()}}<br>Available {{activity.getAvailableWeekDaysDisplayString()}}</h3> 
-  <div id="jobDetails" *ngIf="activity.isJob()">
-    <h2>{{activity.getJobDescription()}}</h2>    
-  </div>
+  <ng-container [ngSwitch]="activity.type">
+    <div id="confidantDetails" *ngSwitchCase="ActivityType.Confidant">
+      <h2>{{activity.getConfidantDescription()}}</h2>    
+    </div>
+    <div id="statBoostDetails" *ngSwitchCase="ActivityType.StatBoost">
+      <h2>{{activity.getStatBoost()}}</h2>
+    </div>
+    <div id="traitBoostDetails" *ngSwitchCase="ActivityType.TraitBoost">
+      <h3>{{activity.getTraitBoost()}}</h3>
+    </div>
+    <div id="minigameDetails" *ngSwitchCase="ActivityType.Minigame">
+      <h2>{{activity.description}}</h2>
+    </div>
+    <h3 id="activityDaysTimes">Available {{activity.getAvailableTimesDisplayString()}}<br>Available {{activity.getAvailableWeekDaysDisplayString()}}</h3> 
+    <div id="jobDetails" *ngSwitchCase="ActivityType.Job">
+      <h2>{{activity.getJobDescription()}}</h2>    
+    </div>
+  </ng-container>
   <div id="activityRestrictions">
     <h5 *ngFor="let restriction of activity.restrictions">
       {{restriction.getComposedRestriction()}}

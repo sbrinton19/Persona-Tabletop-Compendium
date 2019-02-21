@@ -183,6 +183,8 @@ public abstract class DatabaseObject {
 			field.set(this, BoundType.fromIntStatic(in.nextInt()));
 		} else if (clazz.equals(RestrictionType.class)) {
 			field.set(this, RestrictionType.fromIntStatic(in.nextInt()));
+		} else if (clazz.equals(Location.class)) {
+			field.set(this, Location.fromIntStatic(in.nextInt()));
 		}
 	}
 
@@ -276,19 +278,21 @@ public abstract class DatabaseObject {
 					} else if (fieldClass.equals(DamageMultiplier.class)) {
 						field.set(this, DamageMultiplier.fromDoubleStatic(rs.getDouble(field.getName())));
 					} else if (fieldClass.equals(Element.class)) {
-						field.set(this, Element.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, Element.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(AilmentType.class)) {
-						field.set(this, AilmentType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, AilmentType.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(SupportType.class)) {
-						field.set(this, SupportType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, SupportType.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(PassiveType.class)) {
-						field.set(this, PassiveType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, PassiveType.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(ActivityType.class)) {
-						field.set(this, ActivityType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, ActivityType.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(BoundType.class)) {
-						field.set(this, BoundType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, BoundType.fromByteStatic(rs.getByte(field.getName())));
 					} else if (fieldClass.equals(RestrictionType.class)) {
-						field.set(this, RestrictionType.fromIntStatic(rs.getInt(field.getName())));
+						field.set(this, RestrictionType.fromByteStatic(rs.getByte(field.getName())));
+					} else if (fieldClass.equals(Location.class)) {
+						field.set(this, Location.fromByteStatic(rs.getByte(field.getName())));
 					}
 				}
 			} catch (IllegalArgumentException | IllegalAccessException | IOException | SQLException e) {

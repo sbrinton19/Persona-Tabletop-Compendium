@@ -11,6 +11,13 @@ export enum AvailableWeekDay {
     Any = 127,
 }
 
+const DisplayAvailableWeekDays = [AvailableWeekDay.Monday, AvailableWeekDay.Tuesday, AvailableWeekDay.Wednesday,
+    AvailableWeekDay.Thursday, AvailableWeekDay.Friday, AvailableWeekDay.Saturday, AvailableWeekDay.Sunday];
+
+export function getDisplayAvailableWeekDays(): AvailableWeekDay[] {
+    return DisplayAvailableWeekDays;
+}
+
 export function getAvailableWeekDays(avail: number): AvailableWeekDay[] {
     const availableWeekDays: AvailableWeekDay[] = [];
     for (const available in AvailableWeekDay) {

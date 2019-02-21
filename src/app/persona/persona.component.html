@@ -190,26 +190,26 @@
         <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
             <table id="recipesFromTable" class="ui table unstackable striped recipe-table">
                 <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Cost</th>
-                    <th>Fuse with</th>
-                    <th>Result</th>
-                </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Cost</th>
+                        <th>Fuse with</th>
+                        <th>Result</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let recipe of displayData; index as i">
-                    <td>{{i + 1 + (currPage - 1) * perPage}}</td>
-                    <td>¥{{recipe.cost | number}}</td>
-                    <td>
-                        <a href='/persona/{{recipe.sources[1].personaId}}'>{{recipe.sources[1].personaName}}</a>
-                        ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
-                    </td>
-                    <td>
-                        <a href='/persona/{{recipe.result.personaId}}'>{{recipe.result.personaName}}</a>
-                        ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
-                    </td>
-                </tr>
+                    <tr *ngFor="let recipe of displayData; index as i">
+                        <td>{{i + 1 + (currPage - 1) * perPage}}</td>
+                        <td>¥{{recipe.cost | number}}</td>
+                        <td>
+                            <a href='/persona/{{recipe.sources[1].personaId}}'>{{recipe.sources[1].personaName}}</a>
+                            ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
+                        </td>
+                        <td>
+                            <a href='/persona/{{recipe.result.personaId}}'>{{recipe.result.personaName}}</a>
+                            ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </ng-template>

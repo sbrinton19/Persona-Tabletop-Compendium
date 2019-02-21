@@ -8,9 +8,9 @@
         <span (click)="getLastPage()"><span style="position: relative; right: -0.4em;">&#x25ba;</span>&#x25ba;</span>
     </div>
 </div>
-<app-filter id="paginationFilter"
+<app-string-filter id="paginationFilter"
     [displayList]="activeData"
     [masterList]="listData"
     (filtered)="onFiltered($event)">
-</app-filter>
+</app-string-filter>
 <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{$implicit: displayData, currentPage: currPage, pageSize: perPage}"></ng-template>

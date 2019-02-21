@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ActivityType;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Location;
 
 /**
  * The FlatActivity class is the server representation of the DB Table activity with
@@ -19,8 +20,8 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Activ
  */
 public class FlatActivity extends DatabaseObject {
 	protected int id;
-	protected String activityName;
-	protected String locationName;
+	protected String name;
+	protected Location location;
 	protected byte availableTimes;
 	protected byte availableWeekDays;
 	protected ActivityType type;
@@ -36,10 +37,11 @@ public class FlatActivity extends DatabaseObject {
 	 * 
 	 * @param id
 	 *            The Unique id for this activity
-	 * @param activityName
+	 * @param name
 	 *            The name of this activity
-	 * @param locationName
-	 * 			  The name of the location this activity takes place in
+	 * @param location
+	 * 			  A {@link Location} representing the location this activity
+	 * 			  takes place in 
 	 * @param availableTimes
 	 *            A {@code byte} being used as a bit array to represent the
 	 *            times this activity can be done (see
@@ -58,11 +60,11 @@ public class FlatActivity extends DatabaseObject {
 	 * @param description
 	 *            A description of this activity if one is necessary
 	 */
-	public FlatActivity(int id, String activityName, String locationName, byte availableTimes, byte availableWeekDays,
+	public FlatActivity(int id, String name, Location location, byte availableTimes, byte availableWeekDays,
 			ActivityType type, byte value, byte secondValue, String description) {
 		this.id = id;
-		this.activityName = activityName;
-		this.locationName = locationName;
+		this.name = name;
+		this.location = location;
 		this.availableTimes = availableTimes;
 		this.availableWeekDays = availableWeekDays;
 		this.type = type;
@@ -100,15 +102,15 @@ public class FlatActivity extends DatabaseObject {
 	/**
 	 * @return The name of this activity
 	 */
-	public String getActivityName() {
-		return activityName;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @return The name of the location this activity takes place in
+	 * @return A {@link Location{ representing location this activity takes place in
 	 */
-	public String getLocationName() {
-		return locationName;
+	public Location getLocation() {
+		return location;
 	}
 
 	/**
@@ -342,8 +344,8 @@ public class FlatActivity extends DatabaseObject {
 			prep.setInt(1, this.getId());
 			bump = 1;
 		}
-		prep.setString(1 + bump, this.activityName);
-		prep.setString(2 + bump, this.locationName);
+		prep.setString(1 + bump, this.name);
+		prep.setByte(2 + bump, this.location.getValue());
 		prep.setByte(3 + bump, this.availableTimes);
 		prep.setByte(4 + bump, this.availableWeekDays);
 		prep.setByte(5 + bump, this.type.getValue());

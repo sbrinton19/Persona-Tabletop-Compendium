@@ -22,7 +22,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { SkillComponent } from './skill/skill.component';
 import { WebsocketService } from './websocket.service';
 import { ItemComponent } from './item/item.component';
-import { FilterComponent } from './filter/filter.component';
+import { FilterComponent } from './string-filter/string-filter.component';
 import { ActivitiesComponent } from './activities/activities.component';
 import { ActivityService } from './activity.service';
 import { RestrictionService } from './restriction.service';

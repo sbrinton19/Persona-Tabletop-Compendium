@@ -7,7 +7,14 @@ export enum AvailableTime {
     Afternoon = 8,
     Evening = 16,
     Night = 32,
-    LateNight = 64,
+    LateNight = 64
+}
+
+const DisplayAvailableTimes = [AvailableTime.EarlyMorning, AvailableTime.Morning, AvailableTime.Midday,
+    AvailableTime.Afternoon, AvailableTime.Evening, AvailableTime.Night, AvailableTime.LateNight];
+
+export function getDisplayAvailableTimes(): AvailableTime[] {
+    return DisplayAvailableTimes;
 }
 
 export function getAvailableTimes(avail: number): AvailableTime[] {
