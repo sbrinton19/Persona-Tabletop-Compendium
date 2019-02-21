@@ -1,22 +1,26 @@
-<app-string-filter id="armorFilter"
-  [displayList]="displayList"
-  [masterList]="flatArmorsList"
-  (filtered)="onFiltered($event)">
-</app-string-filter>
-
 <table id="armorTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>
     <tr>
-      <th class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
+      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
-      <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
-      <th class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
-      <th class="mobile-hidden-2" (click)="orderBy('armorClass')">Armor<br>Class</th>
-      <th (click)="orderBy('damageReduction')">DMG<br>Reduction</th>
-      <th (click)="orderBy('moveAimPenalty')">Move/Aim<br>Penalty</th>
-      <th (click)="orderBy('maxDodgeBonus')">Max Dodge<br>Bonus</th>
-      <th class="mobile-hidden-2" (click)="orderBy('dirtyGearPool')">Gear Pool</th>
-      <th class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
+      <th rowspan="2" class="mobile-hidden-2" (click)="orderBy('armorClass')">Armor<br>Class</th>
+      <th rowspan="2" (click)="orderBy('damageReduction')">DMG<br>Reduction</th>
+      <th rowspan="2" (click)="orderBy('moveAimPenalty')">Move/Aim<br>Penalty</th>
+      <th rowspan="2" (click)="orderBy('maxDodgeBonus')">Max Dodge<br>Bonus</th>
+      <th rowspan="2" class="mobile-hidden-2" (click)="orderBy('dirtyGearPool')">Gear Pool</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('special')">Special</th>
+    </tr>
+    <tr>
+      <th class="filter-header left-border">
+        <app-string-filter id="armorFilter"
+        [displayList]="displayList"
+        [masterList]="flatArmorsList"
+        [fieldInfo]="'name'"
+        (filtered)="onFiltered($event)">
+        </app-string-filter>
+      </th>
     </tr>
   </thead>
   <tbody>

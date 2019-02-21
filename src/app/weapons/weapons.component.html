@@ -1,24 +1,28 @@
-<app-string-filter id="weaponFilter"
-  [displayList]="displayList"
-  [masterList]="flatWeaponList.concat(flatRangedWeaponList)"
-  (filtered)="onFiltered($event)">
-</app-string-filter>
-
 <table id="weaponTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>
     <tr>
-      <th class="mobile-hidden-3" (click)="orderBy('id')">ID</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
-      <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
-      <th class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
-      <th (click)="orderBy('baseDamage')">Base<br>Damage</th>
-      <th (click)="orderBy('maxDamageDice')">Max<br>Dice</th>
-      <th class="mobile-hidden-1" (click)="orderBy('damageDie')">Damage<br>Die</th>
-      <th (click)="orderBy('range')">Range</th>
-      <th class="mobile-hidden-2" (click)="orderBy('failValue')">FV</th>
-      <th (click)="orderBy('magSize')">Mag<br>Size</th>
-      <th class="mobile-hidden-1" (click)="orderBy('magCount')">Mag<br>Count</th>
-      <th class="mobile-hidden-1" (click)="orderBy('special')">Special</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('origins')">Origins</th>
+      <th rowspan="2" (click)="orderBy('baseDamage')">Base<br>Damage</th>
+      <th rowspan="2" (click)="orderBy('maxDamageDice')">Max<br>Dice</th>
+      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('damageDie')">Damage<br>Die</th>
+      <th rowspan="2" (click)="orderBy('range')">Range</th>
+      <th rowspan="2" class="mobile-hidden-2" (click)="orderBy('failValue')">FV</th>
+      <th rowspan="2" (click)="orderBy('magSize')">Mag<br>Size</th>
+      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('magCount')">Mag<br>Count</th>
+      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('special')">Special</th>
+    </tr>
+    <tr>
+      <th class="filter-header left-border">
+        <app-string-filter id="weaponFilter"
+        [displayList]="displayList"
+        [masterList]="flatWeaponList.concat(flatRangedWeaponList)"
+        [fieldInfo]="'name'"
+        (filtered)="onFiltered($event)">
+        </app-string-filter>
+      </th>
     </tr>
   </thead>
   <tbody>

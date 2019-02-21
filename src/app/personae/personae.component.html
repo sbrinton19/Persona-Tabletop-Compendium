@@ -1,17 +1,21 @@
-<app-string-filter id="personaFilter"
-  [displayList]="displayList"
-  [masterList]="flatPersonaeList"
-  (filtered)="onFiltered($event)">
-</app-string-filter>
-
 <table id="personaTable" cellspacing="0" class="ui table striped sortable unstackable">
   <thead>
     <tr>
-        <th (click)="orderBy('level')">Level</th>
-        <th (click)="orderBy('name')">Name</th>
-        <th (click)="orderBy('arcana')">Arcana</th>
-        <th *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats',i)">{{stat}}</th>
-        <th *ngFor="let elem of elemList; index as i" class="mobile-hidden-3" (click)="orderBy('elems',i)">{{elem}}</th>
+      <th rowspan="2" (click)="orderBy('level')">Level</th>
+      <th (click)="orderBy('name')">Name</th>
+      <th rowspan="2" (click)="orderBy('arcana')">Arcana</th>
+      <th rowspan="2" *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats', i)">{{stat}}</th>
+      <th rowspan="2" *ngFor="let elem of elemList; index as i" class="mobile-hidden-3" (click)="orderBy('elems', i)">{{elem}}</th>
+    </tr>
+    <tr>
+      <th class="filter-header left-border">
+        <app-string-filter id="personaFilter"
+        [displayList]="displayList"
+        [masterList]="flatPersonaeList"
+        [fieldInfo]="'name'"
+        (filtered)="onFiltered($event)">
+        </app-string-filter>
+      </th>
     </tr>
   </thead>
   <tbody>

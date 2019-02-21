@@ -1,19 +1,23 @@
-<app-string-filter id="itemsFilter"
-  [displayList]="displayList"
-  [masterList]="flatConsumableList.concat(flatLootList)"
-  (filtered)="onFiltered($event)">
-</app-string-filter>
-
 <table id="itemTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
   <thead>
     <tr>
-      <th (click)="orderBy('id')">ID</th>
+      <th rowspan="2" (click)="orderBy('id')">ID</th>
       <th (click)="orderBy('name')">Name</th>
-      <th class="mobile-hidden-3" (click)="orderBy('type')">Item Type</th>
-      <th class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
-      <th class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
-      <th class="mobile-hidden-3" (click)="orderBy('consumableType')">Consumable Type</th>
-      <th (click)="orderBy('special')">Special</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('type')">Item Type</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
+      <th rowspan="2" class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
+      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('consumableType')">Consumable Type</th>
+      <th rowspan="2" (click)="orderBy('special')">Special</th>
+    </tr>
+    <tr>
+      <th class="filter-header left-border">
+        <app-string-filter id="itemsFilter"
+        [displayList]="displayList"
+        [masterList]="flatConsumableList.concat(flatLootList)"
+        [fieldInfo]="'name'"
+        (filtered)="onFiltered($event)">
+        </app-string-filter>
+      </th>
     </tr>
   </thead>
   <tbody>
