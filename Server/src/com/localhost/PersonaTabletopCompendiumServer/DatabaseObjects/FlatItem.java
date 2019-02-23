@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +29,9 @@ public class FlatItem extends DatabaseObject {
 	protected byte origins;
 	protected int transmuteId;
 	protected ConsumableType consumableType;
-	private static String ITEMSEARCH = null;
-	private static String ITEMINSERT = null;
-	private static String ITEMUPDATE = null;
+	private static String _ITEMSEARCH = null;
+	private static String _ITEMINSERT = null;
+	private static String _ITEMUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatItem}
@@ -174,6 +175,7 @@ public class FlatItem extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -191,9 +193,14 @@ public class FlatItem extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, FlatItem.class);
 	}
 	
@@ -204,14 +211,14 @@ public class FlatItem extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatItem.ITEMSEARCH != null)
+		if (FlatItem._ITEMSEARCH != null)
 			return;
-		FlatItem.ITEMSEARCH = "SELECT * FROM item WHERE item.id = ?";
+		FlatItem._ITEMSEARCH = "SELECT * FROM item WHERE item.id = ?";
 		String insertTemplate = "INSERT INTO item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatItem.class);
-		FlatItem.ITEMINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatItem.ITEMUPDATE = String.format(updateTemplate, built[2]);
+		FlatItem._ITEMINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatItem._ITEMUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -223,9 +230,10 @@ public class FlatItem extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("ITEMINSERT") || name.equals("ITEMUPDATE") || name.equals("ITEMSEARCH")
-				|| name.equals("ITEMDELETE");
+		return name.equals("_ITEMINSERT") || name.equals("_ITEMUPDATE") || name.equals("_ITEMSEARCH")
+				|| name.equals("_ITEMDELETE");
 	}
 
 	/**
@@ -236,6 +244,7 @@ public class FlatItem extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -250,6 +259,7 @@ public class FlatItem extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -267,13 +277,14 @@ public class FlatItem extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update so do not update it
 		return name.equals("id");
 	}
 
 	/**
-	 * Searches the database for this FlatItem's id
+	 * Searches the database for this {@link FlatItem FlatItem's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -281,15 +292,16 @@ public class FlatItem extends DatabaseObject {
 	 *         FlatItem's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectItem(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatItem.ITEMSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatItem._ITEMSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} FlatItem into the item table. Note: the
+	 * This method inserts {@code this} {@link FlatItem} into the item table. Note: the
 	 * item table has an optional FK constraint in transmuteId
 	 * 
 	 * @param conn
@@ -297,10 +309,11 @@ public class FlatItem extends DatabaseObject {
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatItem.ITEMINSERT);
+			insert = conn.prepareStatement(FlatItem._ITEMINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -310,7 +323,7 @@ public class FlatItem extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@link this} FlatItem's entry in the item table.
+	 * This method updates {@code this} {@link FlatItem FlatItem's} entry in the item table.
 	 * Note: The item table has an optional FK constraint in transmuteId
 	 * 
 	 * @param conn
@@ -318,10 +331,11 @@ public class FlatItem extends DatabaseObject {
 	 * @return True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatItem.ITEMUPDATE);
+			update = conn.prepareStatement(FlatItem._ITEMUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -340,7 +354,8 @@ public class FlatItem extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -370,8 +385,9 @@ public class FlatItem extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteItem(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 
 }

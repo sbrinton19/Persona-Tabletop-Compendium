@@ -1,10 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 
-import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
@@ -94,18 +92,11 @@ public class VendorItemReference extends ItemReference {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
 		write(out, VendorItemReference.class);
-	}
-
-	/**
-	 * Never call this method under any circumstances
-	 */
-	@Override
-	public void read(JsonReader in, String name) throws IOException, IllegalArgumentException, IllegalAccessException {
-		return;
 	}
 
 	/**
@@ -117,6 +108,7 @@ public class VendorItemReference extends ItemReference {
 	 * @return false if the field is one to write, true if it should be
 	 *         ignored when writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
 		// No ignored fields
 		return false;
@@ -130,6 +122,7 @@ public class VendorItemReference extends ItemReference {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// restrictions is not read in using a single ResultSet
 		return name.equals("restrictions");
@@ -144,22 +137,9 @@ public class VendorItemReference extends ItemReference {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
-		return false;
-	}
-	
-	/**
-	 * This function should never be used
-	 */
-	protected boolean isIgnoredUpdateField(String name) {
-		return true;
-	}
-	
-	/**
-	 * Never call this method under any circumstances
-	 */
-	public boolean databaseInsert(Connection conn) {
 		return false;
 	}
 }

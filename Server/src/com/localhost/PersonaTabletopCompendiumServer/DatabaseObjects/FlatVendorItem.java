@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,9 +22,9 @@ public class FlatVendorItem extends DatabaseObject {
 	protected int vendorId;
 	protected int itemId;
 	protected int cost;
-	private static String VENDORITEMSEARCH = null;
-	private static String VENDORITEMINSERT = null;
-	private static String VENDORITEMUPDATE = null;
+	private static String _VENDORITEMSEARCH = null;
+	private static String _VENDORITEMINSERT = null;
+	private static String _VENDORITEMUPDATE = null;
 	
 	/**
 	 * Full constructor for {@link FlatVendorItem}
@@ -108,6 +109,7 @@ public class FlatVendorItem extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -125,9 +127,14 @@ public class FlatVendorItem extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, FlatVendorItem.class);
 	}
 	
@@ -138,14 +145,14 @@ public class FlatVendorItem extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatVendorItem.VENDORITEMSEARCH != null)
+		if (FlatVendorItem._VENDORITEMSEARCH != null)
 			return;
-		FlatVendorItem.VENDORITEMSEARCH = "SELECT * FROM vendor_item WHERE vendor_item.id = ?";
+		FlatVendorItem._VENDORITEMSEARCH = "SELECT * FROM vendor_item WHERE vendor_item.id = ?";
 		String insertTemplate = "INSERT INTO vendor_item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE vendor_item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatVendorItem.class);
-		FlatVendorItem.VENDORITEMINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatVendorItem.VENDORITEMUPDATE = String.format(updateTemplate, built[2]);
+		FlatVendorItem._VENDORITEMINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatVendorItem._VENDORITEMUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -157,9 +164,10 @@ public class FlatVendorItem extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("VENDORITEMINSERT") || name.equals("VENDORITEMUPDATE") || name.equals("VENDORITEMSEARCH")
-				|| name.equals("VENDORITEMDELETE");
+		return name.equals("_VENDORITEMINSERT") || name.equals("_VENDORITEMUPDATE") || name.equals("_VENDORITEMSEARCH")
+				|| name.equals("_VENDORITEMDELETE");
 	}
 
 	/**
@@ -170,6 +178,7 @@ public class FlatVendorItem extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -184,6 +193,7 @@ public class FlatVendorItem extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -201,13 +211,14 @@ public class FlatVendorItem extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update so do not update it
 		return name.equals("id");
 	}
 
 	/**
-	 * Searches the database for this FlatVendorItem's id
+	 * Searches the database for {@code this} {@link FlatVendorItem FlatVendorItem's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -215,25 +226,27 @@ public class FlatVendorItem extends DatabaseObject {
 	 *         FlatVendorItem's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectVendorItem(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatVendorItem.VENDORITEMSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatVendorItem._VENDORITEMSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} FlatVendorItem into the vendor_item table.
+	 * This method inserts {@code this} {@link FlatVendorItem} into the vendor_item table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatVendorItem.VENDORITEMINSERT);
+			insert = conn.prepareStatement(FlatVendorItem._VENDORITEMINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -243,17 +256,18 @@ public class FlatVendorItem extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@link this} FlatVendorItem's entry in the vendor_item table.
+	 * This method updates {@code this} {@link FlatItemVendor FlatVendorItem's} entry in the vendor_item table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatVendorItem.VENDORITEMUPDATE);
+			update = conn.prepareStatement(FlatVendorItem._VENDORITEMUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -272,7 +286,8 @@ public class FlatVendorItem extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -293,8 +308,9 @@ public class FlatVendorItem extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteVendorItem(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 
 }

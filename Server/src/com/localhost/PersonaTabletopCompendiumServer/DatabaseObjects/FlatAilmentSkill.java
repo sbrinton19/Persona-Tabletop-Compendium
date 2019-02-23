@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,9 +25,9 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Eleme
 public class FlatAilmentSkill extends FlatSkill {
 	protected AilmentType ailmentType;
 	protected byte ailmentFailValue;
-	private static String AILMENTSKILLSEARCH = null;
-	private static String AILMENTSKILLINSERT = null;
-	private static String AILMENTSKILLUPDATE = null;
+	private static String _AILMENTSKILLSEARCH = null;
+	private static String _AILMENTSKILLINSERT = null;
+	private static String _AILMENTSKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatAilmentSkill}
@@ -103,6 +104,7 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @return A complete description compiled from the values of this skill's
 	 *         fields
 	 */
+	@Override
 	public String getCompiledDescription(boolean replace) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("%s FV=%d", this.ailmentType.asString(), this.ailmentFailValue));
@@ -139,6 +141,7 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -156,9 +159,14 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatAilmentSkill.class)) {
 			// We struck out check if the superclass has what were looking for
 			super.read(in, name);
@@ -172,14 +180,14 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatAilmentSkill.AILMENTSKILLSEARCH != null)
+		if (FlatAilmentSkill._AILMENTSKILLSEARCH != null)
 			return;
-		FlatAilmentSkill.AILMENTSKILLSEARCH = "SELECT * FROM ailment_skill WHERE ailment_skill.skillid = ?";
-		String insertTemplate = "INSERT INTO ailment_skill(skillid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE ailment_skill SET %s WHERE skillid = ?";
+		FlatAilmentSkill._AILMENTSKILLSEARCH = "SELECT * FROM ailment_skill WHERE ailment_skill.skillId = ?";
+		String insertTemplate = "INSERT INTO ailment_skill(skillId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE ailment_skill SET %s WHERE skillId = ?";
 		String[] built = fieldBuilder(FlatAilmentSkill.class);
-		FlatAilmentSkill.AILMENTSKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatAilmentSkill.AILMENTSKILLUPDATE = String.format(updateTemplate, built[2]);
+		FlatAilmentSkill._AILMENTSKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatAilmentSkill._AILMENTSKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -191,9 +199,10 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("AILMENTSKILLINSERT") || name.equals("AILMENTSKILLUPDATE")
-				|| name.equals("AILMENTSKILLSEARCH") || name.equals("AILMENTSKILLDELETE");
+		return name.equals("_AILMENTSKILLINSERT") || name.equals("_AILMENTSKILLUPDATE")
+				|| name.equals("_AILMENTSKILLSEARCH") || name.equals("_AILMENTSKILLDELETE");
 	}
 
 	/**
@@ -204,6 +213,7 @@ public class FlatAilmentSkill extends FlatSkill {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -218,6 +228,7 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -235,6 +246,7 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatAilmentSkill are updated
 		// in the side table during an UPDATE
@@ -242,8 +254,8 @@ public class FlatAilmentSkill extends FlatSkill {
 	}
 
 	/**
-	 * Searches the database for this {@link FlatAilmentSkill
-	 * FlatAilmentSkill's} id
+	 * Searches the database for this 
+	 * {@link FlatAilmentSkill FlatAilmentSkill's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -251,76 +263,85 @@ public class FlatAilmentSkill extends FlatSkill {
 	 *         this FlatAilmentSkill's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectailmentSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatAilmentSkill.AILMENTSKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatAilmentSkill._AILMENTSKILLSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatAilmentSkill
-	 * FlatAilmentSkill's} base data into the skill table and if successful,
-	 * then inserts the FlatAilmentSkill data into the ailment_skill side table
-	 * or updates it if a matching orphan entry is found
+	 * This method inserts {@code this} {@link FlatAilmentSkill FlatAilmentSkill's}
+	 * data into the ailment_skill side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the action was performed without errors, false otherwise
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
+		try {
+			insert = conn.prepareStatement(FlatAilmentSkill._AILMENTSKILLINSERT);
+			insertUpdate(insert, true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
-	 * This method updates {@code this} {@link FlatAilmentSkill FlatAilment's}
-	 * entry in the skill table and if successful, then updates its
-	 * ailment_skill side table entry or if there is no corresponding side table
-	 * entry, inserts it
+	 * This method updates {@code this} {@link FlatAilmentSkill FlatAilmentSkill's}
+	 * entry in the ailment_skill side table 
 	 * 
 	 * @param conn
 	 *            A connection to the database
 	 * @return True if the action was performed without errors, false otherwise
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the ailment_skill side table to see if we are updating or
-	 * inserting and then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
 		try {
-			ResultSet rs = this.databaseSelectailmentSkill(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatAilmentSkill.AILMENTSKILLINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatAilmentSkill.AILMENTSKILLUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			update = conn.prepareStatement(FlatAilmentSkill._AILMENTSKILLUPDATE);
+			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * First checks the skill table for an entry for {@code this} skill's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the ailment_skill table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -333,7 +354,8 @@ public class FlatAilmentSkill extends FlatSkill {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -353,7 +375,8 @@ public class FlatAilmentSkill extends FlatSkill {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteAilmentSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,9 +27,9 @@ public class FlatArmor extends FlatItem {
 	protected byte moveAimPenalty;
 	protected byte maxDodgeBonus;
 	protected GearPool dirtyGearPool;
-	private static String ARMORSEARCH = null;
-	private static String ARMORINSERT = null;
-	private static String ARMORUPDATE = null;
+	private static String _ARMORSEARCH = null;
+	private static String _ARMORINSERT = null;
+	private static String _ARMORUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatArmor}
@@ -50,7 +51,7 @@ public class FlatArmor extends FlatItem {
 	 *            A {@code byte} being used as a bit array to represent the
 	 *            sources this item can be obtained from (see
 	 *            {@link OriginType})
-	 * @param transmuteid
+	 * @param transmuteId
 	 *            The unique id of the persona that transmutes into this item,
 	 *            -1 if none do
 	 * @param consumableType
@@ -70,9 +71,9 @@ public class FlatArmor extends FlatItem {
 	 *            a {@link GearPool} enum
 	 */
 	public FlatArmor(int id, String name, byte schedule, String description, String special, ItemType type,
-			byte origins, int transmuteid, ConsumableType consumableType, ArmorClass armorClass, byte damageReduction,
+			byte origins, int transmuteId, ConsumableType consumableType, ArmorClass armorClass, byte damageReduction,
 			byte moveAimPenalty, byte maxDodgeBonus, GearPool dirtyGearPool) {
-		super(id, name, schedule, description, special, type, origins, transmuteid, consumableType);
+		super(id, name, schedule, description, special, type, origins, transmuteId, consumableType);
 		this.armorClass = armorClass;
 		this.damageReduction = damageReduction;
 		this.moveAimPenalty = moveAimPenalty;
@@ -153,6 +154,7 @@ public class FlatArmor extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -170,9 +172,14 @@ public class FlatArmor extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatArmor.class)) {
 			// We struck out check if the superclass has what were looking for
 			super.read(in, name);
@@ -186,14 +193,14 @@ public class FlatArmor extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatArmor.ARMORSEARCH != null)
+		if (FlatArmor._ARMORSEARCH != null)
 			return;
-		FlatArmor.ARMORSEARCH = "SELECT * FROM armor WHERE armor.itemid = ?";
-		String insertTemplate = "INSERT INTO armor(itemid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE armor SET %s WHERE itemid = ?";
+		FlatArmor._ARMORSEARCH = "SELECT * FROM armor WHERE armor.itemId = ?";
+		String insertTemplate = "INSERT INTO armor(itemId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE armor SET %s WHERE itemId = ?";
 		String[] built = fieldBuilder(FlatArmor.class);
-		FlatArmor.ARMORINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatArmor.ARMORUPDATE = String.format(updateTemplate, built[2]);
+		FlatArmor._ARMORINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatArmor._ARMORUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -205,9 +212,10 @@ public class FlatArmor extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("ARMORINSERT") || name.equals("ARMORUPDATE") || name.equals("ARMORSEARCH")
-				|| name.equals("ARMORDELETE");
+		return name.equals("_ARMORINSERT") || name.equals("_ARMORUPDATE") || name.equals("_ARMORSEARCH")
+				|| name.equals("_ARMORDELETE");
 	}
 
 	/**
@@ -218,6 +226,7 @@ public class FlatArmor extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -232,6 +241,7 @@ public class FlatArmor extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -249,6 +259,7 @@ public class FlatArmor extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatArmor are updated
 		// in the side table during an UPDATE
@@ -264,75 +275,85 @@ public class FlatArmor extends FlatItem {
 	 *         FlatArmor's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectArmor(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatArmor.ARMORSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatArmor._ARMORSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatArmor FlatArmor's} base data
-	 * into the item table and if successful, then inserts the FlatArmor data
-	 * into the armor side table or updates it if a matching orphan entry is
-	 * found
+	 * This method inserts {@code this} {@link FlatArmor FlatArmor's} data
+	 * into the armor side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the action was performed without errors, otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
+		try {
+			insert = conn.prepareStatement(FlatArmor._ARMORINSERT);
+			insertUpdate(insert, true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
 	 * This method updates {@code this} {@link FlatArmor FlatArmor's} entry in
-	 * the item table and if successful, then updates its armor side table entry
-	 * or if there is no corresponding side table entry, inserts it
+	 * the armor side table
 	 * 
 	 * @param conn
 	 *            A connection to the database
 	 * @return True if the action was performed without errors, otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the armor side table to see if we are updating or inserting and
-	 * then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
 		try {
-			ResultSet rs = this.databaseSelectArmor(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatArmor.ARMORINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatArmor.ARMORUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			update = conn.prepareStatement(FlatArmor._ARMORUPDATE);
+			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * First checks the item table for an entry for {@code this} item's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the armor table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -345,7 +366,8 @@ public class FlatArmor extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -380,8 +402,9 @@ public class FlatArmor extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteArmor(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 
 }

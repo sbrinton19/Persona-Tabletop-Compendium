@@ -9,40 +9,40 @@ import com.localhost.PersonaTabletopCompendiumServer.ProtocolObjects.Enums.Proto
  *
  */
 public class ProtocolMessage {
-	private final ProtocolCommand command;
-	private final String responseClass;
-	private final String payload;
-	private Class<?> resolvedClass = null;
+	private final ProtocolCommand _command;
+	private final String _responseClass;
+	private final String _payload;
+	private Class<?> _resolvedClass = null;
 
 	public ProtocolMessage(ProtocolCommand command, String clazz, String payload) {
-		this.command = command;
-		this.responseClass = clazz;
-		this.payload = payload;
+		this._command = command;
+		this._responseClass = clazz;
+		this._payload = payload;
 	}
 
 	public ProtocolMessage(String message) {
 		String[] orders = message.split("\\|");
-		this.command = ProtocolCommand.fromStringStatic(orders[0]);
+		this._command = ProtocolCommand.fromStringStatic(orders[0]);
 		// All classes sent as an expected response payload should be
 		// DatabaseObjects
-		this.responseClass = "com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects." + orders[1];
-		this.payload = orders[2];
+		this._responseClass = "com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects." + orders[1];
+		this._payload = orders[2];
 	}
 
 	/**
 	 * @return the command for the given message in the "protocol"
 	 */
 	public ProtocolCommand getCommand() {
-		return command;
+		return _command;
 	}
 
 	protected String getResponseClass() {
-		return responseClass;
+		return _responseClass;
 	}
 
 	private boolean resolveClass() {
 		try {
-			this.resolvedClass = Class.forName(responseClass);
+			this._resolvedClass = Class.forName(_responseClass);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			return false;
@@ -51,18 +51,18 @@ public class ProtocolMessage {
 	}
 
 	public Class<?> getResolvedClass() {
-		if (this.resolvedClass == null) {
+		if (this._resolvedClass == null) {
 			if (!resolveClass()) {
 				return null;
 			}
 		}
-		return this.resolvedClass;
+		return this._resolvedClass;
 	}
 
 	/**
 	 * @return the payload
 	 */
 	public String getPayload() {
-		return payload;
+		return _payload;
 	}
 }

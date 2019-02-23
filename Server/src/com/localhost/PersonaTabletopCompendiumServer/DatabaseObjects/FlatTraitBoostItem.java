@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +21,11 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ItemT
  *
  */
 public class FlatTraitBoostItem extends FlatItem {
-	private static String TRAITBOOSTITEMSEARCH = null;
-	private static String TRAITBOOSTITEMINSERT = null;
-	private static String TRAITBOOSTITEMUPDATE = null;
+	private static String _TRAITBOOSTITEMSEARCH = null;
+	@SuppressWarnings("unused")
+	private static String _TRAITBOOSTITEMINSERT = null;
+	@SuppressWarnings("unused")
+	private static String _TRAITBOOSTITEMUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatTraitBoostItem}
@@ -93,6 +96,7 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -110,9 +114,14 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatTraitBoostItem.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -126,14 +135,14 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatTraitBoostItem.TRAITBOOSTITEMSEARCH != null)
+		if (FlatTraitBoostItem._TRAITBOOSTITEMSEARCH != null)
 			return;
-		FlatTraitBoostItem.TRAITBOOSTITEMSEARCH = "SELECT * FROM item WHERE item.itemid = ? AND item.type = ?";
+		FlatTraitBoostItem._TRAITBOOSTITEMSEARCH = "SELECT * FROM item WHERE item.id = ? AND item.type = ?";
 		String insertTemplate = "INSERT INTO item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatTraitBoostItem.class);
-		FlatTraitBoostItem.TRAITBOOSTITEMINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatTraitBoostItem.TRAITBOOSTITEMUPDATE = String.format(updateTemplate, built[2]);
+		FlatTraitBoostItem._TRAITBOOSTITEMINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatTraitBoostItem._TRAITBOOSTITEMUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -145,9 +154,10 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("TRAITBOOSTITEMINSERT") || name.equals("TRAITBOOSTITEMUPDATE") || name.equals("TRAITBOOSTITEMSEARCH")
-				|| name.equals("TRAITBOOSTITEMDELETE");
+		return name.equals("_TRAITBOOSTITEMINSERT") || name.equals("_TRAITBOOSTITEMUPDATE") || name.equals("_TRAITBOOSTITEMSEARCH")
+				|| name.equals("_TRAITBOOSTITEMDELETE");
 	}
 
 	/**
@@ -158,6 +168,7 @@ public class FlatTraitBoostItem extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -172,6 +183,7 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -189,6 +201,7 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		return false;
 	}
@@ -202,8 +215,9 @@ public class FlatTraitBoostItem extends FlatItem {
 	 *         FlatTraitBoostItem's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectTraitBoostItem(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatTraitBoostItem.TRAITBOOSTITEMSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatTraitBoostItem._TRAITBOOSTITEMSEARCH);
 		search.setInt(1, getId());
 		search.setByte(2, getType().getValue());
 		ResultSet ret = search.executeQuery();
@@ -220,7 +234,7 @@ public class FlatTraitBoostItem extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
+	protected boolean databaseInsert(Connection conn) {
 		return super.databaseInsert(conn);
 	}
 
@@ -233,41 +247,8 @@ public class FlatTraitBoostItem extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
+	protected boolean databaseUpdate(Connection conn) {
 		return super.databaseUpdate(conn);
-	}
-
-	/**
-	 * Queries the skill_card side table to see if we are updating or inserting
-	 * and then performs the appropriate action
-	 * 
-	 * NOTE: There is no skill_card side table at this time so this is an unused
-	 * method
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	@SuppressWarnings("unused")
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
-		try {
-			ResultSet rs = this.databaseSelectTraitBoostItem(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatTraitBoostItem.TRAITBOOSTITEMINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatTraitBoostItem.TRAITBOOSTITEMUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -280,7 +261,8 @@ public class FlatTraitBoostItem extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		@SuppressWarnings("unused")
 		int bump = 0;
 		if (insert) {
@@ -299,7 +281,8 @@ public class FlatTraitBoostItem extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteTraitBoostItem(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

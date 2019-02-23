@@ -1,6 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.JsonAdapters;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -31,7 +33,7 @@ public class FlatPersonaTypeAdapter extends TypeAdapter<FlatPersona> {
 		while (in.hasNext()) {
 			try {
 				persona.read(in, in.nextName());
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
 				e.printStackTrace();
 			}
 		}

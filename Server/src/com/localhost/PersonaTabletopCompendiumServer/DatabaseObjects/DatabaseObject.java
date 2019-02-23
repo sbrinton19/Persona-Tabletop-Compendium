@@ -3,7 +3,9 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.*;
 
 /**
- * A common base class to define shared methods or aspects of database objects
+ * A common base class to define shared methods and aspects of database objects
  * 
  * @author Stefan
  *
@@ -110,9 +112,13 @@ public abstract class DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws IOException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
 	protected boolean read(final JsonReader in, String name, Class<?> clazz)
-			throws IllegalArgumentException, IllegalAccessException, IOException {
+			throws IllegalArgumentException, IllegalAccessException, IOException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.getName().equals(name)) {
 				fieldReader(in, field);
@@ -135,9 +141,12 @@ public abstract class DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws IOException
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
 	private void fieldReader(final JsonReader in, Field field)
-			throws IllegalArgumentException, IllegalAccessException, IOException {
+			throws IllegalArgumentException, IllegalAccessException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException {
 		Class<?> clazz = field.getType();
 		if (clazz.isArray()) {
 			in.beginArray();
@@ -155,36 +164,12 @@ public abstract class DatabaseObject {
 			field.set(this, in.nextDouble());
 		} else if (clazz.equals(boolean.class)) {
 			field.set(this, in.nextBoolean());
-		} else if (clazz.equals(ElemResist.class)) {
-			field.set(this, ElemResist.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(ItemType.class)) {
-			field.set(this, ItemType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(ConsumableType.class)) {
-			field.set(this, ConsumableType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(ArmorClass.class)) {
-			field.set(this, ArmorClass.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(GearPool.class)) {
-			field.set(this, GearPool.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(Arcana.class)) {
-			field.set(this, Arcana.fromIntStatic(in.nextInt()));
+		} else if (ByteValueEnum.class.isAssignableFrom(clazz)) {
+			field.set(this, clazz.getMethod("fromIntStatic", int.class).invoke(null, in.nextInt()));
 		} else if (clazz.equals(DamageMultiplier.class)) {
 			field.set(this, DamageMultiplier.fromDoubleStatic(in.nextDouble()));
-		} else if (clazz.equals(Element.class)) {
-			field.set(this, Element.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(AilmentType.class)) {
-			field.set(this, AilmentType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(SupportType.class)) {
-			field.set(this, SupportType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(PassiveType.class)) {
-			field.set(this, PassiveType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(ActivityType.class)) {
-			field.set(this, ActivityType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(BoundType.class)) {
-			field.set(this, BoundType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(RestrictionType.class)) {
-			field.set(this, RestrictionType.fromIntStatic(in.nextInt()));
-		} else if (clazz.equals(Location.class)) {
-			field.set(this, Location.fromIntStatic(in.nextInt()));
+		} else {
+			System.err.printf("Unable to find a matching class for field: %s", field.getName());
 		}
 	}
 
@@ -263,39 +248,15 @@ public abstract class DatabaseObject {
 						field.setBoolean(this, rs.getBoolean(field.getName()));
 					} else if (fieldClass.equals(String.class)) {
 						field.set(this, rs.getString(field.getName()));
-					} else if (fieldClass.equals(ItemType.class)) {
-						field.set(this, ItemType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(ConsumableType.class)) {
-						field.set(this, ConsumableType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(ArmorClass.class)) {
-						field.set(this, ArmorClass.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(GearPool.class)) {
-						field.set(this, GearPool.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(Arcana.class)) {
-						field.set(this, Arcana.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(ElemResist.class)) {
-						field.set(this, ElemResist.fromByteStatic(rs.getByte(field.getName())));
+					} else if (ByteValueEnum.class.isAssignableFrom(fieldClass)) {
+						field.set(this, fieldClass.getMethod("fromByteStatic", byte.class).invoke(null, rs.getByte(field.getName())));
 					} else if (fieldClass.equals(DamageMultiplier.class)) {
 						field.set(this, DamageMultiplier.fromDoubleStatic(rs.getDouble(field.getName())));
-					} else if (fieldClass.equals(Element.class)) {
-						field.set(this, Element.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(AilmentType.class)) {
-						field.set(this, AilmentType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(SupportType.class)) {
-						field.set(this, SupportType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(PassiveType.class)) {
-						field.set(this, PassiveType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(ActivityType.class)) {
-						field.set(this, ActivityType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(BoundType.class)) {
-						field.set(this, BoundType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(RestrictionType.class)) {
-						field.set(this, RestrictionType.fromByteStatic(rs.getByte(field.getName())));
-					} else if (fieldClass.equals(Location.class)) {
-						field.set(this, Location.fromByteStatic(rs.getByte(field.getName())));
+					} else {
+						System.err.printf("Unable to find a matching class for field: %s", field.getName());
 					}
 				}
-			} catch (IllegalArgumentException | IllegalAccessException | IOException | SQLException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | IOException | SQLException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
@@ -431,9 +392,13 @@ public abstract class DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
 	public abstract void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException;
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException;
 
 	protected abstract boolean isIgnoredField(String name);
 
@@ -443,5 +408,39 @@ public abstract class DatabaseObject {
 
 	protected abstract boolean isIgnoredUpdateField(String name);
 
-	public abstract boolean databaseInsert(Connection conn);
+	/**
+	 * Checks if we should update or insert {@code this} object
+	 * based on if an entry for its Primary Key already exists
+	 * 
+	 * @param conn
+	 * 			A {@link Connection Database Connection}
+	 * @return True if the action was performed without erros, otherwise false
+	 */
+	public boolean updateOrInsert(Connection conn) {
+		try {
+			ResultSet rs = this.databaseSelect(conn);
+			if (rs == null) {
+				return false;
+			}
+			if (!rs.isBeforeFirst()) {
+				// No data so blind insert
+				return databaseInsert(conn);
+			} else {
+				return databaseUpdate(conn);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	protected abstract ResultSet databaseSelect(Connection conn) throws SQLException;
+	
+	protected abstract boolean databaseInsert(Connection conn);
+	
+	protected abstract boolean databaseUpdate(Connection conn);
+	
+	protected abstract void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException;
+	
+	public abstract void databaseDelete(Connection conn);
 }

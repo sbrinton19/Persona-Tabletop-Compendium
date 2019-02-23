@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +21,11 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ItemT
  *
  */
 public class FlatConsumable extends FlatItem {
-	private static String CONSUMABLESEARCH = null;
-	private static String CONSUMABLEINSERT = null;
-	private static String CONSUMABLEUPDATE = null;
+	private static String _CONSUMABLESEARCH = null;
+	@SuppressWarnings("unused")
+	private static String _CONSUMABLEINSERT = null;
+	@SuppressWarnings("unused")
+	private static String _CONSUMABLEUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatConsumable}
@@ -44,7 +47,7 @@ public class FlatConsumable extends FlatItem {
 	 *            A {@code byte} being used as a bit array to represent the
 	 *            sources this item can be obtained from (see
 	 *            {@link OriginType})
-	 * @param transmuteid
+	 * @param transmuteId
 	 *            The unique id of the persona that transmutes into this item,
 	 *            -1 if none do
 	 * @param consumableType
@@ -93,6 +96,7 @@ public class FlatConsumable extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -110,9 +114,14 @@ public class FlatConsumable extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatConsumable.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -126,14 +135,14 @@ public class FlatConsumable extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatConsumable.CONSUMABLESEARCH != null)
+		if (FlatConsumable._CONSUMABLESEARCH != null)
 			return;
-		FlatConsumable.CONSUMABLESEARCH = "SELECT * FROM item WHERE item.itemid = ? AND item.type = ?";
+		FlatConsumable._CONSUMABLESEARCH = "SELECT * FROM item WHERE item.id = ? AND item.type = ?";
 		String insertTemplate = "INSERT INTO item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatConsumable.class);
-		FlatConsumable.CONSUMABLEINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatConsumable.CONSUMABLEUPDATE = String.format(updateTemplate, built[2]);
+		FlatConsumable._CONSUMABLEINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatConsumable._CONSUMABLEUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -145,9 +154,10 @@ public class FlatConsumable extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("CONSUMABLEINSERT") || name.equals("CONSUMABLEUPDATE") || name.equals("CONSUMABLESEARCH")
-				|| name.equals("CONSUMABLEDELETE");
+		return name.equals("_CONSUMABLEINSERT") || name.equals("_CONSUMABLEUPDATE") || name.equals("_CONSUMABLESEARCH")
+				|| name.equals("_CONSUMABLEDELETE");
 	}
 
 	/**
@@ -158,6 +168,7 @@ public class FlatConsumable extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -172,6 +183,7 @@ public class FlatConsumable extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -189,6 +201,7 @@ public class FlatConsumable extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// FlatConsumable has no side table to update so nothing is ignored on
 		// update
@@ -204,8 +217,8 @@ public class FlatConsumable extends FlatItem {
 	 *         FlatConsumable's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectConsumable(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatConsumable.CONSUMABLESEARCH);
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatConsumable._CONSUMABLESEARCH);
 		search.setInt(1, getId());
 		search.setByte(2, getType().getValue());
 		ResultSet ret = search.executeQuery();
@@ -222,7 +235,7 @@ public class FlatConsumable extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
+	protected boolean databaseInsert(Connection conn) {
 		return super.databaseInsert(conn);
 	}
 
@@ -236,41 +249,8 @@ public class FlatConsumable extends FlatItem {
 	 *         otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
+	protected boolean databaseUpdate(Connection conn) {
 		return super.databaseUpdate(conn);
-	}
-
-	/**
-	 * Queries the consumable side table to see if we are updating or inserting
-	 * and then performs the appropriate action
-	 * 
-	 * NOTE: There is no consumable side table at this time so this is an unused
-	 * method
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	@SuppressWarnings("unused")
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
-		try {
-			ResultSet rs = this.databaseSelectConsumable(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatConsumable.CONSUMABLEINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatConsumable.CONSUMABLEUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -283,7 +263,8 @@ public class FlatConsumable extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		@SuppressWarnings("unused")
 		int bump = 0;
 		if (insert) {
@@ -302,7 +283,8 @@ public class FlatConsumable extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteConsumable(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

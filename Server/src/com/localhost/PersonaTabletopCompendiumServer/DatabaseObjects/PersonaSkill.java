@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,9 +24,9 @@ public class PersonaSkill extends DatabaseObject {
 	protected int personaid;
 	protected int skillid;
 	protected byte level;
-	private static String PERSONASKILLSEARCH = null;
-	private static String PERSONASKILLINSERT = null;
-	private static String PERSONASKILLUPDATE = null;
+	private static String _PERSONASKILLSEARCH = null;
+	private static String _PERSONASKILLINSERT = null;
+	private static String _PERSONASKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link PersonaSkill}
@@ -98,6 +99,7 @@ public class PersonaSkill extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -115,9 +117,14 @@ public class PersonaSkill extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, PersonaSkill.class);
 	}
 	
@@ -128,14 +135,14 @@ public class PersonaSkill extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (PersonaSkill.PERSONASKILLSEARCH != null)
+		if (PersonaSkill._PERSONASKILLSEARCH != null)
 			return;
-		PersonaSkill.PERSONASKILLSEARCH = "SELECT * FROM persona_skill WHERE persona_skill.personaid = ? AND persona_skill.skillid = ?";
+		PersonaSkill._PERSONASKILLSEARCH = "SELECT * FROM persona_skill WHERE persona_skill.personaid = ? AND persona_skill.skillid = ?";
 		String insertTemplate = "INSERT INTO persona_skill(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE persona_skill SET %s WHERE personaid = ? AND skillid = ?";
 		String[] built = fieldBuilder(PersonaSkill.class);
-		PersonaSkill.PERSONASKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		PersonaSkill.PERSONASKILLUPDATE = String.format(updateTemplate, built[2]);
+		PersonaSkill._PERSONASKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		PersonaSkill._PERSONASKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 	
 	/**
@@ -146,6 +153,7 @@ public class PersonaSkill extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -160,6 +168,7 @@ public class PersonaSkill extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -174,9 +183,10 @@ public class PersonaSkill extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("PERSONASKILLINSERT") || name.equals("PERSONASKILLUPDATE")
-				|| name.equals("PERSONASKILLSEARCH") || name.equals("PERSONASKILLDELETE");
+		return name.equals("_PERSONASKILLINSERT") || name.equals("_PERSONASKILLUPDATE")
+				|| name.equals("_PERSONASKILLSEARCH") || name.equals("_PERSONASKILLDELETE");
 	}
 
 	/**
@@ -191,13 +201,14 @@ public class PersonaSkill extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// We search on personaid, skillid so we don't update them
 		return name.equals("personaid") || name.equals("skillid");
 	}
 
 	/**
-	 * Searches the database for this {@link PersonaSkill PersonaSkill's} Primary Key
+	 * Searches the database for {@code this} {@link PersonaSkill PersonaSkill's} Primary Key
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -205,8 +216,9 @@ public class PersonaSkill extends DatabaseObject {
 	 *         this PersonaSkill's complete Primary Key
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectPersonaSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(PersonaSkill.PERSONASKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(PersonaSkill._PERSONASKILLSEARCH);
 		search.setInt(1, this.personaid);
 		search.setInt(2, this.skillid);
 		ResultSet ret = search.executeQuery();
@@ -215,16 +227,17 @@ public class PersonaSkill extends DatabaseObject {
 
 	/**
 	 * This method inserts {@code this} {@link PersonaSkill} into the persona_skill
-	 * 
+	 * table
 	 * @param conn
 	 *            A connection to the Database
 	 * @returns true if the insert completes successfully with no errors;
 	 *          otherwise false
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(PersonaSkill.PERSONASKILLINSERT);
+			insert = conn.prepareStatement(PersonaSkill._PERSONASKILLINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -235,16 +248,17 @@ public class PersonaSkill extends DatabaseObject {
 
 	/**
 	 * This method updates {@code this} {@link PersonaSkill PersonaSkill's} entry in the persona_skill
-	 * 
+	 * table
 	 * @param conn
 	 *            A connection to the Database
 	 * @return true if the update completes successfully with no errors,
 	 *         otherwise false
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(PersonaSkill.PERSONASKILLUPDATE);
+			update = conn.prepareStatement(PersonaSkill._PERSONASKILLUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -263,7 +277,8 @@ public class PersonaSkill extends DatabaseObject {
 	 *            Whether we are performing an insert or update
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.personaid);
@@ -285,7 +300,8 @@ public class PersonaSkill extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeletePersonaSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+		
 	}
 }

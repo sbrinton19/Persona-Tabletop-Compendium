@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +29,9 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	protected int allyCardId;
 	protected int mainCardId;
 	protected byte aoe;
-	private static String SKILLSEARCH = null;
-	private static String SKILLINSERT = null;
-	private static String SKILLUPDATE = null;
+	private static String _SKILLSEARCH = null;
+	private static String _SKILLINSERT = null;
+	private static String _SKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatSkill}
@@ -219,6 +220,7 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -236,9 +238,14 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, FlatSkill.class);
 	}
 	
@@ -249,14 +256,14 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatSkill.SKILLSEARCH != null)
+		if (FlatSkill._SKILLSEARCH != null)
 			return;
-		FlatSkill.SKILLSEARCH = "SELECT * FROM skill WHERE skill.id = ?";
+		FlatSkill._SKILLSEARCH = "SELECT * FROM skill WHERE skill.id = ?";
 		String insertTemplate = "INSERT INTO skill(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE skill SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatSkill.class);
-		FlatSkill.SKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatSkill.SKILLUPDATE = String.format(updateTemplate, built[2]);
+		FlatSkill._SKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatSkill._SKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -268,9 +275,10 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("SKILLINSERT") || name.equals("SKILLUPDATE") || name.equals("SKILLSEARCH")
-				|| name.equals("SKILLDELETE");
+		return name.equals("_SKILLINSERT") || name.equals("_SKILLUPDATE") || name.equals("_SKILLSEARCH")
+				|| name.equals("_SKILLDELETE");
 	}
 
 	/**
@@ -281,6 +289,7 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -295,6 +304,7 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -305,13 +315,14 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * update in the database. Note: This method does not check if a field is an
 	 * ignored field. So, this method should always be prefaced with
 	 * {@link #isIgnoredField(String name) isIgnoredField} to check for ignored
-	 * fieldss
+	 * fields
 	 * 
 	 * @param name
 	 *            Name of the field to be checked
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update, so don't update it
 		return name.equals("id");
@@ -326,8 +337,9 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 *         FlatSkill's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatSkill.SKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatSkill._SKILLSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
@@ -343,10 +355,11 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatSkill.SKILLINSERT);
+			insert = conn.prepareStatement(FlatSkill._SKILLINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -365,10 +378,11 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatSkill.SKILLUPDATE);
+			update = conn.prepareStatement(FlatSkill._SKILLUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -387,7 +401,8 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -417,8 +432,9 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 
 }

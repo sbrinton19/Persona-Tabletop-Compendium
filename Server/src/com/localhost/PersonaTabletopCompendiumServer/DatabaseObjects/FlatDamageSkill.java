@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,9 +27,9 @@ public class FlatDamageSkill extends FlatSkill {
 	protected DamageMultiplier multiplier;
 	protected byte damageBonus;
 	protected byte damageDie;
-	private static String DAMAGESKILLSEARCH = null;
-	private static String DAMAGESKILLINSERT = null;
-	private static String DAMAGESKILLUPDATE = null;
+	private static String _DAMAGESKILLSEARCH = null;
+	private static String _DAMAGESKILLINSERT = null;
+	private static String _DAMAGESKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatDamageSkill}
@@ -125,6 +126,7 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @return A complete description compiled from the values of this skill's
 	 *         fields
 	 */
+	@Override
 	public String getCompiledDescription(boolean replace) {
 		return getCompiledDescription(replace, "");
 	}
@@ -238,6 +240,7 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -255,9 +258,14 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatDamageSkill.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -271,14 +279,14 @@ public class FlatDamageSkill extends FlatSkill {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatDamageSkill.DAMAGESKILLSEARCH != null)
+		if (FlatDamageSkill._DAMAGESKILLSEARCH != null)
 			return;
-		FlatDamageSkill.DAMAGESKILLSEARCH = "SELECT * FROM damage_skill WHERE damage_skill.skillid = ?";
-		String insertTemplate = "INSERT INTO damage_skill(skillid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE damage_skill SET %s WHERE skillid = ?";
+		FlatDamageSkill._DAMAGESKILLSEARCH = "SELECT * FROM damage_skill WHERE damage_skill.skillId = ?";
+		String insertTemplate = "INSERT INTO damage_skill(skillId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE damage_skill SET %s WHERE skillId = ?";
 		String[] built = fieldBuilder(FlatDamageSkill.class);
-		FlatDamageSkill.DAMAGESKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatDamageSkill.DAMAGESKILLUPDATE = String.format(updateTemplate, built[2]);
+		FlatDamageSkill._DAMAGESKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatDamageSkill._DAMAGESKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -290,9 +298,10 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("DAMAGESKILLINSERT") || name.equals("DAMAGESKILLUPDATE") || name.equals("DAMAGESKILLSEARCH")
-				|| name.equals("DAMAGESKILLDELETE");
+		return name.equals("_DAMAGESKILLINSERT") || name.equals("_DAMAGESKILLUPDATE") || name.equals("_DAMAGESKILLSEARCH")
+				|| name.equals("_DAMAGESKILLDELETE");
 	}
 
 	/**
@@ -303,6 +312,7 @@ public class FlatDamageSkill extends FlatSkill {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -317,6 +327,7 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -334,6 +345,7 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatDamageSkill are updated
 		// in the side table during an UPDATE
@@ -347,79 +359,88 @@ public class FlatDamageSkill extends FlatSkill {
 	 * @param conn
 	 *            A connection to the Database
 	 * @return A {@link ResultSet} for a search in the damage_skill table for
-	 *         this FlatDamageSkill's skillId
+	 *         this FlatDamageSkill's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectDamageSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatDamageSkill.DAMAGESKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatDamageSkill._DAMAGESKILLSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatDamageSkill
-	 * FlatDamageSkill's} base data into the skill table and if successful, then
-	 * inserts the DamageSkill data into the damage_skill side table or updates
-	 * it if a matching orphan entry is found
+	 * This method inserts {@code this} {@link FlatDamageSkill FlatDamageSkill's}
+	 * data into the damage_skill side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
-	 * @return True if the action was performed without errors, otherwise false
+	 * @return True if the action was performed without errors, false otherwise
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * This method updates {@code this} {@link FlatDamageSkill
-	 * FlatDamageSkill's} entry in the skill table and if successful, then
-	 * updates its damage_skill side table entry or if there is no corresponding
-	 * side table entry, inserts it
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the damage_skill side table to see if we are updating or
-	 * inserting and then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
 		try {
-			ResultSet rs = this.databaseSelectDamageSkill(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatDamageSkill.DAMAGESKILLINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatDamageSkill.DAMAGESKILLUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			insert = conn.prepareStatement(FlatDamageSkill._DAMAGESKILLINSERT);
+			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * This method updates {@code this} {@link FlatDamageSkill FlatDamageSkill's}
+	 * entry in the damage_skill side table 
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, false otherwise
+	 */
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
+		try {
+			update = conn.prepareStatement(FlatDamageSkill._DAMAGESKILLUPDATE);
+			insertUpdate(update, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * First checks the skill table for an entry for {@code this} skill's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the damage_skill table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -432,7 +453,8 @@ public class FlatDamageSkill extends FlatSkill {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -458,7 +480,8 @@ public class FlatDamageSkill extends FlatSkill {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteDamageSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

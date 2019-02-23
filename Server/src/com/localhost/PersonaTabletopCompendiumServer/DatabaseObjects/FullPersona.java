@@ -1,10 +1,8 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 
-import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseHandler;
 import com.localhost.PersonaTabletopCompendiumServer.Common.FusionCalculator;
@@ -75,20 +73,13 @@ public class FullPersona extends FlatPersona {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
 		write(out, FullPersona.class);
 	}
 	
-	/**
-	 * Never call this method under any circumstances
-	 */
-	@Override
-	public void read(JsonReader in, String name) throws IOException, IllegalArgumentException, IllegalAccessException {
-		return;
-	}
-
 	/**
 	 * Shorthand function to check if a given field should not be considered
 	 * when writing to JSON
@@ -98,6 +89,7 @@ public class FullPersona extends FlatPersona {
 	 * @return false if the field is one to write, true if it should be
 	 *         ignored when writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
 		// Ignore helper
 		return name.equals("helper");
@@ -111,6 +103,7 @@ public class FullPersona extends FlatPersona {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// All of these fields should only be written to JSON
 		return true;
@@ -125,22 +118,9 @@ public class FullPersona extends FlatPersona {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
-		return false;
-	}
-	
-	/**
-	 * This function should never be used
-	 */
-	protected boolean isIgnoredUpdateField(String name) {
-		return true;
-	}
-	
-	/**
-	 * Never call this method under any circumstances
-	 */
-	public boolean databaseInsert(Connection conn) {
 		return false;
 	}
 }

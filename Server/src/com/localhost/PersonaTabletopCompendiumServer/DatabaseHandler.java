@@ -20,20 +20,20 @@ import com.mysql.cj.jdbc.MysqlDataSource;
  *
  */
 public class DatabaseHandler {
-	private static DatabaseHandler singleton;
-	private Connection conn = null;
-	private String user;
-	private String pass;
+	private static DatabaseHandler _SINGLETON;
+	private Connection _conn = null;
+	private String _user;
+	private String _pass;
 
 	private DatabaseHandler() {
 		initDB();
 	}
 
 	public static DatabaseHandler getHandler() {
-		if (singleton == null) {
-			singleton = new DatabaseHandler();
+		if (_SINGLETON == null) {
+			_SINGLETON = new DatabaseHandler();
 		}
-		return singleton;
+		return _SINGLETON;
 	}
 
 	/**
@@ -42,21 +42,21 @@ public class DatabaseHandler {
 	 */
 	public void refreshConnection() {
 		try {
-			this.conn.prepareStatement("SELECT 1 FROM item");
+			this._conn.prepareStatement("SELECT 1 FROM item");
 		} catch (Exception e) {
-			this.conn = null;
-			while (this.conn == null) {
+			this._conn = null;
+			while (this._conn == null) {
 				MysqlDataSource ds = new MysqlDataSource();
-				ds.setUser(this.user);
-				ds.setPassword(this.pass);
+				ds.setUser(this._user);
+				ds.setPassword(this._pass);
 				ds.setServerName("localhost");
 				ds.setPortNumber(9129);
 				ds.setDatabaseName("persona_tabletop_compendium");
 				try {
-					this.conn = ds.getConnection();
+					this._conn = ds.getConnection();
 				} catch (SQLException e2) {
 					e2.printStackTrace();
-					this.conn = null;
+					this._conn = null;
 				}
 			}
 		}
@@ -65,22 +65,22 @@ public class DatabaseHandler {
 	// Quick and dirty DB connection initializer
 	private void initDB() {
 		Scanner scanner = new Scanner(System.in);
-		while (this.conn == null) {
+		while (this._conn == null) {
 			System.out.println("Please input DB username");
-			this.user = scanner.nextLine();
+			this._user = scanner.nextLine();
 			System.out.println("Please input DB password");
-			this.pass = scanner.nextLine();
+			this._pass = scanner.nextLine();
 			MysqlDataSource ds = new MysqlDataSource();
-			ds.setUser(this.user);
-			ds.setPassword(this.pass);
+			ds.setUser(this._user);
+			ds.setPassword(this._pass);
 			ds.setServerName("localhost");
 			ds.setPortNumber(9129);
 			ds.setDatabaseName("persona_tabletop_compendium");
 			try {
-				this.conn = ds.getConnection();
+				this._conn = ds.getConnection();
 			} catch (SQLException e) {
 				e.printStackTrace();
-				this.conn = null;
+				this._conn = null;
 			}
 		}
 		scanner.close();
@@ -128,7 +128,7 @@ public class DatabaseHandler {
 			idsToInClause(ids, sb);
 		}
 		try {
-			PreparedStatement search = conn.prepareStatement(sb.toString());
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				personaList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
@@ -155,19 +155,7 @@ public class DatabaseHandler {
 	public boolean addPersona(FlatPersona persona) {
 		if (persona == null)
 			return false;
-		ResultSet rs;
-		try {
-			rs = persona.databaseSelectPersona(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return persona.databaseInsert(conn);
-			} else {
-				return persona.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return persona.updateOrInsert(_conn);
 	}
 
 	/**
@@ -249,7 +237,7 @@ public class DatabaseHandler {
 				sb.append(")");
 			}
 			sb.append(
-					" skill INNER JOIN ailment_skill ON skill.id=ailment_skill.skillId) ailment INNER JOIN damage_skill ON ailment.id=damage_skill.skillId");
+					" skill INNER JOIN ailment_skill ON skill.id=ailment_skill.skillId) ailment INNER JOIN damage_skill ON ailment.skillId=damage_skill.skillId");
 		} else if (clazz == FlatAilmentSkill.class) {
 			sb.append("(SELECT * FROM skill WHERE skill.");
 			if (ids.length == 0) {
@@ -276,7 +264,7 @@ public class DatabaseHandler {
 			sb.append("skill INNER JOIN passive_skill ON skill.id=passive_skill.skillId");
 		}
 		try {
-			PreparedStatement search = conn.prepareStatement(sb.toString());
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				skillList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
@@ -301,18 +289,7 @@ public class DatabaseHandler {
 	public boolean addSkill(FlatSkill skill) {
 		if (skill == null)
 			return false;
-		try {
-			ResultSet rs = skill.databaseSelectSkill(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return skill.databaseInsert(conn);
-			} else {
-				return skill.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return skill.updateOrInsert(_conn);
 	}
 	
 
@@ -341,21 +318,21 @@ public class DatabaseHandler {
 		if (clazz == FlatWeapon.class) {
 			if (ids.length == 0) {
 				sb.append(
-						"(SELECT * FROM weapon WHERE weapon.magSize IS NULL) unranged INNER JOIN item ON unranged.itemid=item.id");
+						"(SELECT * FROM weapon WHERE weapon.magSize IS NULL) unranged INNER JOIN item ON unranged.itemId=item.id");
 			} else {
-				sb.append("item INNER JOIN weapon ON item.id=weapon.itemid");
+				sb.append("item INNER JOIN weapon ON item.id=weapon.itemId");
 			}
 		} else if (clazz == FlatRangedWeapon.class) {
 			if (ids.length == 0) {
 				sb.append(
-						"(SELECT * FROM weapon WHERE weapon.magSize IS NOT NULL) unranged INNER JOIN item ON unranged.itemid=item.id");
+						"(SELECT * FROM weapon WHERE weapon.magSize IS NOT NULL) unranged INNER JOIN item ON unranged.itemId=item.id");
 			} else {
-				sb.append("item INNER JOIN weapon ON item.id=weapon.itemid");
+				sb.append("item INNER JOIN weapon ON item.id=weapon.itemId");
 			}
 		} else if (clazz == FlatArmor.class) {
-			sb.append("item INNER JOIN armor ON item.id=armor.itemid");
+			sb.append("item INNER JOIN armor ON item.id=armor.itemId");
 		} else if (clazz == FlatLoot.class) {
-			sb.append("item INNER JOIN loot ON item.id=loot.itemid");
+			sb.append("item INNER JOIN loot ON item.id=loot.itemId");
 		} else if (clazz == FlatAccessory.class) {
 			sb.append("item ");
 			if (ids.length == 0) {
@@ -388,7 +365,7 @@ public class DatabaseHandler {
 			}
 		}
 		try {
-			PreparedStatement search = conn.prepareStatement(sb.toString());
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				itemList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
@@ -413,18 +390,7 @@ public class DatabaseHandler {
 	public boolean addItem(FlatItem item) {
 		if (item == null)
 			return false;
-		try {
-			ResultSet rs = item.databaseSelectItem(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return item.databaseInsert(conn);
-			} else {
-				return item.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return item.updateOrInsert(_conn);
 	}
 	
 	/**
@@ -449,7 +415,7 @@ public class DatabaseHandler {
 			idsToInClause(ids, sb);
 		}
 		try {
-			PreparedStatement search = conn.prepareStatement(sb.toString());
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				activityList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
@@ -474,18 +440,7 @@ public class DatabaseHandler {
 	public boolean addActivity(FlatActivity activity) {
 		if (activity == null)
 			return false;
-		try {
-			ResultSet rs = activity.databaseSelectActivity(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return activity.databaseInsert(conn);
-			} else {
-				return activity.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return activity.updateOrInsert(_conn);
 	}
 
 	/**
@@ -498,18 +453,7 @@ public class DatabaseHandler {
 	public boolean addVendor(FlatVendor vendor) {
 		if (vendor == null)
 			return false;
-		try {
-			ResultSet rs = vendor.databaseSelectVendor(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return vendor.databaseInsert(conn);
-			} else {
-				return vendor.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return vendor.updateOrInsert(_conn);
 	}
 	
 	/**
@@ -522,18 +466,7 @@ public class DatabaseHandler {
 	public boolean addVendorItem(FlatVendorItem vendorItem) {
 		if (vendorItem == null)
 			return false;
-		try {
-			ResultSet rs = vendorItem.databaseSelectVendorItem(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return vendorItem.databaseInsert(conn);
-			} else {
-				return vendorItem.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return vendorItem.updateOrInsert(_conn);
 	}
 	
 	/**
@@ -558,7 +491,7 @@ public class DatabaseHandler {
 			idsToInClause(ids, sb);
 		}
 		try {
-			PreparedStatement search = conn.prepareStatement(sb.toString());
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				restrictionList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
@@ -607,8 +540,8 @@ public class DatabaseHandler {
 	private Restriction[] getBoundRestrictionsAsRestrictions(int bindingId, BoundType bindingType) {
 		ArrayList<Restriction> restrictionList = new ArrayList<Restriction>();
 		try {
-			PreparedStatement search = conn
-					.prepareStatement("SELECT * FROM (SELECT restrictionid FROM bound_restriction WHERE boundid=? AND type=?) binded INNER JOIN restriction ON binded.restrictionid=restriction.id");
+			PreparedStatement search = _conn
+					.prepareStatement("SELECT * FROM (SELECT restrictionId FROM bound_restriction WHERE boundId=? AND type=?) binded INNER JOIN restriction ON binded.restrictionId=restriction.id");
 			search.setInt(1, bindingId);
 			search.setByte(2, bindingType.getValue());
 			ResultSet rs = search.executeQuery();
@@ -634,18 +567,7 @@ public class DatabaseHandler {
 	public boolean addRestriction(Restriction restriction) {
 		if (restriction == null)
 			return false;
-		try {
-			ResultSet rs = restriction.databaseSelectRestriction(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return restriction.databaseInsert(conn);
-			} else {
-				return restriction.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return restriction.updateOrInsert(_conn);
 	}
 	
 	/**
@@ -658,18 +580,7 @@ public class DatabaseHandler {
 	public boolean addBoundRestriction(BoundRestriction boundRestriction) {
 		if (boundRestriction == null)
 			return false;
-		try {
-			ResultSet rs = boundRestriction.databaseSelectBoundRestriction(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return boundRestriction.databaseInsert(conn);
-			} else {
-				return boundRestriction.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return boundRestriction.updateOrInsert(_conn);
 	}
 
 	/**
@@ -678,32 +589,26 @@ public class DatabaseHandler {
 	public Recipe[] getSpecialRecipes() {
 		ArrayList<Recipe> special = new ArrayList<Recipe>();
 		try {
-			PreparedStatement findRecipe = conn.prepareStatement("SELECT * FROM recipe");
+			PreparedStatement findRecipe = _conn.prepareStatement("SELECT * FROM recipe");
 			ResultSet recipes = findRecipe.executeQuery();
 			while (recipes.next()) {
-				PreparedStatement getPersonaRef = conn.prepareStatement(
-						"SELECT persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
-				int resultid = recipes.getInt("result");
-				getPersonaRef.setInt(1, resultid);
+				PreparedStatement getPersonaRef = _conn.prepareStatement(
+						"SELECT persona.id, persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
+				int resultId = recipes.getInt("result");
+				getPersonaRef.setInt(1, resultId);
 				ResultSet resultResult = getPersonaRef.executeQuery();
 				resultResult.next();
-				String resultName = resultResult.getString("name");
-				byte resultLevel = resultResult.getByte("level");
-				byte resultArcana = resultResult.getByte("arcana");
-				PersonaReference result = new PersonaReference(resultid, resultName, resultLevel, resultArcana);
+				PersonaReference result = new PersonaReference(resultResult);
 				PersonaReference[] source = new PersonaReference[7];
 				for (int i = 1; i < 8; i++) {
-					int personaid = recipes.getInt("sources" + i);
+					int personaId = recipes.getInt("sources" + i);
 					if (recipes.wasNull()) {
 						break;
 					} else {
-						getPersonaRef.setInt(1, personaid);
+						getPersonaRef.setInt(1, personaId);
 						ResultSet nameResult = getPersonaRef.executeQuery();
 						nameResult.next();
-						String personaname = nameResult.getString("name");
-						byte personalevel = nameResult.getByte("level");
-						byte personaArcana = nameResult.getByte("arcana");
-						source[i - 1] = new PersonaReference(personaid, personaname, personalevel, personaArcana);
+						source[i - 1] = new PersonaReference(nameResult);
 					}
 				}
 				special.add(new Recipe(result, source));
@@ -728,12 +633,12 @@ public class DatabaseHandler {
 		ArrayList<LeveledSkill> skillList = new ArrayList<LeveledSkill>();
 		try {
 			// Get the actual skills
-			PreparedStatement search = conn.prepareStatement(
-					"SELECT persona_skill.skillid, persona_skill.level FROM persona_skill WHERE persona_skill.personaid = ? ORDER BY persona_skill.level ASC");
+			PreparedStatement search = _conn.prepareStatement(
+					"SELECT persona_skill.skillId, persona_skill.level FROM persona_skill WHERE persona_skill.personaId = ? ORDER BY persona_skill.level ASC");
 			search.setInt(1, personaid);
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
-				int skillid = rs.getInt("skillid");
+				int skillId = rs.getInt("skillId");
 				byte level = rs.getByte("level");
 				// The class of a skill is ambiguous because of DamageSkill &
 				// DamageAilmentSkill
@@ -742,33 +647,34 @@ public class DatabaseHandler {
 				// skill is a DamageAilmentSkill
 				// This removes the ambiguity and lets us get all of a skill's
 				// data correctly
-				PreparedStatement skillTypeSearch = conn.prepareStatement(
-						"SELECT skill.element, ailment_skill.skillId FROM (SELECT skill.element FROM skill WHERE skill.id=?) skill LEFT JOIN ailment_skill ON ?=ailment_skill.skillid");
-				skillTypeSearch.setInt(1, skillid);
-				skillTypeSearch.setInt(2, skillid);
+				PreparedStatement skillTypeSearch = _conn.prepareStatement(
+						"SELECT skill.element, ailment_skill.skillId FROM (SELECT skill.element FROM skill WHERE skill.id=?) skill LEFT JOIN ailment_skill ON ?=ailment_skill.skillId");
+				skillTypeSearch.setInt(1, skillId);
+				skillTypeSearch.setInt(2, skillId);
 				ResultSet skillTypeResult = skillTypeSearch.executeQuery();
 				if (skillTypeResult.isBeforeFirst()) {
 					skillTypeResult.next();
 					Element skillElement = Element.fromByteStatic(skillTypeResult.getByte("element"));
+					// The following two lines are interdependent wasNull checks the last value retrieved
 					skillTypeResult.getInt("skillId");
 					boolean hasAilment = !skillTypeResult.wasNull();
 					FlatSkill skill;
 					if (skillElement != Element.AILMENT && hasAilment) {
 						// DamageAilmentSkill
-						skill = getSkills(FlatDamageAilmentSkill.class, new int[] { skillid })[0];
+						skill = getSkills(FlatDamageAilmentSkill.class, new int[] { skillId })[0];
 					} else if (skillElement == Element.SUPPORT) {
-						skill = getSkills(FlatSupportSkill.class, new int[] { skillid })[0];
+						skill = getSkills(FlatSupportSkill.class, new int[] { skillId })[0];
 					} else if (skillElement == Element.AILMENT) {
-						skill = getSkills(FlatAilmentSkill.class, new int[] { skillid })[0];
+						skill = getSkills(FlatAilmentSkill.class, new int[] { skillId })[0];
 					} else if (skillElement == Element.PASSIVE) {
-						skill = getSkills(FlatPassiveSkill.class, new int[] { skillid })[0];
+						skill = getSkills(FlatPassiveSkill.class, new int[] { skillId })[0];
 					} else {
-						skill = getSkills(FlatDamageSkill.class, new int[] { skillid })[0];
+						skill = getSkills(FlatDamageSkill.class, new int[] { skillId })[0];
 					}
 					skill.getCompiledDescription(true);
 					skillList.add(new LeveledSkill(skill, level));
 				} else {
-					System.err.println(String.format("Unable to find a table entry for skillid %d", skillid));
+					System.err.println(String.format("Unable to find a table entry for skill id %d", skillId));
 				}
 			}
 			LeveledSkill[] temp = new LeveledSkill[skillList.size()];
@@ -790,36 +696,25 @@ public class DatabaseHandler {
 	public boolean addPersonaSkill(PersonaSkill personaSkill) {
 		if (personaSkill == null)
 			return false;
-		try {
-			ResultSet rs = personaSkill.databaseSelectPersonaSkill(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return personaSkill.databaseInsert(conn);
-			} else {
-				return personaSkill.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return personaSkill.updateOrInsert(_conn);
 	}
 	
 	/**
 	 * Get the drops and negotiates for a persona
 	 * 
-	 * @param personaid
+	 * @param personaId
 	 *            The id of the persona to get drops and negotiates for
 	 * @return A double-array, outer array index 0 is drops, outer array index 1
 	 *         is negotiates
 	 */
-	public DropReference[][] getBothDrops(int personaid) {
+	public DropReference[][] getBothDrops(int personaId) {
 		DropReference[][] bothDrops = new DropReference[2][];
 		ArrayList<DropReference> dropList = new ArrayList<DropReference>();
 		ArrayList<DropReference> negotList = new ArrayList<DropReference>();
 		try {
-			PreparedStatement search = conn.prepareStatement(
-					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.personaid=?) drop_table INNER JOIN item ON drop_table.itemid=item.id ORDER BY drop_table.low ASC");
-			search.setInt(1, personaid);
+			PreparedStatement search = _conn.prepareStatement(
+					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.personaId=?) drop_table INNER JOIN item ON drop_table.itemId=item.id ORDER BY drop_table.low ASC");
+			search.setInt(1, personaId);
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				boolean isDrop = rs.getBoolean("isDrop");
@@ -852,37 +747,26 @@ public class DatabaseHandler {
 	public boolean addDrop(Drop drop) {
 		if (drop == null)
 			return false;
-		try {
-			ResultSet rs = drop.databaseSelectDrop(conn);
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				return drop.databaseInsert(conn);
-			} else {
-				return drop.databaseUpdate(conn);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return drop.updateOrInsert(_conn);
 	}
 	
 	/**
 	 * Get the transmutes of a persona
 	 * 
-	 * @param personaid
+	 * @param personaId
 	 *            The id of the persona to get the transmutes of
 	 * @return An array of size 4 containing the transmutes of the requested
 	 *         persona of the order [Weapon, Armor, Accessory, SkillCard]. If
 	 *         one does not exist for the persona, it uses a dummy entry to fill
 	 *         out the array
 	 */
-	public ItemReference[] getTransmutes(int personaid) {
+	public ItemReference[] getTransmutes(int personaId) {
 		ItemReference empty = new ItemReference(0, "-");
 		ItemReference[] transmutes = new ItemReference[] { empty, empty, empty, empty };
 		try {
-			PreparedStatement search = conn
+			PreparedStatement search = _conn
 					.prepareStatement("SELECT item.id, item.name, item.type FROM item WHERE item.transmuteId=?");
-			search.setInt(1, personaid);
+			search.setInt(1, personaId);
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				ItemType type = ItemType.fromByteStatic(rs.getByte("type"));
@@ -901,7 +785,7 @@ public class DatabaseHandler {
 					transmutes[3] = item;
 					break;
 				default:
-					System.err.println("When attempting to retreive transmutes for " + personaid
+					System.err.println("When attempting to retreive transmutes for " + personaId
 							+ " found a transmute of unexpected type " + type.toString());
 					break;
 				}
@@ -917,7 +801,7 @@ public class DatabaseHandler {
 	 * Get the full version of the requested skills
 	 * 
 	 * @param ids
-	 *            An array of skillids to retrieve
+	 *            An array of skill ids to retrieve
 	 * @return An array of the {@link FullSkill} representations of the
 	 *         requested skills
 	 */
@@ -934,7 +818,7 @@ public class DatabaseHandler {
 				sb.append(" WHERE skill.id ");
 				idsToInClause(ids, sb);
 			}
-			sb.append(") skill LEFT JOIN ailment_skill ON skill.id=ailment_skill.skillid");
+			sb.append(") skill LEFT JOIN ailment_skill ON skill.id=ailment_skill.skillId");
 			// The class of a skill is ambiguous because of DamageSkill &
 			// DamageAilmentSkill
 			// But any skill with an ailment_skill entry that is not an
@@ -942,30 +826,31 @@ public class DatabaseHandler {
 			// skill is a DamageAilmentSkill
 			// This removes the ambiguity and lets us get all of a skill's
 			// data correctly
-			PreparedStatement skillTypeSearch = conn.prepareStatement(sb.toString());
+			PreparedStatement skillTypeSearch = _conn.prepareStatement(sb.toString());
 			ResultSet skillTypeResult = skillTypeSearch.executeQuery();
 			while (skillTypeResult.next()) {
 				Element skillElement = Element.fromByteStatic(skillTypeResult.getByte("element"));
-				int skillid = skillTypeResult.getInt("id");
+				int skillId = skillTypeResult.getInt("id");
+				// The following two lines are interdependent wasNull checks the last value retrieved
 				skillTypeResult.getInt("skillId");
 				boolean hasAilment = !skillTypeResult.wasNull();
 				FlatSkill skill;
 				if (skillElement != Element.AILMENT && hasAilment) {
 					// DamageAilmentSkill
-					skill = getSkills(FlatDamageAilmentSkill.class, new int[] { skillid })[0];
+					skill = getSkills(FlatDamageAilmentSkill.class, new int[] { skillId })[0];
 				} else if (skillElement == Element.SUPPORT) {
-					skill = getSkills(FlatSupportSkill.class, new int[] { skillid })[0];
+					skill = getSkills(FlatSupportSkill.class, new int[] { skillId })[0];
 				} else if (skillElement == Element.AILMENT) {
-					skill = getSkills(FlatAilmentSkill.class, new int[] { skillid })[0];
+					skill = getSkills(FlatAilmentSkill.class, new int[] { skillId })[0];
 				} else if (skillElement == Element.PASSIVE) {
-					skill = getSkills(FlatPassiveSkill.class, new int[] { skillid })[0];
+					skill = getSkills(FlatPassiveSkill.class, new int[] { skillId })[0];
 				} else {
-					skill = getSkills(FlatDamageSkill.class, new int[] { skillid })[0];
+					skill = getSkills(FlatDamageSkill.class, new int[] { skillId })[0];
 				}
 				skill.getCompiledDescription(true);
-				PreparedStatement persona = conn.prepareStatement(
-						"SELECT persona_skill.level, persona.id, persona.name, persona.arcana FROM (SELECT persona_skill.personaid, persona_skill.level FROM persona_skill WHERE persona_skill.skillid=?) persona_skill INNER JOIN persona ON persona_skill.personaid=persona.id");
-				persona.setInt(1, skillid);
+				PreparedStatement persona = _conn.prepareStatement(
+						"SELECT persona_skill.level, persona.id, persona.name, persona.arcana FROM (SELECT persona_skill.personaid, persona_skill.level FROM persona_skill WHERE persona_skill.skillId=?) persona_skill INNER JOIN persona ON persona_skill.personaid=persona.id");
+				persona.setInt(1, skillId);
 				ResultSet learningPersonae = persona.executeQuery();
 				ArrayList<PersonaReference> refs = new ArrayList<PersonaReference>();
 				while (learningPersonae.next()) {
@@ -988,7 +873,7 @@ public class DatabaseHandler {
 	 * Get the full version of the requested items
 	 * 
 	 * @param ids
-	 *            An array of itemids to retrieve
+	 *            An array of item ids to retrieve
 	 * @return An array of the {@link FullItem} representations of the
 	 *         requested items
 	 */
@@ -1004,52 +889,52 @@ public class DatabaseHandler {
 				sb.append(" WHERE item.id ");
 				idsToInClause(ids, sb);
 			}
-			PreparedStatement itemTypeSearch = conn.prepareStatement(sb.toString());
+			PreparedStatement itemTypeSearch = _conn.prepareStatement(sb.toString());
 			
 			ResultSet itemTypeResult = itemTypeSearch.executeQuery();
 			while (itemTypeResult.next()) {
 				ItemType itemType = ItemType.fromByteStatic(itemTypeResult.getByte("type"));
-				int itemid = itemTypeResult.getInt("id");
+				int itemId = itemTypeResult.getInt("id");
 				FlatItem item = null;
 				switch (itemType) {
 					case ACCESSORY:
-						item = getItems(FlatAccessory.class, new int[] { itemid })[0];
+						item = getItems(FlatAccessory.class, new int[] { itemId })[0];
 						break;
 					case ARMOR:
-						item = getItems(FlatArmor.class, new int[] { itemid })[0];
+						item = getItems(FlatArmor.class, new int[] { itemId })[0];
 						break;
 					case CONSUMABLE:
-						item = getItems(FlatConsumable.class, new int[] { itemid })[0];
+						item = getItems(FlatConsumable.class, new int[] { itemId })[0];
 						break;
 					case LOOT:
-						item = getItems(FlatLoot.class, new int[] { itemid })[0];
+						item = getItems(FlatLoot.class, new int[] { itemId })[0];
 						break;
 					case SKILLCARD:
-						item = getItems(FlatSkillCard.class, new int[] { itemid })[0];
+						item = getItems(FlatSkillCard.class, new int[] { itemId })[0];
 						break;
 					case STATBOOST:
-						item = getItems(FlatStatBoostItem.class, new int[] { itemid })[0];
+						item = getItems(FlatStatBoostItem.class, new int[] { itemId })[0];
 						break;
 					case TRAITBOOST:
-						item = getItems(FlatTraitBoostItem.class, new int[] { itemid })[0];
+						item = getItems(FlatTraitBoostItem.class, new int[] { itemId })[0];
 						break;
 					case WEAPON:
-						item = getItems(FlatWeapon.class, new int[] { itemid })[0];
+						item = getItems(FlatWeapon.class, new int[] { itemId })[0];
 						break;
 					default:
 						break;
 				}
 				PersonaReference transmutePersonaRef = null;
 				if (item.getTransmuteId() != -1) {
-					PreparedStatement transmute = conn.prepareStatement("SELECT persona.id, persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
+					PreparedStatement transmute = _conn.prepareStatement("SELECT persona.id, persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
 					transmute.setInt(1, item.getTransmuteId());
 					ResultSet transmutePersona = transmute.executeQuery();
 					transmutePersona.next();
 					transmutePersonaRef = new PersonaReference(transmutePersona);
 				}
-				PreparedStatement persona = conn.prepareStatement(
-						"SELECT drop_table.isDrop, persona.id, persona.name, persona.level, persona.arcana FROM (SELECT drop_table.personaid, drop_table.isDrop FROM drop_table WHERE drop_table.itemid=?) drop_table INNER JOIN persona ON drop_table.personaid=persona.id");
-				persona.setInt(1, itemid);
+				PreparedStatement persona = _conn.prepareStatement(
+						"SELECT drop_table.isDrop, persona.id, persona.name, persona.level, persona.arcana FROM (SELECT drop_table.personaId, drop_table.isDrop FROM drop_table WHERE drop_table.itemId=?) drop_table INNER JOIN persona ON drop_table.personaId=persona.id");
+				persona.setInt(1, itemId);
 				ResultSet sourcePersonae = persona.executeQuery();
 				ArrayList<PersonaReference> dropRefs = new ArrayList<PersonaReference>();
 				ArrayList<PersonaReference> negotRefs = new ArrayList<PersonaReference>();
@@ -1065,9 +950,9 @@ public class DatabaseHandler {
 				PersonaReference[] negotRefTemp = new PersonaReference[negotRefs.size()];
 				dropRefs.toArray(dropRefTemp);
 				negotRefs.toArray(negotRefTemp);
-				PreparedStatement vendor = conn.prepareStatement(
+				PreparedStatement vendor = _conn.prepareStatement(
 						"SELECT vendor.id, vendor.name, vendor_item.cost, vendor_item.id AS vendorItemId FROM (SELECT vendor_item.id, vendor_item.vendorId, vendor_item.cost FROM vendor_item WHERE vendor_item.itemId=?) vendor_item INNER JOIN vendor ON vendor_item.vendorId=vendor.id");
-				vendor.setInt(1, itemid);
+				vendor.setInt(1, itemId);
 				ResultSet vendors = vendor.executeQuery();
 				ArrayList<VendorItemReference> vendorRefs = new ArrayList<VendorItemReference>();
 				while (vendors.next()) {
@@ -1098,7 +983,7 @@ public class DatabaseHandler {
 	public FullVendor[] getShoppingVendors(int activityId) {
 		ArrayList<FullVendor> vendors = new ArrayList<FullVendor>();
 		try {
-			PreparedStatement search = conn
+			PreparedStatement search = _conn
 					.prepareStatement("SELECT * FROM vendor WHERE activityId=?");
 			search.setInt(1, activityId);
 			ResultSet rs = search.executeQuery();
@@ -1124,7 +1009,7 @@ public class DatabaseHandler {
 	public VendorItemReference[] getItemsForVendor(int vendorId) {
 		ArrayList<VendorItemReference> vendorItems = new ArrayList<VendorItemReference>();
 		try {
-			PreparedStatement search = conn
+			PreparedStatement search = _conn
 					.prepareStatement("SELECT vendorItem.id as vendorItemId, vendorItem.cost as cost, item.id as id, item.name as name FROM (SELECT * FROM vendor_item WHERE vendor_item.vendorId=?) vendorItem INNER JOIN item ON vendorItem.itemId= item.id");
 			search.setInt(1, vendorId);
 			ResultSet rs = search.executeQuery();

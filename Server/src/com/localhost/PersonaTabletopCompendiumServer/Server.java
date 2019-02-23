@@ -25,8 +25,8 @@ import com.localhost.PersonaTabletopCompendiumServer.ProtocolObjects.Enums.Proto
  *
  */
 public class Server extends WebSocketServer {
-	private DatabaseHandler dbh;
-	private Gson gson;
+	private DatabaseHandler _dbh;
+	private Gson _gson;
 
 	/**
 	 * Make a Server to service database requests
@@ -34,7 +34,7 @@ public class Server extends WebSocketServer {
 	 */
 	public Server(InetSocketAddress address) {
 		super(address);
-		dbh = DatabaseHandler.getHandler();
+		_dbh = DatabaseHandler.getHandler();
 		GsonBuilder gsonB = new GsonBuilder();
 		gsonB
 			.registerTypeAdapter(FlatPersona.class, new FlatPersonaTypeAdapter())
@@ -65,7 +65,7 @@ public class Server extends WebSocketServer {
 			.registerTypeAdapter(FullSkill.class, new FullSkillTypeAdapter())
 			.registerTypeAdapter(FullActivity.class, new FullActivityTypeAdapter())
 			.setPrettyPrinting();
-		gson = gsonB.create();
+		_gson = gsonB.create();
 		FusionCalculator.getCalculator();
 	}
 
@@ -84,21 +84,21 @@ public class Server extends WebSocketServer {
 	public void onMessage(WebSocket conn, String message) {
 		System.out.println("received message from " + conn.getRemoteSocketAddress() + ": " + message);
 		ProtocolMessage pMess = new ProtocolMessage(message);
-		dbh.refreshConnection();
+		_dbh.refreshConnection();
 		if (pMess.getCommand() == ProtocolCommand.GET) {
-			int[] ids = (int[]) gson.fromJson(pMess.getPayload(), int[].class);
+			int[] ids = (int[]) _gson.fromJson(pMess.getPayload(), int[].class);
 			// An empty array signifies a request for all entries
 			if (FlatPersona.class.isAssignableFrom(pMess.getResolvedClass())) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getPersonae(pMess.getResolvedClass(), ids);
+					result = _dbh.getPersonae(pMess.getResolvedClass(), ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 
@@ -106,12 +106,12 @@ public class Server extends WebSocketServer {
 				int retry = 0;
 				FullSkill[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getFullSkills(ids);
+					result = _dbh.getFullSkills(ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
-					Server.sendResponseWithPayload(conn, "FullSkill[]", gson.toJson(result));
+					Server.sendResponseWithPayload(conn, "FullSkill[]", _gson.toJson(result));
 				}
 				return;
 			} else if (pMess.getResolvedClass() == FlatSkill.class) {
@@ -119,132 +119,132 @@ public class Server extends WebSocketServer {
 				FlatSkill[] result = null;
 				if (ids.length == 0) {
 					while (result == null && retry++ < 5) {
-						result = dbh.getAllSkills();
+						result = _dbh.getAllSkills();
 					}
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
-					Server.sendResponseWithPayload(conn, "FlatSkill[]", gson.toJson(result));
+					Server.sendResponseWithPayload(conn, "FlatSkill[]", _gson.toJson(result));
 				}
 				return;
 			} else if (FlatSkill.class.isAssignableFrom(pMess.getResolvedClass())) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getSkills(pMess.getResolvedClass(), ids);
+					result = _dbh.getSkills(pMess.getResolvedClass(), ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 			} else if (FullItem.class == pMess.getResolvedClass()) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getFullItems(ids);
+					result = _dbh.getFullItems(ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 			} else if (FlatItem.class.isAssignableFrom(pMess.getResolvedClass())) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getItems(pMess.getResolvedClass(), ids);
+					result = _dbh.getItems(pMess.getResolvedClass(), ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 			} else if (FlatActivity.class.isAssignableFrom(pMess.getResolvedClass())) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getActivities(pMess.getResolvedClass(), ids);
+					result = _dbh.getActivities(pMess.getResolvedClass(), ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 			} else if (Restriction.class == pMess.getResolvedClass()) {
 				int retry = 0;
 				Object[] result = null;
 				while (result == null && retry++ < 5) {
-					result = dbh.getRestrictions(pMess.getResolvedClass(), ids);
+					result = _dbh.getRestrictions(pMess.getResolvedClass(), ids);
 				}
 				if (result == null) {
 					conn.send("Failed to read database");
 				} else {
 					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
-							gson.toJson(result));
+							_gson.toJson(result));
 				}
 				return;
 			}
 		}
 		// Post Get
 		if (pMess.getResolvedClass() == FlatPersona.class) {
-			FlatPersona persona = gson.fromJson(pMess.getPayload(), FlatPersona.class);
+			FlatPersona persona = _gson.fromJson(pMess.getPayload(), FlatPersona.class);
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addPersona(persona);
+				_dbh.addPersona(persona);
 			}
 		} else if (FlatSkill.class.isAssignableFrom(pMess.getResolvedClass())) {
-			FlatSkill skill = (FlatSkill) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			FlatSkill skill = (FlatSkill) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addSkill(skill);
+				_dbh.addSkill(skill);
 			}
 		} else if (FlatItem.class.isAssignableFrom(pMess.getResolvedClass())) {
-			FlatItem item = (FlatItem) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			FlatItem item = (FlatItem) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addItem(item);
+				_dbh.addItem(item);
 			}
 		} else if (FlatActivity.class.isAssignableFrom(pMess.getResolvedClass())) {
-			FlatActivity activity = (FlatActivity) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			FlatActivity activity = (FlatActivity) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addActivity(activity);
+				_dbh.addActivity(activity);
 			}
 		} else if (FlatVendor.class.isAssignableFrom(pMess.getResolvedClass())) {
-			FlatVendor vendor = (FlatVendor) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			FlatVendor vendor = (FlatVendor) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addVendor(vendor);
+				_dbh.addVendor(vendor);
 			}
 		} else if (FlatVendorItem.class.isAssignableFrom(pMess.getResolvedClass())) {
-			FlatVendorItem vendorItem = (FlatVendorItem) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			FlatVendorItem vendorItem = (FlatVendorItem) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addVendorItem(vendorItem);
+				_dbh.addVendorItem(vendorItem);
 			}
 		} else if (pMess.getResolvedClass() == Restriction.class) {
-			Restriction restriction = (Restriction) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			Restriction restriction = (Restriction) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addRestriction(restriction);
+				_dbh.addRestriction(restriction);
 			}
 		} else if (pMess.getResolvedClass() == BoundRestriction.class) {
-			BoundRestriction boundRestriction = (BoundRestriction) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			BoundRestriction boundRestriction = (BoundRestriction) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addBoundRestriction(boundRestriction);
+				_dbh.addBoundRestriction(boundRestriction);
 			}
 		} else if (pMess.getResolvedClass() == Drop.class) {
-			Drop drop = (Drop) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			Drop drop = (Drop) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addDrop(drop);
+				_dbh.addDrop(drop);
 			}
 		} else if (pMess.getResolvedClass() == PersonaSkill.class) {
-			PersonaSkill personaSkill = (PersonaSkill) gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			PersonaSkill personaSkill = (PersonaSkill) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				dbh.addPersonaSkill(personaSkill);
+				_dbh.addPersonaSkill(personaSkill);
 			}
 		}
 	}

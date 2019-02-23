@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +29,9 @@ public class FlatActivity extends DatabaseObject {
 	protected byte value;
 	protected int secondValue;
 	protected String description;
-	private static String ACTIVITYSEARCH = null;
-	private static String ACTIVITYINSERT = null;
-	private static String ACTIVITYUPDATE = null;
+	private static String _ACTIVITYSEARCH = null;
+	private static String _ACTIVITYINSERT = null;
+	private static String _ACTIVITYUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatActivity}
@@ -107,7 +108,7 @@ public class FlatActivity extends DatabaseObject {
 	}
 
 	/**
-	 * @return A {@link Location{ representing location this activity takes place in
+	 * @return A {@link Location} representing location this activity takes place in
 	 */
 	public Location getLocation() {
 		return location;
@@ -174,6 +175,7 @@ public class FlatActivity extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -191,9 +193,14 @@ public class FlatActivity extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, FlatActivity.class);
 	}
 	
@@ -204,14 +211,14 @@ public class FlatActivity extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatActivity.ACTIVITYSEARCH != null)
+		if (FlatActivity._ACTIVITYSEARCH != null)
 			return;
-		FlatActivity.ACTIVITYSEARCH = "SELECT * FROM activity WHERE activity.id = ?";
+		FlatActivity._ACTIVITYSEARCH = "SELECT * FROM activity WHERE activity.id = ?";
 		String insertTemplate = "INSERT INTO activity(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE activity SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatActivity.class);
-		FlatActivity.ACTIVITYINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatActivity.ACTIVITYUPDATE = String.format(updateTemplate, built[2]);
+		FlatActivity._ACTIVITYINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatActivity._ACTIVITYUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -223,9 +230,10 @@ public class FlatActivity extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("ACTIVITYINSERT") || name.equals("ACTIVITYUPDATE") || name.equals("ACTIVITYSEARCH")
-				|| name.equals("ACTIVITYDELETE");
+		return name.equals("_ACTIVITYINSERT") || name.equals("_ACTIVITYUPDATE") || name.equals("_ACTIVITYSEARCH")
+				|| name.equals("_ACTIVITYDELETE");
 	}
 
 	/**
@@ -236,6 +244,7 @@ public class FlatActivity extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -250,6 +259,7 @@ public class FlatActivity extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -267,13 +277,14 @@ public class FlatActivity extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update so do not update it
 		return name.equals("id");
 	}
 
 	/**
-	 * Searches the database for this FlatActivity's id
+	 * Searches the database for this {@link FlatActivity FlatActivity's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -281,25 +292,27 @@ public class FlatActivity extends DatabaseObject {
 	 *         FlatActivity's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectActivity(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatActivity.ACTIVITYSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatActivity._ACTIVITYSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} FlatActivity into the activity table.
+	 * This method inserts {@code this} {@link FlatActivity} into the activity table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatActivity.ACTIVITYINSERT);
+			insert = conn.prepareStatement(FlatActivity._ACTIVITYINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -309,17 +322,18 @@ public class FlatActivity extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@link this} FlatActivity's entry in the activity table.
+	 * This method updates {@code this} {@link FlatActivity FlatActivity's} entry in the activity table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatActivity.ACTIVITYUPDATE);
+			update = conn.prepareStatement(FlatActivity._ACTIVITYUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -338,7 +352,8 @@ public class FlatActivity extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -372,8 +387,9 @@ public class FlatActivity extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteActivity(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 
 }

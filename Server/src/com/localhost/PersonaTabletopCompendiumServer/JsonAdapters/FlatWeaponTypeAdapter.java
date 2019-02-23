@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.JsonAdapters;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -33,7 +34,7 @@ public class FlatWeaponTypeAdapter extends TypeAdapter<FlatWeapon> {
 		while (in.hasNext()) {
 			try {
 				weapon.read(in, in.nextName());
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

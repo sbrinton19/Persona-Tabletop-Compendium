@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,9 +22,9 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ItemT
  */
 public class FlatLoot extends FlatItem {
 	protected Arcana[] arcanaSources = new Arcana[6];
-	private static String LOOTSEARCH = null;
-	private static String LOOTINSERT = null;
-	private static String LOOTUPDATE = null;
+	private static String _LOOTSEARCH = null;
+	private static String _LOOTINSERT = null;
+	private static String _LOOTUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatLoot}
@@ -104,6 +105,7 @@ public class FlatLoot extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -121,9 +123,14 @@ public class FlatLoot extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatLoot.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -137,14 +144,14 @@ public class FlatLoot extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatLoot.LOOTSEARCH != null)
+		if (FlatLoot._LOOTSEARCH != null)
 			return;
-		FlatLoot.LOOTSEARCH = "SELECT * FROM loot WHERE loot.itemid = ?";
-		String insertTemplate = "INSERT INTO loot(itemid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE loot SET %s WHERE itemid = ?";
+		FlatLoot._LOOTSEARCH = "SELECT * FROM loot WHERE loot.itemId = ?";
+		String insertTemplate = "INSERT INTO loot(itemId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE loot SET %s WHERE itemId = ?";
 		String[] built = fieldBuilder(FlatLoot.class);
-		FlatLoot.LOOTINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatLoot.LOOTUPDATE = String.format(updateTemplate, built[2]);
+		FlatLoot._LOOTINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatLoot._LOOTUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -156,9 +163,10 @@ public class FlatLoot extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("LOOTINSERT") || name.equals("LOOTUPDATE") || name.equals("LOOTSEARCH")
-				|| name.equals("LOOTDELETE");
+		return name.equals("_LOOTINSERT") || name.equals("_LOOTUPDATE") || name.equals("_LOOTSEARCH")
+				|| name.equals("_LOOTDELETE");
 	}
 
 	/**
@@ -169,6 +177,7 @@ public class FlatLoot extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -183,6 +192,7 @@ public class FlatLoot extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -200,6 +210,7 @@ public class FlatLoot extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatLoot are updated
 		// in the side table during an UPDATE
@@ -215,76 +226,85 @@ public class FlatLoot extends FlatItem {
 	 *         FlatLoot's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectLoot(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatLoot.LOOTSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatLoot._LOOTSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@link code} {@link FlatLoot FlatLoot's} base data
-	 * into the item table and if successful, then inserts the Loot data into
-	 * the loot side table, or updates it if a matching orphan entry is found
+	 * This method inserts {@code this} {@link FlatLoot FlatLoot's} data
+	 * into the loot side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
-	 * @return True if the action was performed without errors successfully
-	 *         false if otherwise
-	 */
-	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * This method updates {@code this} {@link FlatLoot FlatLoot's} entry in the
-	 * item table and if successful, then updates its loot side table entry, or
-	 * inserts it if there is no corresponding entry
-	 * 
-	 * @param conn
-	 *            A connection to the Database
-	 * @return True if the action was performed without errors successfully
-	 *         false if otherwise
-	 */
-	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the loot side table to see if we are updating or inserting and
-	 * then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
 	 * @return True if the action was performed without errors, otherwise false
 	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	@Override
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
 		try {
-			ResultSet rs = this.databaseSelectLoot(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatLoot.LOOTINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatLoot.LOOTUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			insert = conn.prepareStatement(FlatLoot._LOOTINSERT);
+			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * This method updates {@code this} {@link FlatLoot FlatLoot's} entry in
+	 * the loot side table
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
+		try {
+			update = conn.prepareStatement(FlatLoot._LOOTUPDATE);
+			insertUpdate(update, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * First checks the item table for an entry for {@code this} item's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the loot table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -297,7 +317,8 @@ public class FlatLoot extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -322,7 +343,8 @@ public class FlatLoot extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteLoot(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

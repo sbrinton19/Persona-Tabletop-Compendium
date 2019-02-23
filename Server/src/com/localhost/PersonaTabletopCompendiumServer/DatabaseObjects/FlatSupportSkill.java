@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +26,9 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Suppo
 public class FlatSupportSkill extends FlatSkill {
 	protected SupportType supportType;
 	protected byte supportValue;
-	private static String SUPPORTSKILLSEARCH = null;
-	private static String SUPPORTSKILLINSERT = null;
-	private static String SUPPORTSKILLUPDATE = null;
+	private static String _SUPPORTSKILLSEARCH = null;
+	private static String _SUPPORTSKILLINSERT = null;
+	private static String _SUPPORTSKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatSupportSkill}
@@ -104,6 +105,7 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @return A complete description compiled from the values of this skill's
 	 *         fields
 	 */
+	@Override
 	public String getCompiledDescription(boolean replace) {
 		StringBuilder sb = new StringBuilder();
 		if (this.supportType == SupportType.SPECIAL) {
@@ -161,6 +163,7 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -178,9 +181,14 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatSupportSkill.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -194,14 +202,14 @@ public class FlatSupportSkill extends FlatSkill {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatSupportSkill.SUPPORTSKILLSEARCH != null)
+		if (FlatSupportSkill._SUPPORTSKILLSEARCH != null)
 			return;
-		FlatSupportSkill.SUPPORTSKILLSEARCH = "SELECT * FROM support_skill WHERE support_skill.skillid = ?";
-		String insertTemplate = "INSERT INTO support_skill(skillid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE support_skill SET %s WHERE skillid = ?";
+		FlatSupportSkill._SUPPORTSKILLSEARCH = "SELECT * FROM support_skill WHERE support_skill.skillId = ?";
+		String insertTemplate = "INSERT INTO support_skill(skillId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE support_skill SET %s WHERE skillId = ?";
 		String[] built = fieldBuilder(FlatSupportSkill.class);
-		FlatSupportSkill.SUPPORTSKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatSupportSkill.SUPPORTSKILLUPDATE = String.format(updateTemplate, built[2]);
+		FlatSupportSkill._SUPPORTSKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatSupportSkill._SUPPORTSKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -213,9 +221,10 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("SUPPORTSKILLINSERT") || name.equals("SUPPORTSKILLUPDATE")
-				|| name.equals("SUPPORTSKILLSEARCH") || name.equals("SUPPORTSKILLDELETE");
+		return name.equals("_SUPPORTSKILLINSERT") || name.equals("_SUPPORTSKILLUPDATE")
+				|| name.equals("_SUPPORTSKILLSEARCH") || name.equals("_SUPPORTSKILLDELETE");
 	}
 
 	/**
@@ -226,6 +235,7 @@ public class FlatSupportSkill extends FlatSkill {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -240,6 +250,7 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -257,6 +268,7 @@ public class FlatSupportSkill extends FlatSkill {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatSupportSkill are updated
 		// in the side table during an UPDATE
@@ -264,8 +276,7 @@ public class FlatSupportSkill extends FlatSkill {
 	}
 
 	/**
-	 * Searches the database for this {@link FlatSupportSkill
-	 * FlatSupportSkill's} id
+	 * Searches the database for this {@link FlatSupportSkill FlatSupportSkill's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -273,79 +284,85 @@ public class FlatSupportSkill extends FlatSkill {
 	 *         this FlatSupportSkill's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectSupportSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatSupportSkill.SUPPORTSKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatSupportSkill._SUPPORTSKILLSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatSupportSkill
-	 * FlatSupportSkill's} base data into the skill table and if successful,
-	 * then inserts the FlatSupportSkill data into the support_skill side table
-	 * or updates it if a matching orphan entry is found
+	 * This method inserts {@code this} {@link FlatSupportSkill FlatSupportSkill's}
+	 * data into the support_skill side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
+	 * @return True if the action was performed without errors, false otherwise
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * This method updates {@code this} {@link FlatSupportSkill
-	 * FlatSupportSkill's} entry in the skill table and if successful, then
-	 * updates its support_skill side table entry or if there is no
-	 * corresponding side table entry, inserts it
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
-	 */
-	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the support_skill side table to see if we are updating or
-	 * inserting and then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
 		try {
-			ResultSet rs = this.databaseSelectSupportSkill(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatSupportSkill.SUPPORTSKILLINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatSupportSkill.SUPPORTSKILLUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			insert = conn.prepareStatement(FlatSupportSkill._SUPPORTSKILLINSERT);
+			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * This method updates {@code this} {@link FlatSupportSkill FlatSupportSkill's}
+	 * entry in the support_skill side table 
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, false otherwise
+	 */
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
+		try {
+			update = conn.prepareStatement(FlatSupportSkill._SUPPORTSKILLUPDATE);
+			insertUpdate(update, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * First checks the skill table for an entry for {@code this} skill's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the support_skill table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -358,7 +375,8 @@ public class FlatSupportSkill extends FlatSkill {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -378,7 +396,8 @@ public class FlatSupportSkill extends FlatSkill {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteSupportSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

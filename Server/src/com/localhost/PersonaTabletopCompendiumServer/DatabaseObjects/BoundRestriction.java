@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,26 +19,26 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Bound
  *
  */
 public class BoundRestriction extends DatabaseObject {
-	protected int restrictionid;
-	protected int boundid;
+	protected int restrictionId;
+	protected int boundId;
 	protected BoundType type;
-	private static String BOUNDRESTRICTIONSEARCH = null;
-	private static String BOUNDRESTRICTIONINSERT = null;
-	private static String BOUNDRESTRICTIONUPDATE = null;
+	private static String _BOUNDRESTRICTIONSEARCH = null;
+	private static String _BOUNDRESTRICTIONINSERT = null;
+	private static String _BOUNDRESTRICTIONUPDATE = null;
 
 	/**
 	 * Produces a complete {@link BoundRestriction}
 	 * 
-	 * @param restrictionid
+	 * @param restrictionId
 	 *            The Unique id of the restriction
-	 * @param boundid
+	 * @param boundId
 	 *            The Unique id of the object bound to this restriction
 	 * @param type
 	 * 			  A {@link BoundType} representing the class of the bound object 
 	 */
-	public BoundRestriction(int restrictionid, int boundid, BoundType type) {
-		this.restrictionid = restrictionid;
-		this.boundid = boundid;
+	public BoundRestriction(int restrictionId, int boundId, BoundType type) {
+		this.restrictionId = restrictionId;
+		this.boundId = boundId;
 		this.type = type;
 		initSUIDStrings();
 	}
@@ -64,14 +65,14 @@ public class BoundRestriction extends DatabaseObject {
 	 * @return The Unique id of the restriction
 	 */
 	public int getRestrictionId() {
-		return restrictionid;
+		return restrictionId;
 	}
 
 	/**
 	 * @return The Unique id of the bound item
 	 */
 	public int getBoundId() {
-		return boundid;
+		return boundId;
 	}
 	
 	/**
@@ -97,6 +98,7 @@ public class BoundRestriction extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -114,9 +116,14 @@ public class BoundRestriction extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, BoundRestriction.class);
 	}
 	
@@ -127,14 +134,14 @@ public class BoundRestriction extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (BoundRestriction.BOUNDRESTRICTIONSEARCH != null)
+		if (BoundRestriction._BOUNDRESTRICTIONSEARCH != null)
 			return;
-		BoundRestriction.BOUNDRESTRICTIONSEARCH = "SELECT * FROM bound_restriction WHERE bound_restriction.restrictionid = ? AND bound_restriction.boundid = ? AND bound_restriction.type = ?";
+		BoundRestriction._BOUNDRESTRICTIONSEARCH = "SELECT * FROM bound_restriction WHERE bound_restriction.restrictionId = ? AND bound_restriction.boundId = ? AND bound_restriction.type = ?";
 		String insertTemplate = "INSERT INTO bound_restriction(%s) VALUES(%s)";
-		String updateTemplate = "UPDATE bound_restriction SET %s WHERE bound_restriction.restrictionid = ? AND bound_restriction.boundid = ? AND bound_restriction.type = ?";
+		String updateTemplate = "UPDATE bound_restriction SET %s WHERE bound_restriction.restrictionId = ? AND bound_restriction.boundId = ? AND bound_restriction.type = ?";
 		String[] built = fieldBuilder(BoundRestriction.class);
-		BoundRestriction.BOUNDRESTRICTIONINSERT = String.format(insertTemplate, built[0], built[1]);
-		BoundRestriction.BOUNDRESTRICTIONUPDATE = String.format(updateTemplate, built[2]);
+		BoundRestriction._BOUNDRESTRICTIONINSERT = String.format(insertTemplate, built[0], built[1]);
+		BoundRestriction._BOUNDRESTRICTIONUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -146,9 +153,10 @@ public class BoundRestriction extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("BOUNDRESTRICTIONINSERT") || name.equals("BOUNDRESTRICTIONUPDATE") || name.equals("BOUNDRESTRICTIONSEARCH")
-				|| name.equals("BOUNDRESTRICTIONDELETE");
+		return name.equals("_BOUNDRESTRICTIONINSERT") || name.equals("_BOUNDRESTRICTIONUPDATE") || name.equals("_BOUNDRESTRICTIONSEARCH")
+				|| name.equals("_BOUNDRESTRICTIONDELETE");
 	}
 
 	/**
@@ -159,6 +167,7 @@ public class BoundRestriction extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -173,6 +182,7 @@ public class BoundRestriction extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -190,13 +200,14 @@ public class BoundRestriction extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// The ids and type are used as the primary key
-		return name.equals("restrictionid") || name.equals("boundid") || name.equals("type");
+		return name.equals("restrictionId") || name.equals("boundId") || name.equals("type");
 	}
 
 	/**
-	 * Searches the database for this BoundRestriction's primary key
+	 * Searches the database for this {@link BoundRestriction BoundRestriction's} primary key
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -204,27 +215,29 @@ public class BoundRestriction extends DatabaseObject {
 	 *         BoundRestriction's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectBoundRestriction(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(BoundRestriction.BOUNDRESTRICTIONSEARCH);
-		search.setInt(1, this.restrictionid);
-		search.setInt(2, this.boundid);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(BoundRestriction._BOUNDRESTRICTIONSEARCH);
+		search.setInt(1, this.restrictionId);
+		search.setInt(2, this.boundId);
 		search.setByte(3, this.type.getValue());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} BoundRestriction into the bound_restriction table.
+	 * This method inserts {@code this} {@link BoundRestriction} into the bound_restriction table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(BoundRestriction.BOUNDRESTRICTIONINSERT);
+			insert = conn.prepareStatement(BoundRestriction._BOUNDRESTRICTIONINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -234,17 +247,18 @@ public class BoundRestriction extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@link this} BoundRestriction's entry in the bound_restriction table.
+	 * This method updates {@link this} {@link BoundRestriction BoundRestriction's} entry in the bound_restriction table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(BoundRestriction.BOUNDRESTRICTIONUPDATE);
+			update = conn.prepareStatement(BoundRestriction._BOUNDRESTRICTIONUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -263,14 +277,15 @@ public class BoundRestriction extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		// This currently has no other fields other than those that
 		// compose the primary key, but it'll follow standard form for future proofing
 		@SuppressWarnings("unused")
 		int bump = 0;
 		if (insert) {
-			prep.setInt(1, this.restrictionid);
-			prep.setInt(2, this.boundid);
+			prep.setInt(1, this.restrictionId);
+			prep.setInt(2, this.boundId);
 			prep.setByte(3, this.type.getValue());
 			bump = 3;
 		}
@@ -279,7 +294,9 @@ public class BoundRestriction extends DatabaseObject {
 			/*prep.setInt(1, this.restrictionid);
 			prep.setInt(2, this.boundid);
 			prep.setByte(3, this.type.getValue());*/
-			System.out.println("Cannot update a bound restriction this is a duplicate entry");
+			prep.close();
+			System.err.println("Cannot update a bound restriction this is a duplicate entry");
+			return;
 		}
 		prep.executeUpdate();
 		prep.close();
@@ -290,8 +307,9 @@ public class BoundRestriction extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteBoundRestriction(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+		
 	}
 
 }

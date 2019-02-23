@@ -31,7 +31,6 @@ export class SkillsComponent implements OnInit, OnDestroy {
       this.flatSkillList = skills;
       this.displayList = this.flatSkillList;
     });
-    this.skillService.getFullSkillsList();
   }
 
   orderBy(field: string, idx = 0): void {

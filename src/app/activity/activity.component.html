@@ -1,6 +1,6 @@
 <div id="activityPage" *ngIf="activity; else notFound" style="margin-top:10px">
-  <h1 id="activityTitle">{{activity.activityName}}</h1>
-  <h2 id="activitySubtitle">({{activity.getTypeName()}} / {{activity.locationName}})</h2>
+  <h1 id="activityTitle">{{activity.name}}</h1>
+  <h2 id="activitySubtitle">({{activity.getTypeName()}} / {{activity.getLocationName()}})</h2>
   <ng-container [ngSwitch]="activity.type">
     <div id="confidantDetails" *ngSwitchCase="ActivityType.Confidant">
       <h2>{{activity.getConfidantDescription()}}</h2>    

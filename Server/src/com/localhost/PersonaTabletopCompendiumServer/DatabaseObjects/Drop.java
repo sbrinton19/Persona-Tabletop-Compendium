@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,21 +21,21 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class Drop extends DatabaseObject {
-	protected int itemid;
-	protected int personaid;
+	protected int itemId;
+	protected int personaId;
 	protected boolean isDrop;
 	protected byte low;
 	protected byte high;
-	private static String DROPSEARCH = null;
-	private static String DROPINSERT = null;
-	private static String DROPUPDATE = null;
+	private static String _DROPSEARCH = null;
+	private static String _DROPINSERT = null;
+	private static String _DROPUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link Drop}
 	 * 
-	 * @param itemid
+	 * @param itemId
 	 *            The unique id of the item for this drop
-	 * @param personaid
+	 * @param personaId
 	 *            The unique id of the persona for this drop
 	 * @param isDrop
 	 *            Is this a drop from defeating this persona; otherwise, it is
@@ -44,9 +45,9 @@ public class Drop extends DatabaseObject {
 	 * @param high
 	 *            The upper bound for rolling/drawing for this drop
 	 */
-	public Drop(int itemid, int personaid, boolean isDrop, byte low, byte high) {
-		this.itemid = itemid;
-		this.personaid = personaid;
+	public Drop(int itemId, int personaId, boolean isDrop, byte low, byte high) {
+		this.itemId = itemId;
+		this.personaId = personaId;
 		this.isDrop = isDrop;
 		this.low = low;
 		this.high = high;
@@ -60,7 +61,7 @@ public class Drop extends DatabaseObject {
 	}
 
 	/**
-	 * Used to read a {@link Drop} from a database
+	 * Used to read a {@link Drop} from the database
 	 * 
 	 * @param rs
 	 *            The {@link ResultSet} pointing to the row to make a Drop out
@@ -73,15 +74,15 @@ public class Drop extends DatabaseObject {
 	/**
 	 * @return The unique id of the item for this drop
 	 */
-	public int getItemid() {
-		return itemid;
+	public int getItemId() {
+		return itemId;
 	}
 
 	/**
 	 * @return The unique id of the persona for this drop
 	 */
-	public int getPersonaid() {
-		return personaid;
+	public int getPersonaId() {
+		return personaId;
 	}
 
 	/**
@@ -122,6 +123,7 @@ public class Drop extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -139,9 +141,14 @@ public class Drop extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, Drop.class);
 	}
 
@@ -152,14 +159,14 @@ public class Drop extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (Drop.DROPSEARCH != null)
+		if (Drop._DROPSEARCH != null)
 			return;
-		Drop.DROPSEARCH = "SELECT * FROM drop_table WHERE drop_table.itemid = ? AND drop_table.personaid = ? AND drop_table.isDrop = ?";
+		Drop._DROPSEARCH = "SELECT * FROM drop_table WHERE drop_table.itemId = ? AND drop_table.personaId = ? AND drop_table.isDrop = ?";
 		String insertTemplate = "INSERT INTO drop_table(%s) VALUES(%s)";
-		String updateTemplate = "UPDATE drop_table SET %s WHERE itemid = ? AND personaid = ? AND isDrop = ?";
+		String updateTemplate = "UPDATE drop_table SET %s WHERE itemId = ? AND personaId = ? AND isDrop = ?";
 		String[] built = fieldBuilder(Drop.class);
-		Drop.DROPINSERT = String.format(insertTemplate, built[0], built[1]);
-		Drop.DROPUPDATE = String.format(updateTemplate, built[2]);
+		Drop._DROPINSERT = String.format(insertTemplate, built[0], built[1]);
+		Drop._DROPUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -171,9 +178,10 @@ public class Drop extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("DROPINSERT") || name.equals("DROPUPDATE") || name.equals("DROPSEARCH")
-				|| name.equals("DROPDELETE");
+		return name.equals("_DROPINSERT") || name.equals("_DROPUPDATE") || name.equals("_DROPSEARCH")
+				|| name.equals("_DROPDELETE");
 	}
 
 	/**
@@ -184,6 +192,7 @@ public class Drop extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -198,6 +207,7 @@ public class Drop extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -215,9 +225,10 @@ public class Drop extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
-		// We search on itemid, personaid, and isDrop so we don't update them
-		return name.equals("itemid") || name.equals("personaid") || name.equals("isDrop");
+		// We search on itemId, personaId, and isDrop so we don't update them
+		return name.equals("itemId") || name.equals("personaId") || name.equals("isDrop");
 	}
 
 	/**
@@ -229,10 +240,11 @@ public class Drop extends DatabaseObject {
 	 *         Drop's complete Primary Key
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectDrop(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(Drop.DROPSEARCH);
-		search.setInt(1, this.itemid);
-		search.setInt(2, this.personaid);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(Drop._DROPSEARCH);
+		search.setInt(1, this.itemId);
+		search.setInt(2, this.personaId);
 		search.setBoolean(3, this.isDrop);
 		ResultSet ret = search.executeQuery();
 		return ret;
@@ -246,10 +258,11 @@ public class Drop extends DatabaseObject {
 	 * @returns true if the insert completes successfully with no errors;
 	 *          otherwise false
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(Drop.DROPINSERT);
+			insert = conn.prepareStatement(Drop._DROPINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -267,10 +280,11 @@ public class Drop extends DatabaseObject {
 	 * @return true if the update completes successfully with no errors,
 	 *         otherwise false
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(Drop.DROPUPDATE);
+			update = conn.prepareStatement(Drop._DROPUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -289,19 +303,20 @@ public class Drop extends DatabaseObject {
 	 *            Whether we are performing an insert or update
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
-			prep.setInt(1, this.itemid);
-			prep.setInt(2, this.personaid);
+			prep.setInt(1, this.itemId);
+			prep.setInt(2, this.personaId);
 			prep.setBoolean(3, this.isDrop);
 			bump = 3;
 		}
 		prep.setByte(1 + bump, this.low);
 		prep.setByte(2 + bump, this.high);
 		if (!insert) {
-			prep.setInt(3, this.itemid);
-			prep.setInt(4, this.personaid);
+			prep.setInt(3, this.itemId);
+			prep.setInt(4, this.personaId);
 			prep.setBoolean(5, this.isDrop);
 		}
 		prep.executeUpdate();
@@ -313,7 +328,8 @@ public class Drop extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteDrop(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+		
 	}
 }

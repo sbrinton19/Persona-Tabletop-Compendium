@@ -2,6 +2,10 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -77,6 +81,7 @@ public class Recipe extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -86,6 +91,7 @@ public class Recipe extends DatabaseObject {
 	/**
 	 * This method should not be called
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
 		return;
@@ -100,6 +106,7 @@ public class Recipe extends DatabaseObject {
 	 * @return false if the field is one to write, true if it should be ignored
 	 *         when writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
 		return false;
 	}
@@ -112,6 +119,7 @@ public class Recipe extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -126,6 +134,7 @@ public class Recipe extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -134,6 +143,7 @@ public class Recipe extends DatabaseObject {
 	/**
 	 * This function should never be used
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		return true;
 	}
@@ -141,8 +151,36 @@ public class Recipe extends DatabaseObject {
 	/**
 	 * Never call this method under any circumstances
 	 */
+	@Override
 	public boolean databaseInsert(Connection conn) {
 		return false;
 	}
-
+	
+	/**
+	 * Never call this method under any circumstances
+	 */
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		return null;
+	}
+	
+	/**
+	 * Never call this method under any circumstances
+	 */
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
+		return false;
+	}
+	
+	/**
+	 * Never call this method under any circumstances
+	 */
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {}
+	
+	/**
+	 * Never call this method under any circumstances
+	 */
+	@Override
+	public void databaseDelete(Connection conn) {}
 }

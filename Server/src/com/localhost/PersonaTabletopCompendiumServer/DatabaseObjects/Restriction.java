@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +26,9 @@ public class Restriction extends DatabaseObject {
 	protected boolean negate;
 	protected boolean bonus;
 	protected String description;
-	private static String RESTRICTIONSEARCH = null;
-	private static String RESTRICTIONINSERT = null;
-	private static String RESTRICTIONUPDATE = null;
+	private static String _RESTRICTIONSEARCH = null;
+	private static String _RESTRICTIONINSERT = null;
+	private static String _RESTRICTIONUPDATE = null;
 
 	/**
 	 * Produces a complete {@link Restriction}
@@ -146,6 +147,7 @@ public class Restriction extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -163,9 +165,14 @@ public class Restriction extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, Restriction.class);
 	}
 	
@@ -176,14 +183,14 @@ public class Restriction extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (Restriction.RESTRICTIONSEARCH != null)
+		if (Restriction._RESTRICTIONSEARCH != null)
 			return;
-		Restriction.RESTRICTIONSEARCH = "SELECT * FROM restriction WHERE restriction.id = ?";
+		Restriction._RESTRICTIONSEARCH = "SELECT * FROM restriction WHERE restriction.id = ?";
 		String insertTemplate = "INSERT INTO restriction(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE restriction SET %s WHERE id = ?";
 		String[] built = fieldBuilder(Restriction.class);
-		Restriction.RESTRICTIONINSERT = String.format(insertTemplate, built[0], built[1]);
-		Restriction.RESTRICTIONUPDATE = String.format(updateTemplate, built[2]);
+		Restriction._RESTRICTIONINSERT = String.format(insertTemplate, built[0], built[1]);
+		Restriction._RESTRICTIONUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -195,9 +202,10 @@ public class Restriction extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("RESTRICTIONINSERT") || name.equals("RESTRICTIONUPDATE") || name.equals("RESTRICTIONSEARCH")
-				|| name.equals("RESTRICTIONDELETE");
+		return name.equals("_RESTRICTIONINSERT") || name.equals("_RESTRICTIONUPDATE") || name.equals("_RESTRICTIONSEARCH")
+				|| name.equals("_RESTRICTIONDELETE");
 	}
 
 	/**
@@ -208,6 +216,7 @@ public class Restriction extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -222,6 +231,7 @@ public class Restriction extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -239,13 +249,14 @@ public class Restriction extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update so do not update it
 		return name.equals("id");
 	}
 
 	/**
-	 * Searches the database for this Restriction's id
+	 * Searches the database for {@code this} {@link Restriction Restriction's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -253,25 +264,27 @@ public class Restriction extends DatabaseObject {
 	 *         Restriction's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectRestriction(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(Restriction.RESTRICTIONSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(Restriction._RESTRICTIONSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} Restriction into the restriction table.
+	 * This method inserts {@code this} {@link Restriction} into the restriction table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(Restriction.RESTRICTIONINSERT);
+			insert = conn.prepareStatement(Restriction._RESTRICTIONINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -281,17 +294,18 @@ public class Restriction extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@link this} Restriction's entry in the restriction table.
+	 * This method updates {@link this} {@link Restriction Restriction's} entry in the restriction table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(Restriction.RESTRICTIONUPDATE);
+			update = conn.prepareStatement(Restriction._RESTRICTIONUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -310,7 +324,8 @@ public class Restriction extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -342,8 +357,8 @@ public class Restriction extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteRestriction(Connection conn) {
-		// TODO Auto-generated method stub
-	}
+	@Override
+	public void databaseDelete(Connection conn) {
 
+	}
 }

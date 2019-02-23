@@ -4,6 +4,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,9 +32,9 @@ public class FlatPassiveSkill extends FlatSkill {
 	protected byte type;
 	protected byte value;
 	protected byte secondValue;
-	private static String PASSIVESKILLSEARCH = null;
-	private static String PASSIVESKILLINSERT = null;
-	private static String PASSIVESKILLUPDATE = null;
+	private static String _PASSIVESKILLSEARCH = null;
+	private static String _PASSIVESKILLINSERT = null;
+	private static String _PASSIVESKILLUPDATE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatPassiveSkill}
@@ -136,6 +137,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @return A complete description compiled from the values of this skill's
 	 *         fields
 	 */
+	@Override
 	public String getCompiledDescription(boolean replace) {
 		StringBuilder sb = new StringBuilder();
 		if (this.type == 0 || this.passiveType == PassiveType.IRREGULAR) {
@@ -281,6 +283,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -298,9 +301,14 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatPassiveSkill.class)) {
 			// We struck out check if the superclass has what were looking for
 			super.read(in, name);
@@ -314,14 +322,14 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatPassiveSkill.PASSIVESKILLSEARCH != null)
+		if (FlatPassiveSkill._PASSIVESKILLSEARCH != null)
 			return;
-		FlatPassiveSkill.PASSIVESKILLSEARCH = "SELECT * FROM passive_skill WHERE passive_skill.skillid = ?";
-		String insertTemplate = "INSERT INTO passive_skill(skillid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE passive_skill SET %s WHERE skillid = ?";
+		FlatPassiveSkill._PASSIVESKILLSEARCH = "SELECT * FROM passive_skill WHERE passive_skill.skillId = ?";
+		String insertTemplate = "INSERT INTO passive_skill(skillId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE passive_skill SET %s WHERE skillId = ?";
 		String[] built = fieldBuilder(FlatPassiveSkill.class);
-		FlatPassiveSkill.PASSIVESKILLINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatPassiveSkill.PASSIVESKILLUPDATE = String.format(updateTemplate, built[2]);
+		FlatPassiveSkill._PASSIVESKILLINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatPassiveSkill._PASSIVESKILLUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -333,9 +341,10 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("PASSIVESKILLINSERT") || name.equals("PASSIVESKILLUPDATE")
-				|| name.equals("PASSIVESKILLSEARCH") || name.equals("PASSIVESKILLDELETE");
+		return name.equals("_PASSIVESKILLINSERT") || name.equals("_PASSIVESKILLUPDATE")
+				|| name.equals("_PASSIVESKILLSEARCH") || name.equals("_PASSIVESKILLDELETE");
 	}
 
 	/**
@@ -346,6 +355,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -360,6 +370,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -377,6 +388,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatPassiveSkill are updated
 		// in the side table during an UPDATE
@@ -384,8 +396,7 @@ public class FlatPassiveSkill extends FlatSkill {
 	}
 
 	/**
-	 * Searches the database for this {@link FlatPassiveSkill
-	 * FlatPassiveSkill's} id
+	 * Searches the database for this {@link FlatPassiveSkill FlatPassiveSkill's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -393,79 +404,85 @@ public class FlatPassiveSkill extends FlatSkill {
 	 *         this FlatPassiveSkill's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectPassiveSkill(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatPassiveSkill.PASSIVESKILLSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatPassiveSkill._PASSIVESKILLSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatPassiveSkill
-	 * FlatPassiveSkill's} base data into the skill table and if successful,
-	 * then inserts the FlatPassiveSkill data into the passive_skill side table
-	 * or updates it if a matching orphan entry is found
+	 * This method inserts {@code this} {@link FlatPassiveSkill FlatPassiveSkill's}
+	 * data into the passive_skill side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
+	 * @return True if the action was performed without errors, false otherwise
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * This method updates {@code this} {@link FlatPassiveSkill
-	 * FlatPassiveSkill's} entry in the skill table and if successful, then
-	 * updates its passive_skill side table entry or if there is no
-	 * corresponding side table entry, inserts it
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
-	 */
-	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the passive_skill side table to see if we are updating or
-	 * inserting and then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, false if
-	 *         otherwise
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
 		try {
-			ResultSet rs = this.databaseSelectPassiveSkill(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatPassiveSkill.PASSIVESKILLINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatPassiveSkill.PASSIVESKILLUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			insert = conn.prepareStatement(FlatPassiveSkill._PASSIVESKILLINSERT);
+			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * This method updates {@code this} {@link FlatPassiveSkill FlatPassiveSkill's}
+	 * entry in the passive_skill side table 
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, false otherwise
+	 */
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
+		try {
+			update = conn.prepareStatement(FlatPassiveSkill._PASSIVESKILLUPDATE);
+			insertUpdate(update, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * First checks the skill table for an entry for {@code this} skill's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the passive_skill table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -478,7 +495,8 @@ public class FlatPassiveSkill extends FlatSkill {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -508,7 +526,8 @@ public class FlatPassiveSkill extends FlatSkill {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeletePassiveSkill(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

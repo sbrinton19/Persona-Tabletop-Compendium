@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +26,9 @@ public class FlatWeapon extends FlatItem {
 	protected byte minRange;
 	protected byte maxRange;
 	protected byte failValue;
-	private static String WEAPONSEARCH = null;
-	private static String WEAPONINSERT = null;
-	private static String WEAPONUPDATE = null;
+	private static String _WEAPONSEARCH = null;
+	private static String _WEAPONINSERT = null;
+	private static String _WEAPONUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatWeapon}
@@ -49,7 +50,7 @@ public class FlatWeapon extends FlatItem {
 	 *            A {@code byte} being used as a bit array to represent the
 	 *            sources this item can be obtained from (see
 	 *            {@link OriginType})
-	 * @param transmuteid
+	 * @param transmuteId
 	 *            The unique id of the persona that transmutes into this item,
 	 *            -1 if none do
 	 * @param consumableType
@@ -69,9 +70,9 @@ public class FlatWeapon extends FlatItem {
 	 *            Rolling this value or lower is an automatic failure to hit
 	 */
 	public FlatWeapon(int id, String name, byte schedule, String description, String special, ItemType type,
-			byte origins, int transmuteid, byte baseDamage, byte maxDamageDice, byte damageDie, byte minRange,
+			byte origins, int transmuteId, byte baseDamage, byte maxDamageDice, byte damageDie, byte minRange,
 			byte maxRange, byte failValue) {
-		super(id, name, schedule, description, special, type, origins, transmuteid, ConsumableType.NONE);
+		super(id, name, schedule, description, special, type, origins, transmuteId, ConsumableType.NONE);
 		this.baseDamage = baseDamage;
 		this.maxDamageDice = maxDamageDice;
 		this.damageDie = damageDie;
@@ -159,6 +160,7 @@ public class FlatWeapon extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -176,9 +178,14 @@ public class FlatWeapon extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatWeapon.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -192,14 +199,14 @@ public class FlatWeapon extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatWeapon.WEAPONSEARCH != null)
+		if (FlatWeapon._WEAPONSEARCH != null)
 			return;
-		FlatWeapon.WEAPONSEARCH = "SELECT * FROM weapon WHERE weapon.itemid = ?";
-		String insertTemplate = "INSERT INTO weapon(itemid,%s) VALUES(?,%s)";
-		String updateTemplate = "UPDATE weapon SET %s WHERE itemid = ?";
+		FlatWeapon._WEAPONSEARCH = "SELECT * FROM weapon WHERE weapon.skillId = ?";
+		String insertTemplate = "INSERT INTO weapon(skillId,%s) VALUES(?,%s)";
+		String updateTemplate = "UPDATE weapon SET %s WHERE skillId = ?";
 		String[] built = fieldBuilder(FlatWeapon.class);
-		FlatWeapon.WEAPONINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatWeapon.WEAPONUPDATE = String.format(updateTemplate, built[2]);
+		FlatWeapon._WEAPONINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatWeapon._WEAPONUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -211,9 +218,10 @@ public class FlatWeapon extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("WEAPONINSERT") || name.equals("WEAPONUPDATE") || name.equals("WEAPONSEARCH")
-				|| name.equals("WEAPONDELETE");
+		return name.equals("_WEAPONINSERT") || name.equals("_WEAPONUPDATE") || name.equals("_WEAPONSEARCH")
+				|| name.equals("_WEAPONDELETE");
 	}
 
 	/**
@@ -224,6 +232,7 @@ public class FlatWeapon extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -238,6 +247,7 @@ public class FlatWeapon extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -255,6 +265,7 @@ public class FlatWeapon extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// All members of FlatWeapon are updated
 		// in the side table during an UPDATE
@@ -270,75 +281,85 @@ public class FlatWeapon extends FlatItem {
 	 *         FlatWeapon's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectWeapon(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatWeapon.WEAPONSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatWeapon._WEAPONSEARCH);
 		search.setInt(1, getId());
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatWeapon FlatWeapon's} base
-	 * data into the item table and if successful, then inserts the FlatWeapon
-	 * data into the weapon side table or updates it if a matching orphan entry
-	 * is found
+	 * This method inserts {@code this} {@link FlatWeapon FlatWeapon's} data
+	 * into the weapon side table
 	 * 
 	 * @param conn
 	 *            A connection to the Database
 	 * @return True if the action was performed without errors, otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
-		if (super.databaseInsert(conn)) {
-			return updateOrInsert(conn);
+	protected boolean databaseInsert(Connection conn) {
+		PreparedStatement insert;
+		try {
+			insert = conn.prepareStatement(FlatWeapon._WEAPONINSERT);
+			insertUpdate(insert, true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
 	 * This method updates {@code this} {@link FlatWeapon FlatWeapon's} entry in
-	 * the item table and if successful, then updates its weapon side table
-	 * entry or if there is no corresponding side table entry, inserts it
+	 * the weapon side table
 	 * 
 	 * @param conn
 	 *            A connection to the database
 	 * @return True if the action was performed without errors, otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
-		if (super.databaseUpdate(conn)) {
-			return updateOrInsert(conn);
-		}
-		return false;
-	}
-
-	/**
-	 * Queries the weapon side table to see if we are updating or inserting and
-	 * then performs the appropriate action
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
+	protected boolean databaseUpdate(Connection conn) {
+		PreparedStatement update;
 		try {
-			ResultSet rs = this.databaseSelectWeapon(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatWeapon.WEAPONINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatWeapon.WEAPONUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
+			update = conn.prepareStatement(FlatWeapon._WEAPONUPDATE);
+			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * First checks the item table for an entry for {@code this} item's 
+	 * id and inserts or updates as appropriate. If successful, it then attempts
+	 * to do the same for the weapon table.
+	 * 
+	 * @param conn
+	 *            A connection to the database
+	 * @return True if the action was performed without errors, otherwise false
+	 */
+	@Override
+	public boolean updateOrInsert(Connection conn) {
+		if (super.updateOrInsert(conn)) {
+			try {
+				ResultSet rs = this.databaseSelect(conn);
+				if (rs == null) {
+					return false;
+				}
+				if (!rs.isBeforeFirst()) {
+					// No data so blind insert
+					return databaseInsert(conn);
+				} else {
+					return databaseUpdate(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}			
+		}
+		return false;
 	}
 
 	/**
@@ -351,7 +372,8 @@ public class FlatWeapon extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -375,7 +397,8 @@ public class FlatWeapon extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteWeapon(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

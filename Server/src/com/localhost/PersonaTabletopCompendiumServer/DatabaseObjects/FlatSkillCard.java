@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +21,11 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ItemT
  *
  */
 public class FlatSkillCard extends FlatItem {
-	private static String SKILLCARDSEARCH = null;
-	private static String SKILLCARDINSERT = null;
-	private static String SKILLCARDUPDATE = null;
+	private static String _SKILLCARDSEARCH = null;
+	@SuppressWarnings("unused")
+	private static String _SKILLCARDINSERT = null;
+	@SuppressWarnings("unused")
+	private static String _SKILLCARDUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatSkillCard}
@@ -93,6 +96,7 @@ public class FlatSkillCard extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -110,9 +114,14 @@ public class FlatSkillCard extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatSkillCard.class)) {
 			// We struck out check if the super class has what were looking for
 			super.read(in, name);
@@ -126,14 +135,14 @@ public class FlatSkillCard extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatSkillCard.SKILLCARDSEARCH != null)
+		if (FlatSkillCard._SKILLCARDSEARCH != null)
 			return;
-		FlatSkillCard.SKILLCARDSEARCH = "SELECT * FROM item WHERE item.itemid = ? AND item.type = ?";
+		FlatSkillCard._SKILLCARDSEARCH = "SELECT * FROM item WHERE item.id = ? AND item.type = ?";
 		String insertTemplate = "INSERT INTO item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatSkillCard.class);
-		FlatSkillCard.SKILLCARDINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatSkillCard.SKILLCARDUPDATE = String.format(updateTemplate, built[2]);
+		FlatSkillCard._SKILLCARDINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatSkillCard._SKILLCARDUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -145,9 +154,10 @@ public class FlatSkillCard extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("SKILLCARDINSERT") || name.equals("SKILLCARDUPDATE") || name.equals("SKILLCARDSEARCH")
-				|| name.equals("SKILLCARDDELETE");
+		return name.equals("_SKILLCARDINSERT") || name.equals("_SKILLCARDUPDATE") || name.equals("_SKILLCARDSEARCH")
+				|| name.equals("_SKILLCARDDELETE");
 	}
 
 	/**
@@ -158,6 +168,7 @@ public class FlatSkillCard extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -172,6 +183,7 @@ public class FlatSkillCard extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -189,6 +201,7 @@ public class FlatSkillCard extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		return false;
 	}
@@ -202,8 +215,9 @@ public class FlatSkillCard extends FlatItem {
 	 *         FlatSkillCard's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectSkillCard(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatSkillCard.SKILLCARDSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatSkillCard._SKILLCARDSEARCH);
 		search.setInt(1, getId());
 		search.setByte(2, getType().getValue());
 		ResultSet ret = search.executeQuery();
@@ -220,7 +234,7 @@ public class FlatSkillCard extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
+	protected boolean databaseInsert(Connection conn) {
 		return super.databaseInsert(conn);
 	}
 
@@ -233,41 +247,8 @@ public class FlatSkillCard extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
+	protected boolean databaseUpdate(Connection conn) {
 		return super.databaseUpdate(conn);
-	}
-
-	/**
-	 * Queries the skill_card side table to see if we are updating or inserting
-	 * and then performs the appropriate action
-	 * 
-	 * NOTE: There is no skill_card side table at this time so this is an unused
-	 * method
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	@SuppressWarnings("unused")
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
-		try {
-			ResultSet rs = this.databaseSelectSkillCard(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatSkillCard.SKILLCARDINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatSkillCard.SKILLCARDUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -280,7 +261,8 @@ public class FlatSkillCard extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		@SuppressWarnings("unused")
 		int bump = 0;
 		if (insert) {
@@ -299,7 +281,7 @@ public class FlatSkillCard extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteSkillCard(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
 	}
 }

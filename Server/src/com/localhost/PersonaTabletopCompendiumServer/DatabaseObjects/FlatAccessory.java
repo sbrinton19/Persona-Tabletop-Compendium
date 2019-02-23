@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +21,11 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ItemT
  *
  */
 public class FlatAccessory extends FlatItem {
-	private static String ACCESSORYSEARCH = null;
-	private static String ACCESSORYINSERT = null;
-	private static String ACCESSORYUPDATE = null;
+	private static String _ACCESSORYSEARCH = null;
+	@SuppressWarnings("unused")
+	private static String _ACCESSORYINSERT = null;
+	@SuppressWarnings("unused")
+	private static String _ACCESSORYUPDATE = null;
 
 	/**
 	 * Produces a complete {@link FlatAccessory}
@@ -44,7 +47,7 @@ public class FlatAccessory extends FlatItem {
 	 *            A {@code byte} being used as a bit array to represent the
 	 *            sources this item can be obtained from (see
 	 *            {@link OriginType})
-	 * @param transmuteid
+	 * @param transmuteId
 	 *            The unique id of the persona that transmutes into this item,
 	 *            -1 if none do
 	 * @param consumableType
@@ -93,6 +96,7 @@ public class FlatAccessory extends FlatItem {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
@@ -110,9 +114,14 @@ public class FlatAccessory extends FlatItem {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if (!read(in, name, FlatAccessory.class)) {
 			// We struck out check if the superclass has what we're looking for
 			super.read(in, name);
@@ -126,14 +135,14 @@ public class FlatAccessory extends FlatItem {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatAccessory.ACCESSORYSEARCH != null)
+		if (FlatAccessory._ACCESSORYSEARCH != null)
 			return;
-		FlatAccessory.ACCESSORYSEARCH = "SELECT * FROM item WHERE item.itemid = ? AND item.type = ?";
+		FlatAccessory._ACCESSORYSEARCH = "SELECT * FROM item WHERE item.id = ? AND item.type = ?";
 		String insertTemplate = "INSERT INTO item(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE item SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatAccessory.class);
-		FlatAccessory.ACCESSORYINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatAccessory.ACCESSORYUPDATE = String.format(updateTemplate, built[2]);
+		FlatAccessory._ACCESSORYINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatAccessory._ACCESSORYUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -145,9 +154,10 @@ public class FlatAccessory extends FlatItem {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("ACCESSORYINSERT") || name.equals("ACCESSORYUPDATE") || name.equals("ACCESSORYSEARCH")
-				|| name.equals("ACCESSORYDELETE");
+		return name.equals("_ACCESSORYINSERT") || name.equals("_ACCESSORYUPDATE") || name.equals("_ACCESSORYSEARCH")
+				|| name.equals("_ACCESSORYDELETE");
 	}
 
 	/**
@@ -158,6 +168,7 @@ public class FlatAccessory extends FlatItem {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		// No JSON unique fields
 		return false;
@@ -172,6 +183,7 @@ public class FlatAccessory extends FlatItem {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		// No database unique fields
 		return false;
@@ -189,6 +201,7 @@ public class FlatAccessory extends FlatItem {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// FlatAccessory has no side table to update so nothing is ignored on
 		// update
@@ -204,8 +217,9 @@ public class FlatAccessory extends FlatItem {
 	 *         FlatAccessory's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectAccessory(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatAccessory.ACCESSORYSEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatAccessory._ACCESSORYSEARCH);
 		search.setInt(1, getId());
 		search.setByte(2, getType().getValue());
 		ResultSet ret = search.executeQuery();
@@ -222,7 +236,7 @@ public class FlatAccessory extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseInsert(Connection conn) {
+	protected boolean databaseInsert(Connection conn) {
 		return super.databaseInsert(conn);
 	}
 
@@ -236,41 +250,8 @@ public class FlatAccessory extends FlatItem {
 	 *          otherwise false
 	 */
 	@Override
-	public boolean databaseUpdate(Connection conn) {
+	protected boolean databaseUpdate(Connection conn) {
 		return super.databaseUpdate(conn);
-	}
-
-	/**
-	 * Queries the accessory side table to see if we are updating or inserting
-	 * and then performs the appropriate action
-	 * 
-	 * NOTE: There is no accessory side table at this time so this is an unused
-	 * method
-	 * 
-	 * @param conn
-	 *            A connection to the database
-	 * @return True if the action was performed without errors, otherwise false
-	 */
-	@SuppressWarnings("unused")
-	private boolean updateOrInsert(Connection conn) {
-		PreparedStatement state;
-		try {
-			ResultSet rs = this.databaseSelectAccessory(conn);
-			boolean isInsert;
-			if (!rs.isBeforeFirst()) {
-				// No data so blind insert
-				state = conn.prepareStatement(FlatAccessory.ACCESSORYINSERT);
-				isInsert = true;
-			} else {
-				state = conn.prepareStatement(FlatAccessory.ACCESSORYUPDATE);
-				isInsert = false;
-			}
-			insertUpdate(state, isInsert);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -283,8 +264,9 @@ public class FlatAccessory extends FlatItem {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
-		@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.id);
@@ -302,7 +284,8 @@ public class FlatAccessory extends FlatItem {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeleteAccessory(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

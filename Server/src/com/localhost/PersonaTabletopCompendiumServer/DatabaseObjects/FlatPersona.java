@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,9 +50,9 @@ public class FlatPersona extends DatabaseObject {
 	protected boolean max;
 	protected boolean dlc;
 	protected boolean rare;
-	private static String PERSONASEARCH = null;
-	private static String PERSONAINSERT = null;
-	private static String PERSONAUPDATE = null;
+	private static String _PERSONASEARCH = null;
+	private static String _PERSONAINSERT = null;
+	private static String _PERSONAUPDATE = null;
 
 	/**
 	 * Produces a {@link FlatPersona} with the array stats and elems
@@ -446,6 +447,7 @@ public class FlatPersona extends DatabaseObject {
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 */
+	@Override
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
@@ -463,9 +465,14 @@ public class FlatPersona extends DatabaseObject {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
+	@Override
 	public void read(final JsonReader in, final String name)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		read(in, name, FlatPersona.class);
 	}
 	
@@ -476,14 +483,14 @@ public class FlatPersona extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatPersona.PERSONASEARCH != null)
+		if (FlatPersona._PERSONASEARCH != null)
 			return;
-		FlatPersona.PERSONASEARCH = "SELECT * FROM persona WHERE persona.id = ?";
+		FlatPersona._PERSONASEARCH = "SELECT * FROM persona WHERE persona.id = ?";
 		String insertTemplate = "INSERT INTO persona(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE persona SET %s WHERE id = ?";
 		String[] built = fieldBuilder(FlatPersona.class);
-		FlatPersona.PERSONAINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatPersona.PERSONAUPDATE = String.format(updateTemplate, built[2]);
+		FlatPersona._PERSONAINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatPersona._PERSONAUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -495,9 +502,10 @@ public class FlatPersona extends DatabaseObject {
 	 * @return false if the field is one to read/write, true if it should be
 	 *         ignored when reading/writing
 	 */
+	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("PERSONAINSERT") || name.equals("PERSONAUPDATE") || name.equals("PERSONASEARCH")
-				|| name.equals("PERSONADELETE");
+		return name.equals("_PERSONAINSERT") || name.equals("_PERSONAUPDATE") || name.equals("_PERSONASEARCH")
+				|| name.equals("_PERSONADELETE");
 	}
 
 	/**
@@ -508,6 +516,7 @@ public class FlatPersona extends DatabaseObject {
 	 *            Name of the field to be checked
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
+	@Override
 	protected boolean isJsonOnly(String name) {
 		return name.equals("stats") || name.equals("elems");
 	}
@@ -521,6 +530,7 @@ public class FlatPersona extends DatabaseObject {
 	 * @return true if the field is only present in database entries, false
 	 *         otherwise
 	 */
+	@Override
 	protected boolean isDatabaseOnly(String name) {
 		return name.equals("hp") || name.equals("sp") || name.equals("strength") || name.equals("magic")
 				|| name.equals("endurance") || name.equals("agility") || name.equals("luck") || name.equals("phys")
@@ -541,6 +551,7 @@ public class FlatPersona extends DatabaseObject {
 	 * @return true if the given field should not be updated when performing a
 	 *         SQL update
 	 */
+	@Override
 	protected boolean isIgnoredUpdateField(String name) {
 		// Id is used to search on an update, so don't update it
 		return name.equals("id");
@@ -555,8 +566,9 @@ public class FlatPersona extends DatabaseObject {
 	 *         FlatPersona's id
 	 * @throws SQLException
 	 */
-	public ResultSet databaseSelectPersona(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatPersona.PERSONASEARCH);
+	@Override
+	protected ResultSet databaseSelect(Connection conn) throws SQLException {
+		PreparedStatement search = conn.prepareStatement(FlatPersona._PERSONASEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
@@ -571,10 +583,11 @@ public class FlatPersona extends DatabaseObject {
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseInsert(Connection conn) {
+	@Override
+	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatPersona.PERSONAINSERT);
+			insert = conn.prepareStatement(FlatPersona._PERSONAINSERT);
 			insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -592,10 +605,11 @@ public class FlatPersona extends DatabaseObject {
 	 * @result True if the operation completes successfully with no errors,
 	 *         false if otherwise
 	 */
-	public boolean databaseUpdate(Connection conn) {
+	@Override
+	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatPersona.PERSONAUPDATE);
+			update = conn.prepareStatement(FlatPersona._PERSONAUPDATE);
 			insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -614,7 +628,8 @@ public class FlatPersona extends DatabaseObject {
 	 *            Whether we are inserting or updating
 	 * @throws SQLException
 	 */
-	private void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	@Override
+	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -657,7 +672,8 @@ public class FlatPersona extends DatabaseObject {
 	 * 
 	 * @param conn
 	 */
-	public void databaseDeletePersona(Connection conn) {
-		// TODO Auto-generated method stub
+	@Override
+	public void databaseDelete(Connection conn) {
+
 	}
 }

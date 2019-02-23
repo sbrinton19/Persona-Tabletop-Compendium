@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.JsonAdapters;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -32,7 +33,7 @@ public class DropTypeAdapter extends TypeAdapter<Drop> {
 		while (in.hasNext()) {
 			try {
 				drop.read(in, in.nextName());
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
 				e.printStackTrace();
 			}
 		}
