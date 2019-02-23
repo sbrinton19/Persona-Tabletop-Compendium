@@ -6,6 +6,7 @@ import { ItemType, getItemTypeName } from '../Enums/ItemType';
 import { ArmorClass, getArmorClassName } from '../Enums/ArmorClass';
 import { SkillCardType, getSkillCardTypeName } from '../Enums/SkillCardType';
 import { ConsumableType, getConsumableTypeName } from '../Enums/ConsumableType';
+import { VendorItemReference } from './ItemReference';
 
 export class FlatItem {
     readonly id: number;
@@ -64,19 +65,29 @@ export class FlatItem {
 
 export class FullItem {
     readonly item: FlatItem;
-    readonly personaSources: PersonaReference[];
-    readonly itemClass: string;
+    readonly transmute: PersonaReference;
+    readonly droppers: PersonaReference[];
+    readonly negotiators: PersonaReference[];
+    readonly vendorSources: VendorItemReference[];
 
-    public constructor(item: FlatItem, personaSources: PersonaReference[], itemClass: string) {
+    public constructor(item: FlatItem, transmute: PersonaReference, droppers: PersonaReference[],
+        negotiators: PersonaReference[], vendorSources: VendorItemReference[]) {
         this.item = item;
-        this.personaSources = personaSources;
-        this.itemClass = itemClass;
+        this.transmute = transmute;
+        this.droppers = droppers;
+        this.negotiators = negotiators;
+        this.vendorSources = vendorSources;
     }
 
     public static copyConstructor(source: FullItem): FullItem {
-        const sources: PersonaReference[] = [];
-        source.personaSources.forEach(pSource => sources.push(PersonaReference.copyConstructor(pSource)));
-        return new FullItem(FlatItem.copyConstructor(source.item), sources, source.itemClass);
+        const droppers: PersonaReference[] = [];
+        source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
+        const negotiators: PersonaReference[] = [];
+        source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
+        const vendors: VendorItemReference[] = [];
+        source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
+        return new FullItem(FlatItem.copyConstructor(source.item), PersonaReference.copyConstructor(source.transmute),
+            droppers, negotiators, vendors);
     }
 
     public isEqual(other: FullItem): boolean {
@@ -84,18 +95,40 @@ export class FullItem {
             return false;
         }
 
-        if (this.personaSources.length !== other.personaSources.length) {
+        if (this.droppers.length !== other.droppers.length) {
             return false;
         }
-        const refMatch = this.personaSources.every(source => {
-            const matcher = other.personaSources.find(otherSource => source.isEqual(otherSource));
+        const refMatch = this.droppers.every(source => {
+            const matcher = other.droppers.find(otherSource => source.isEqual(otherSource));
             return matcher !== undefined;
         });
         if (!refMatch) {
             return false;
         }
 
-        return (this.item.isEqual(other.item) && this.itemClass === other.itemClass);
+        if (this.negotiators.length !== other.negotiators.length) {
+            return false;
+        }
+        const negotMatch = this.negotiators.every(source => {
+            const matcher = other.negotiators.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!negotMatch) {
+            return false;
+        }
+
+        if (this.vendorSources.length !== other.vendorSources.length) {
+            return false;
+        }
+        const vendorMatch = this.vendorSources.every(source => {
+            const matcher = other.vendorSources.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!vendorMatch) {
+            return false;
+        }
+
+        return (this.item.isEqual(other.item) && this.transmute.isEqual(other.transmute));
     }
 }
 

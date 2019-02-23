@@ -122,7 +122,7 @@
         <tr *ngFor="let negot of persona.negotiates">
             <td>{{negot.getRollWinDisplay()}}</td>
             <td class="left-border">
-                <a *ngIf="negot.name !== '-';else dummyData" href="#/item/{{negot.id}}">{{negot.name}}</a>
+                <a *ngIf="negot.name !== '-';else dummyData" href="/item/{{negot.id}}">{{negot.name}}</a>
                 <ng-template #dummyData>{{negot.name}}</ng-template>
             </td>
         </tr>
@@ -140,7 +140,7 @@
         <tbody>
         <tr *ngFor="let drop of persona.drops">
             <td>{{drop.getRollWinDisplay()}}</td>
-            <td class="left-border"><a href="#/item/{{drop.itemId}}">{{drop.name}}</a></td>
+            <td class="left-border"><a href="/item/{{drop.id}}">{{drop.name}}</a></td>
         </tr>
         </tbody>
     </table>
@@ -155,7 +155,7 @@
         <tbody>
         <tr>
             <td [class.left-border]="!isFirst" *ngFor="let transmute of persona.transmutes; first as isFirst">
-                <a *ngIf="transmute.name != '-';else dummyData" href="#/item/{{transmute.itemId}}">{{transmute.name}}</a>
+                <a *ngIf="transmute.name != '-';else dummyData" href="/item/{{transmute.id}}">{{transmute.name}}</a>
                 <ng-template #dummyData>{{transmute.name}}</ng-template>
             </td>
         </tr>
@@ -177,7 +177,7 @@
                     <td>{{i + 1 + (currPage - 1) * perPage}}</td>
                     <td>¥{{recipe.cost | number}}</td>
                     <td *ngFor="let persona of recipe.sources">
-                        <a href='/persona/{{persona.personaId}}'>{{persona.personaName}}</a>
+                        <a href='/persona/{{persona.id}}'>{{persona.name}}</a>
                         ({{persona.level}} / {{persona.getArcanaName()}})
                     </td>
                 </tr>
@@ -202,11 +202,11 @@
                         <td>{{i + 1 + (currPage - 1) * perPage}}</td>
                         <td>¥{{recipe.cost | number}}</td>
                         <td>
-                            <a href='/persona/{{recipe.sources[1].personaId}}'>{{recipe.sources[1].personaName}}</a>
+                            <a href='/persona/{{recipe.sources[1].id}}'>{{recipe.sources[1].name}}</a>
                             ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
                         </td>
                         <td>
-                            <a href='/persona/{{recipe.result.personaId}}'>{{recipe.result.personaName}}</a>
+                            <a href='/persona/{{recipe.result.id}}'>{{recipe.result.name}}</a>
                             ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
                         </td>
                     </tr>

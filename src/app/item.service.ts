@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FlatItem, FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
-  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem } from './Classes/FlatItem';
+  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from './Classes/FlatItem';
 import { Drop } from './Classes/Drop';
 import { SkillCardType } from './Enums/SkillCardType';
 import { WebsocketService } from './websocket.service';
@@ -19,6 +19,9 @@ export class ItemService implements OnDestroy {
   private flatSkillCardList: Subject<FlatSkillCard[]> = new Subject<FlatSkillCard[]>();
   private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
   private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
+  private fullItemMapSubject: Subject<Map<number, FullItem>> = new Subject<Map<number, FullItem>>();
+  private fullItemMap: Map<number, FullItem> = new Map<number, FullItem>();
+
   constructor(private sockService: WebsocketService) {
     this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
   }
@@ -114,15 +117,13 @@ export class ItemService implements OnDestroy {
       });
       this.flatWeaponList.next(returnData);
     } else if (data.PayloadType === 'FullItem[]') {
-      /*let payload = <FullItem[]> data.Payload;
+      let payload = <FullItem[]> data.Payload;
       let returnData: FullItem[] = [];
       payload.forEach(element => {
-        let rangedWeapon: FullItem = new FullItem(element.id, element.name, element.schedule, getOrigins(element.origins), element.description,
-        element.special, element.transmuteId, element.baseDamage, element.maxDamageDice, element.damageDie, element.lowRange,
-        element.highRange, element.failValue);
-        returnData.push(rangedWeapon);
+        let fullItem: FullItem = FullItem.copyConstructor(element);
+        this.fullItemMap.set(fullItem.item.id, fullItem);
       });
-      this.flatWeaponList.next(returnData);*/
+      this.fullItemMapSubject.next(this.fullItemMap);
     }
   }
 
@@ -213,5 +214,10 @@ export class ItemService implements OnDestroy {
 
   addDrop(drop: Drop) {
     this.sockService.sendMessage('add|Drop|' + JSON.stringify(drop));
+  }
+
+  getFullItem(itemid: number): Subject<Map<number, FullItem>> {
+    this.sockService.sendMessage(`get|FullItem|[${itemid}]`);
+    return this.fullItemMapSubject;
   }
 }

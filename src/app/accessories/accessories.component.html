@@ -21,7 +21,7 @@
   <tbody>
     <tr *ngFor="let accessory of displayList">
       <td class="mobile-hidden-1">{{accessory.id}}</td>
-      <td class="left-border"><a href='#/item/{{accessory.id}}'>{{accessory.name}}</a></td>
+      <td class="left-border"><a href='/item/{{accessory.id}}'>{{accessory.name}}</a></td>
       <td class="left-border mobile-hidden-3">{{accessory.schedule}}</td>
       <td class="left-border mobile-hidden-2">
         <label *ngFor="let origin of accessory.getOrigins(); last as isLast">

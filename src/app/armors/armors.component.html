@@ -26,7 +26,7 @@
   <tbody>
     <tr *ngFor="let armor of displayList">
       <td class="mobile-hidden-1">{{armor.id}}</td>
-      <td class="left-border"><a href='#/item/{{armor.id}}'>{{armor.name}}</a></td>
+      <td class="left-border"><a href='/item/{{armor.id}}'>{{armor.name}}</a></td>
       <td class="left-border mobile-hidden-3">{{armor.schedule}}</td>
       <td class="left-border mobile-hidden-3">
         <label *ngFor="let origin of armor.getOrigins(); last as isLast">{{armor.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>

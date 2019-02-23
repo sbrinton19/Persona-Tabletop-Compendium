@@ -13,6 +13,8 @@ import { SkillResolver } from './skill.resolver';
 import { ActivitiesComponent } from './activities/activities.component';
 import { ActivityComponent } from './activity/activity.component';
 import { ActivityResolver } from './activity.resolver';
+import { ItemComponent } from './item/item.component';
+import { ItemResolver } from './item.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: '/personae', pathMatch: 'full' },
@@ -24,6 +26,7 @@ const routes: Routes = [
   { path: 'armors', component: ArmorsComponent },
   { path: 'accessories', component: AccessoriesComponent },
   { path: 'items', component: ItemsComponent },
+  { path: 'item/:id', component: ItemComponent, resolve: { itemData: ItemResolver } },
   { path: 'activities', component: ActivitiesComponent },
   { path: 'activity/:id', component: ActivityComponent, resolve: { activityData: ActivityResolver } },
 ];
@@ -31,6 +34,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [PersonaResolver, SkillResolver, ActivityResolver]
+  providers: [PersonaResolver, SkillResolver, ActivityResolver, ItemResolver]
 })
 export class AppRoutingModule { }

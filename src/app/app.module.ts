@@ -27,6 +27,7 @@ import { ActivitiesComponent } from './activities/activities.component';
 import { ActivityService } from './activity.service';
 import { RestrictionService } from './restriction.service';
 import { ActivityComponent } from './activity/activity.component';
+import { ItemResolver } from './item.resolver';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { ActivityComponent } from './activity/activity.component';
     RestrictionService,
     WebsocketService,
     PersonaResolver,
-    SkillResolver
+    SkillResolver,
+    ItemResolver
   ],
   bootstrap: [AppComponent]
 })

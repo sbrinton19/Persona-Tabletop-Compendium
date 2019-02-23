@@ -2,9 +2,12 @@ package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseHandler;
+import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ActivityType;
 
 /**
  * This class represents an item with the data of the personae that drop it or
@@ -16,12 +19,11 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class FullItem extends DatabaseObject {
-	// TODO: After adding vendors to the database
-	// Implement FullItem for displaying the Item Detail Page
 	protected FlatItem item;
-	protected PersonaReference[] personaSources;
-	protected String itemClass;
-	//protected VendorReference[] vendorSellers;
+	protected PersonaReference transmute;
+	protected PersonaReference[] droppers;
+	protected PersonaReference[] negotiators;
+	protected VendorItemReference[] vendorSources;
 
 	/**
 	 * Empty constructor for instantiation via reflection
@@ -29,16 +31,32 @@ public class FullItem extends DatabaseObject {
 	public FullItem() {
 	}
 
+
 	/**
 	 * Full Constructor for a {@link FullItem}
-	 * @param item The item this FullItem represents
-	 * @param refs The personae that give this item as {@link PersonaReference PersonaReferences}
+	 * 
+	 * @param item 
+	 * 			The item this FullItem represents
+	 * @param transmute
+	 * 			The persona that transmutes into this item, if one exists
+	 * 			as a {@link PersonaReference}
+	 * @param droppers
+	 * 			The personae that drop this item as {@link PersonaReference PersonaReferences}
+	 * @param negotiators
+	 * 			The personae that will give this item from negotiating 
+	 * 			as {@link PersonaReference PersonaReferences}
+	 * @param vendorSources
+	 * 			The vendors that will sell this item as {@link VendorItemReference VendorItemReferences}
 	 */
-	public FullItem(FlatItem item, PersonaReference[] refs) {
+	public FullItem(FlatItem item, PersonaReference transmute, PersonaReference[] droppers,
+			PersonaReference[] negotiators, VendorItemReference[] vendorSources) {
 		this.item = item;
-		personaSources = refs;
-		itemClass = item.getClass().getSimpleName();
+		this.transmute = transmute;
+		this.droppers = droppers;
+		this.negotiators = negotiators;
+		this.vendorSources = vendorSources;
 	}
+
 
 	/**
 	 * This method is an intentionally incomplete implementation of

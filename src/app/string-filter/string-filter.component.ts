@@ -54,7 +54,7 @@ export class FilterComponent<T> implements OnInit {
     // this.filtered.emit(this.filterPipe.transform(this.displayList, filter));
     // Filters do not stack
     if (!this._fieldInfo) {
-      this.filtered.emit(this.filterPipe.transform(this.masterList, filter));
+      this.filtered.emit(this.filterPipe.transform(this.masterList, filter, this._fieldInfo));
     } else if (this.masterList.length) {
       this.filtered.emit(this.filterPipe.transform(this.masterList, filter, this._fieldInfo));
     } else {

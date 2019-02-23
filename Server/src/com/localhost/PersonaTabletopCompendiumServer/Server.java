@@ -141,6 +141,19 @@ public class Server extends WebSocketServer {
 							gson.toJson(result));
 				}
 				return;
+			} else if (FullItem.class == pMess.getResolvedClass()) {
+				int retry = 0;
+				Object[] result = null;
+				while (result == null && retry++ < 5) {
+					result = dbh.getFullItems(ids);
+				}
+				if (result == null) {
+					conn.send("Failed to read database");
+				} else {
+					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
+							gson.toJson(result));
+				}
+				return;
 			} else if (FlatItem.class.isAssignableFrom(pMess.getResolvedClass())) {
 				int retry = 0;
 				Object[] result = null;

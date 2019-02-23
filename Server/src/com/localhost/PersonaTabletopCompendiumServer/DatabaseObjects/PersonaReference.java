@@ -19,29 +19,28 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class PersonaReference extends DatabaseObject {
-	protected int personaId;
-	protected String personaName;
+	protected int id;
+	protected String name;
 	protected byte level;
-	protected byte originArcana;
+	protected byte arcana;
 
 	/**
 	 * Full Constructor for a {@link PersonaReference}
 	 * 
-	 * @param personaId
+	 * @param id
 	 *            The id of the persona being referenced
-	 * @param personaName
+	 * @param name
 	 *            The name of the referenced persona
 	 * @param level
 	 *            The level of the persona or the level it learns a skill
-	 * @param originArcana
-	 *            The arcana of this persona or origins for an item referencing
-	 *            this persona
+	 * @param arcana
+	 *            The arcana of this persona
 	 */
-	public PersonaReference(int personaId, String personaName, byte level, byte originArcana) {
-		this.personaId = personaId;
-		this.personaName = personaName;
+	public PersonaReference(int id, String name, byte level, byte arcana) {
+		this.id = id;
+		this.name = name;
 		this.level = level;
-		this.originArcana = originArcana;
+		this.arcana = arcana;
 	}
 
 	/**
@@ -66,14 +65,14 @@ public class PersonaReference extends DatabaseObject {
 	 * @return The id of the persona being referenced
 	 */
 	public int getId() {
-		return personaId;
+		return id;
 	}
 
 	/**
 	 * @return The name of the referenced persona
 	 */
 	public String getName() {
-		return personaName;
+		return name;
 	}
 
 	/**
@@ -84,11 +83,10 @@ public class PersonaReference extends DatabaseObject {
 	}
 
 	/**
-	 * @return The arcana of this persona or origins for an item referencing
-	 *         this persona
+	 * @return The arcana of this persona
 	 */
-	public byte getOriginArcana() {
-		return originArcana;
+	public byte getArcana() {
+		return arcana;
 	}
 
 	/**
@@ -144,8 +142,7 @@ public class PersonaReference extends DatabaseObject {
 	 * @return true if the field is only present in JSON, false otherwise
 	 */
 	protected boolean isJsonOnly(String name) {
-		// All of these fields should only be written to JSON
-		return true;
+		return false;
 	}
 
 	/**

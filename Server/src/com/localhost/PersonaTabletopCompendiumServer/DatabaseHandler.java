@@ -357,28 +357,33 @@ public class DatabaseHandler {
 		} else if (clazz == FlatLoot.class) {
 			sb.append("item INNER JOIN loot ON item.id=loot.itemid");
 		} else if (clazz == FlatAccessory.class) {
+			sb.append("item ");
 			if (ids.length == 0) {
-				sb.append("item WHERE item.type = ");
+				sb.append("WHERE item.type = ");
 				sb.append(ItemType.ACCESSORY.getValue());
 			}
 		} else if (clazz == FlatConsumable.class) {
+			sb.append("item ");
 			if (ids.length == 0) {
-				sb.append("item WHERE item.type = ");
+				sb.append("WHERE item.type = ");
 				sb.append(ItemType.CONSUMABLE.getValue());
 			}
 		} else if (clazz == FlatSkillCard.class) {
+			sb.append("item ");
 			if (ids.length == 0) {
-				sb.append("item WHERE item.type = ");
+				sb.append("WHERE item.type = ");
 				sb.append(ItemType.SKILLCARD.getValue());
 			}
 		} else if (clazz == FlatStatBoostItem.class) {
+			sb.append("item ");
 			if (ids.length == 0) {
-				sb.append("item WHERE item.type = ");
+				sb.append("WHERE item.type = ");
 				sb.append(ItemType.STATBOOST.getValue());
 			}
 		} else if (clazz == FlatTraitBoostItem.class) {
+			sb.append("item ");
 			if (ids.length == 0) {
-				sb.append("item WHERE item.type = ");
+				sb.append("WHERE item.type = ");
 				sb.append(ItemType.TRAITBOOST.getValue());
 			}
 		}
@@ -959,15 +964,12 @@ public class DatabaseHandler {
 				}
 				skill.getCompiledDescription(true);
 				PreparedStatement persona = conn.prepareStatement(
-						"SELECT persona_skill.level, persona.id, persona.name FROM (SELECT persona_skill.personaid, persona_skill.level FROM persona_skill WHERE persona_skill.skillid=?) persona_skill INNER JOIN persona ON persona_skill.personaid=persona.id");
+						"SELECT persona_skill.level, persona.id, persona.name, persona.arcana FROM (SELECT persona_skill.personaid, persona_skill.level FROM persona_skill WHERE persona_skill.skillid=?) persona_skill INNER JOIN persona ON persona_skill.personaid=persona.id");
 				persona.setInt(1, skillid);
 				ResultSet learningPersonae = persona.executeQuery();
 				ArrayList<PersonaReference> refs = new ArrayList<PersonaReference>();
 				while (learningPersonae.next()) {
-					int id = learningPersonae.getInt("id");
-					String name = learningPersonae.getString("name");
-					byte level = learningPersonae.getByte("level");
-					refs.add(new PersonaReference(id, name, level, (byte) 0));
+					refs.add(new PersonaReference(learningPersonae));
 				}
 				PersonaReference[] refTemp = new PersonaReference[refs.size()];
 				refs.toArray(refTemp);
@@ -975,6 +977,110 @@ public class DatabaseHandler {
 			}
 			FullSkill[] temp = new FullSkill[skillList.size()];
 			skillList.toArray(temp);
+			return temp;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Get the full version of the requested items
+	 * 
+	 * @param ids
+	 *            An array of itemids to retrieve
+	 * @return An array of the {@link FullItem} representations of the
+	 *         requested items
+	 */
+	public FullItem[] getFullItems(int ids[]) {
+		ArrayList<FullItem> itemList = new ArrayList<FullItem>();
+		if (ids == null) {
+			ids = new int[0];
+		}
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT item.id, item.type FROM item");
+			if (ids.length != 0) {
+				sb.append(" WHERE item.id ");
+				idsToInClause(ids, sb);
+			}
+			PreparedStatement itemTypeSearch = conn.prepareStatement(sb.toString());
+			
+			ResultSet itemTypeResult = itemTypeSearch.executeQuery();
+			while (itemTypeResult.next()) {
+				ItemType itemType = ItemType.fromByteStatic(itemTypeResult.getByte("type"));
+				int itemid = itemTypeResult.getInt("id");
+				FlatItem item = null;
+				switch (itemType) {
+					case ACCESSORY:
+						item = getItems(FlatAccessory.class, new int[] { itemid })[0];
+						break;
+					case ARMOR:
+						item = getItems(FlatArmor.class, new int[] { itemid })[0];
+						break;
+					case CONSUMABLE:
+						item = getItems(FlatConsumable.class, new int[] { itemid })[0];
+						break;
+					case LOOT:
+						item = getItems(FlatLoot.class, new int[] { itemid })[0];
+						break;
+					case SKILLCARD:
+						item = getItems(FlatSkillCard.class, new int[] { itemid })[0];
+						break;
+					case STATBOOST:
+						item = getItems(FlatStatBoostItem.class, new int[] { itemid })[0];
+						break;
+					case TRAITBOOST:
+						item = getItems(FlatTraitBoostItem.class, new int[] { itemid })[0];
+						break;
+					case WEAPON:
+						item = getItems(FlatWeapon.class, new int[] { itemid })[0];
+						break;
+					default:
+						break;
+				}
+				PersonaReference transmutePersonaRef = null;
+				if (item.getTransmuteId() != -1) {
+					PreparedStatement transmute = conn.prepareStatement("SELECT persona.id, persona.name, persona.level, persona.arcana FROM persona WHERE persona.id=?");
+					transmute.setInt(1, item.getTransmuteId());
+					ResultSet transmutePersona = transmute.executeQuery();
+					transmutePersona.next();
+					transmutePersonaRef = new PersonaReference(transmutePersona);
+				}
+				PreparedStatement persona = conn.prepareStatement(
+						"SELECT drop_table.isDrop, persona.id, persona.name, persona.level, persona.arcana FROM (SELECT drop_table.personaid, drop_table.isDrop FROM drop_table WHERE drop_table.itemid=?) drop_table INNER JOIN persona ON drop_table.personaid=persona.id");
+				persona.setInt(1, itemid);
+				ResultSet sourcePersonae = persona.executeQuery();
+				ArrayList<PersonaReference> dropRefs = new ArrayList<PersonaReference>();
+				ArrayList<PersonaReference> negotRefs = new ArrayList<PersonaReference>();
+				while (sourcePersonae.next()) {
+					boolean isDrop = sourcePersonae.getBoolean("isDrop");
+					if (isDrop) {
+						dropRefs.add(new PersonaReference(sourcePersonae));
+					} else {
+						negotRefs.add(new PersonaReference(sourcePersonae));
+					}
+				}
+				PersonaReference[] dropRefTemp = new PersonaReference[dropRefs.size()];
+				PersonaReference[] negotRefTemp = new PersonaReference[negotRefs.size()];
+				dropRefs.toArray(dropRefTemp);
+				negotRefs.toArray(negotRefTemp);
+				PreparedStatement vendor = conn.prepareStatement(
+						"SELECT vendor.id, vendor.name, vendor_item.cost, vendor_item.id AS vendorItemId FROM (SELECT vendor_item.id, vendor_item.vendorId, vendor_item.cost FROM vendor_item WHERE vendor_item.itemId=?) vendor_item INNER JOIN vendor ON vendor_item.vendorId=vendor.id");
+				vendor.setInt(1, itemid);
+				ResultSet vendors = vendor.executeQuery();
+				ArrayList<VendorItemReference> vendorRefs = new ArrayList<VendorItemReference>();
+				while (vendors.next()) {
+					int vendorItemId = vendors.getInt("vendorItemId");
+					Restriction[] restricts = this.getRestrictionsForItem(vendorItemId);
+					vendorRefs.add(new VendorItemReference(vendors, restricts));
+				}
+				VendorItemReference[] vendorRefTemp = new VendorItemReference[vendorRefs.size()];
+				vendorRefs.toArray(vendorRefTemp);
+				itemList.add(new FullItem(item, transmutePersonaRef, dropRefTemp, negotRefTemp, vendorRefTemp));
+			}
+			FullItem[] temp = new FullItem[itemList.size()];
+			itemList.toArray(temp);
 			return temp;
 		} catch (Exception e) {
 			e.printStackTrace();

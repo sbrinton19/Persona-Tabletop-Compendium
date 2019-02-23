@@ -1,29 +1,32 @@
 import { getArcanaName } from '../Enums/Arcana';
 export class PersonaReference {
-    readonly personaId: number;
-    readonly personaName: string;
+    readonly id: number;
+    readonly name: string;
     readonly level: number;
-    readonly originArcana: number;
+    readonly arcana: number;
     constructor(id: number, name: string, level: number, originArcana: number) {
-        this.personaId = id;
-        this.personaName = name;
+        this.id = id;
+        this.name = name;
         this.level = level;
-        this.originArcana = originArcana;
+        this.arcana = originArcana;
     }
 
     public static copyConstructor(source: PersonaReference): PersonaReference {
-        return new PersonaReference(source.personaId, source.personaName, source.level, source.originArcana);
+        if (!source) {
+            return null;
+        }
+        return new PersonaReference(source.id, source.name, source.level, source.arcana);
     }
 
     public getArcanaName(): string {
-        return getArcanaName(this.originArcana);
+        return getArcanaName(this.arcana);
     }
 
     public isEqual(other: PersonaReference): boolean {
         if (!other) {
             return false;
         }
-        return (this.personaId === other.personaId && this.personaName === other.personaName && this.level === other.level &&
-            this.originArcana === other.originArcana);
+        return (this.id === other.id && this.name === other.name && this.level === other.level &&
+            this.arcana === other.arcana);
     }
 }

@@ -90,8 +90,7 @@ public class FullActivity extends FlatActivity {
 	 *         ignored when writing
 	 */
 	protected boolean isIgnoredField(String name) {
-		// Ignore helper
-		return name.equals("helper");
+		return false;
 	}
 
 	/**

@@ -22,7 +22,7 @@ export class PersonaComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscription = this.route.data.subscribe(({ personaData }) => {
       this.persona = personaData.get(+this.route.snapshot.paramMap.get('id'));
     });
