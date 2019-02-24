@@ -58,14 +58,3 @@
 app-pagination {
     margin: 1em;
 }
-
-.recipe-table {
-    margin: 1em auto auto;
-    text-align: center;
-    width: 85%;
-}
-
-.recipe-table td, .recipe-table th {
-    padding-left: .5em;
-    padding-right: .5em;
-}

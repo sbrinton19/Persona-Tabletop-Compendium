@@ -16,6 +16,10 @@ export class Recipe {
         return new Recipe(newSources, PersonaReference.copyConstructor(source.result), source.cost);
     }
 
+    public clone(): Recipe {
+        return Recipe.copyConstructor(this);
+    }
+
     public isEqual(other: Recipe) {
         if (!other) {
             return false;

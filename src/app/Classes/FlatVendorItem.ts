@@ -15,6 +15,10 @@ export class FlatVendorItem {
         return new FlatVendorItem(source.id, source.vendorId, source.itemId, source.cost);
     }
 
+    public clone(): FlatVendorItem {
+        return FlatVendorItem.copyConstructor(this);
+    }
+
     public isEqual(other: FlatVendorItem) {
         if (!other) {
             return false;

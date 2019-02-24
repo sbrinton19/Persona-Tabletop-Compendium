@@ -16,7 +16,6 @@
       <th class="filter-header left-border">
         <app-string-filter id="armorFilter"
         [displayList]="displayList"
-        [masterList]="flatArmorsList"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -24,19 +23,23 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let armor of displayList">
-      <td class="mobile-hidden-1">{{armor.id}}</td>
-      <td class="left-border"><a href='/item/{{armor.id}}'>{{armor.name}}</a></td>
-      <td class="left-border mobile-hidden-3">{{armor.schedule}}</td>
-      <td class="left-border mobile-hidden-3">
-        <label *ngFor="let origin of armor.getOrigins(); last as isLast">{{armor.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-      </td>
-      <td class="left-border mobile-hidden-2">{{armor.getArmorClassName()}}</td>
-      <td class="left-border">{{armor.damageReduction}}</td>
-      <td class="left-border">{{armor.moveAimPenalty}}</td>
-      <td class="left-border">{{armor.maxDodgeBonus}}</td>
-      <td class="left-border mobile-hidden-2">{{armor.getGearPoolName()}}</td>
-      <td class="left-border mobile-hidden-3">{{armor.special}}</td>
-    </tr>
+    <ng-container *ngFor="let tuple of displayList">
+        <ng-container *ngIf="tuple[0]; let armor">
+          <tr *ngIf="tuple[1]">
+            <td class="mobile-hidden-1">{{armor.id}}</td>
+            <td class="left-border"><a href='/item/{{armor.id}}'>{{armor.name}}</a></td>
+            <td class="left-border mobile-hidden-3">{{armor.schedule}}</td>
+            <td class="left-border mobile-hidden-3">
+              <label *ngFor="let origin of armor.getOrigins(); last as isLast">{{armor.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+            </td>
+            <td class="left-border mobile-hidden-2">{{armor.getArmorClassName()}}</td>
+            <td class="left-border">{{armor.damageReduction}}</td>
+            <td class="left-border">{{armor.moveAimPenalty}}</td>
+            <td class="left-border">{{armor.maxDodgeBonus}}</td>
+            <td class="left-border mobile-hidden-2">{{armor.getGearPoolName()}}</td>
+            <td class="left-border mobile-hidden-3">{{armor.special}}</td>
+          </tr>
+        </ng-container>
+    </ng-container>
   </tbody>
 </table>

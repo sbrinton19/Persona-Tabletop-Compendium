@@ -6,6 +6,8 @@ import { SubscriptionLike } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { ActivityType } from '../Enums/ActivityType';
+import { FilterType } from '../Enums/FilterType';
+import { TableHeader } from '../Classes/TableHeader';
 
 @Component({
   selector: 'app-activity',
@@ -20,6 +22,12 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private sortOrder = false;
   private readonly orderByPipe = new OrderByPipe();
   private readonly ActivityType = ActivityType;
+  private readonly vendorHeaders = [
+    new TableHeader(1, 2, 'ID', FilterType.NoFilter, 'id'),
+    new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name'),
+    new TableHeader(1, 2, 'Cost', FilterType.NoFilter, 'cost'),
+    new TableHeader(1, 2, 'Restrictions', FilterType.NoFilter, 'restrictions'),
+  ];
 
   constructor(private route: ActivatedRoute) { }
 

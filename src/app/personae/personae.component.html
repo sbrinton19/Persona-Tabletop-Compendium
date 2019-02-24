@@ -11,7 +11,6 @@
       <th class="filter-header left-border">
         <app-string-filter id="personaFilter"
         [displayList]="displayList"
-        [masterList]="flatPersonaeList"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -19,12 +18,16 @@
     </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let persona of displayList">
-    <td>{{persona.level}}</td>
-    <td class="left-border"><a href='/persona/{{persona.id}}'>{{persona.name}}</a></td>
-    <td class="left-border">{{persona.getArcanaName()}}</td>
-    <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
-    <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-3 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
-  </tr>
+    <ng-container *ngFor="let tuple of displayList">
+        <ng-container *ngIf="tuple[0]; let persona">
+          <tr *ngIf="tuple[1]">
+            <td>{{persona.level}}</td>
+            <td class="left-border"><a href='/persona/{{persona.id}}'>{{persona.name}}</a></td>
+            <td class="left-border">{{persona.getArcanaName()}}</td>
+            <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
+            <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-3 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
+          </tr>
+        </ng-container>
+    </ng-container>
   </tbody>
 </table>

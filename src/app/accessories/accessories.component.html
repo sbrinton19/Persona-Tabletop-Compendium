@@ -11,7 +11,6 @@
       <th class="filter-string left-border">
         <app-string-filter id="accessoryFilter"
         [displayList]="displayList"
-        [masterList]="flatAccessoriesList"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -19,16 +18,20 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let accessory of displayList">
-      <td class="mobile-hidden-1">{{accessory.id}}</td>
-      <td class="left-border"><a href='/item/{{accessory.id}}'>{{accessory.name}}</a></td>
-      <td class="left-border mobile-hidden-3">{{accessory.schedule}}</td>
-      <td class="left-border mobile-hidden-2">
-        <label *ngFor="let origin of accessory.getOrigins(); last as isLast">
-          {{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container>
-        </label>
-      </td>
-      <td class="left-border">{{accessory.special}}</td>
-    </tr>
+    <ng-container *ngFor="let tuple of displayList">
+      <ng-container *ngIf="tuple[0]; let accessory">
+        <tr *ngIf="tuple[1]">
+          <td class="mobile-hidden-1">{{accessory.id}}</td>
+          <td class="left-border"><a href='/item/{{accessory.id}}'>{{accessory.name}}</a></td>
+          <td class="left-border mobile-hidden-3">{{accessory.schedule}}</td>
+          <td class="left-border mobile-hidden-2">
+            <label *ngFor="let origin of accessory.getOrigins(); last as isLast">
+              {{accessory.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container>
+            </label>
+          </td>
+          <td class="left-border">{{accessory.special}}</td>
+        </tr>
+      </ng-container>
+    </ng-container>
   </tbody>
 </table>

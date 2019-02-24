@@ -4,6 +4,7 @@ export class PersonaReference {
     readonly name: string;
     readonly level: number;
     readonly arcana: number;
+
     constructor(id: number, name: string, level: number, originArcana: number) {
         this.id = id;
         this.name = name;
@@ -16,6 +17,10 @@ export class PersonaReference {
             return null;
         }
         return new PersonaReference(source.id, source.name, source.level, source.arcana);
+    }
+
+    public clone(): PersonaReference {
+        return PersonaReference.copyConstructor(this);
     }
 
     public getArcanaName(): string {

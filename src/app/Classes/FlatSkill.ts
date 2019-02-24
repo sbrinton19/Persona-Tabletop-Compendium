@@ -15,40 +15,32 @@ export class FlatSkill {
     readonly name: string;
     readonly cost: number;
     readonly element: Element;
-    readonly minLevel: number;
     readonly aoe: number;
+    readonly minLevel: number;
     readonly description: string;
     readonly allyCardId: number;
     readonly mainCardId: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number,
-        aoe: number, minLevel: number) {
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number) {
             this.id = id;
             this.name = name;
             this.cost = cost;
             this.element = element;
+            this.aoe = aoe;
             this.minLevel = minLevel;
             this.description = description;
             this.allyCardId = allyCardId;
             this.mainCardId = mainCardId;
-            this.aoe = aoe;
     }
 
     public static copyConstructor(source: FlatSkill): FlatSkill {
-        return new FlatSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel);
+        return new FlatSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId);
     }
 
-    public getAllyCardName(): string {
-        return `${this.name} Ally`;
-    }
-
-    public geMainCardName(): string {
-        return `${this.name} Main`;
-    }
-
-    public getSkillElement(): string {
-        return getElementName(this.element);
+    public clone(): FlatSkill {
+        return FlatSkill.copyConstructor(this);
     }
 
     public getFormattedCost(): string {
@@ -61,6 +53,10 @@ export class FlatSkill {
         }
     }
 
+    public getSkillElement(): string {
+        return getElementName(this.element);
+    }
+
     public getFormattedAoE(): string {
         if (this.aoe === -1) {
             return '-';
@@ -69,6 +65,14 @@ export class FlatSkill {
             return 'Self';
         }
         return `AoE=${this.aoe}`;
+    }
+
+    public getAllyCardName(): string {
+        return `${this.name} Ally`;
+    }
+
+    public geMainCardName(): string {
+        return `${this.name} Main`;
     }
 
     public isEqual(other: FlatSkill): boolean {
@@ -90,28 +94,33 @@ export class FlatDamageSkill extends FlatSkill {
     avgDamage: number;
     maxDamage: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number,
-        aoe: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number) {
-            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel);
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number) {
+            super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
             this.multiplier = damageMultiplier;
             this.maxDamageDice = maxDamageDice;
             this.damageDie = damageDie;
             this.damageBonus = damageBonus;
-        if (this.element === Element.Healing) {
-            return;
-        }
-        minLevel = minLevel > 80 ? 80 : minLevel;
-        const dmgBonus = this.element === Element.Gun ? 0 :
-            (this.element === Element.Physical || this.element === Element.Curse || this.element === Element.Bless ? 10 * (minLevel + 20) / 20 :
-            10 * (minLevel + 20) / 40);
-        this.minDamage = this.multiplier * (this.maxDamageDice + dmgBonus + this.damageBonus);
-        this.avgDamage = this.multiplier * ((this.maxDamageDice + this.maxDamageDice * this.damageDie) / 2 + dmgBonus + this.damageBonus);
-        this.maxDamage = this.multiplier * (this.maxDamageDice * this.damageDie + dmgBonus + this.damageBonus);
+
+            if (this.element === Element.Healing) {
+                return;
+            }
+            minLevel = minLevel > 80 ? 80 : minLevel;
+            const dmgBonus = this.element === Element.Gun ? 0 :
+                (this.element === Element.Physical || this.element === Element.Curse || this.element === Element.Bless ? 10 * (minLevel + 20) / 20 :
+                10 * (minLevel + 20) / 40);
+            this.minDamage = this.multiplier * (this.maxDamageDice + dmgBonus + this.damageBonus);
+            this.avgDamage = this.multiplier * ((this.maxDamageDice + this.maxDamageDice * this.damageDie) / 2 + dmgBonus + this.damageBonus);
+            this.maxDamage = this.multiplier * (this.maxDamageDice * this.damageDie + dmgBonus + this.damageBonus);
     }
 
     public static copyConstructor(source: FlatDamageSkill): FlatDamageSkill {
-        return new FlatDamageSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus);
+        return new FlatDamageSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus);
+    }
+
+    public clone(): FlatDamageSkill {
+        return FlatDamageSkill.copyConstructor(this);
     }
 
     public getDamageMultiplierString(): string {
@@ -122,7 +131,6 @@ export class FlatDamageSkill extends FlatSkill {
         if (!other) {
             return false;
         }
-
         return (super.isEqual(other) && this.maxDamageDice === other.maxDamageDice && this.multiplier === other.multiplier &&
             this.damageBonus === other.damageBonus && this.damageDie === other.damageDie);
     }
@@ -132,18 +140,22 @@ export class FlatDamageAilmentSkill extends FlatDamageSkill {
     readonly ailmentType: AilmentType;
     readonly ailmentFailValue: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number,
-        aoe: number, minLevel: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number,
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, damageMultiplier: DamageMultiplier, maxDamageDice: number, damageDie: number, damageBonus: number,
         ailmentType: AilmentType, ailmentFailValue: number) {
-            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel, damageMultiplier, maxDamageDice, damageDie, damageBonus);
+            super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId, damageMultiplier, maxDamageDice, damageDie, damageBonus);
             this.ailmentType = ailmentType;
             this.ailmentFailValue = ailmentFailValue;
     }
 
     public static copyConstructor(source: FlatDamageAilmentSkill): FlatDamageAilmentSkill {
-        return new FlatDamageAilmentSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus, source.ailmentType,
+        return new FlatDamageAilmentSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.multiplier, source.maxDamageDice, source.damageDie, source.damageBonus, source.ailmentType,
             source.ailmentFailValue);
+    }
+
+    public clone(): FlatDamageAilmentSkill {
+        return FlatDamageAilmentSkill.copyConstructor(this);
     }
 
     public getAilmentName(): string {
@@ -162,16 +174,20 @@ export class FlatSupportSkill extends FlatSkill {
     readonly supportType: SupportType;
     readonly supportValue: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number,
-        minLevel: number, supportType: SupportType, supportValue: number) {
-        super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel);
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, supportType: SupportType, supportValue: number) {
+        super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
         this.supportType = supportType;
         this.supportValue = supportValue;
     }
 
     public static copyConstructor(source: FlatSupportSkill): FlatSupportSkill {
-        return new FlatSupportSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.supportType, source.supportValue);
+        return new FlatSupportSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.supportType, source.supportValue);
+    }
+
+    public clone(): FlatSupportSkill {
+        return FlatSupportSkill.copyConstructor(this);
     }
 
     public getSupportTypeName(): string {
@@ -205,16 +221,20 @@ export class FlatAilmentSkill extends FlatSkill {
     readonly ailmentType: AilmentType;
     readonly ailmentFailValue: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number,
-        minLevel: number, ailmentType: AilmentType, ailmentFailValue: number) {
-            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel);
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, ailmentType: AilmentType, ailmentFailValue: number) {
+            super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
             this.ailmentType = ailmentType;
             this.ailmentFailValue = ailmentFailValue;
     }
 
     public static copyConstructor(source: FlatAilmentSkill): FlatAilmentSkill {
-        return new FlatAilmentSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.ailmentType, source.ailmentFailValue);
+        return new FlatAilmentSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.ailmentType, source.ailmentFailValue);
+    }
+
+    public clone(): FlatAilmentSkill {
+        return FlatAilmentSkill.copyConstructor(this);
     }
 
     public getAilmentName(): string {
@@ -235,9 +255,9 @@ export class FlatPassiveSkill extends FlatSkill {
     readonly value: number;
     readonly secondValue: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number,
-        minLevel: number, passiveType: PassiveType, type: number, value: number, secondValue: number) {
-            super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel);
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, passiveType: PassiveType, type: number, value: number, secondValue: number) {
+            super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
             this.passiveType = passiveType;
             this.type = type;
             this.value = value;
@@ -245,8 +265,12 @@ export class FlatPassiveSkill extends FlatSkill {
     }
 
     public static copyConstructor(source: FlatPassiveSkill): FlatPassiveSkill {
-        return new FlatPassiveSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.passiveType, source.type, source.value, source.secondValue);
+        return new FlatPassiveSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.passiveType, source.type, source.value, source.secondValue);
+    }
+
+    public clone(): FlatPassiveSkill {
+        return FlatPassiveSkill.copyConstructor(this);
     }
 
     public getPassiveTypeName(): string {
@@ -328,6 +352,10 @@ export class PersonaSkill {
         return new PersonaSkill(source.personaid, source.skillid, source.level);
     }
 
+    public clone(): PersonaSkill {
+        return PersonaSkill.copyConstructor(this);
+    }
+
     public isEqual(other: PersonaSkill) {
         if (!other) {
             return false;
@@ -339,15 +367,19 @@ export class PersonaSkill {
 export class LeveledSkill extends FlatSkill {
     readonly level: number;
 
-    public constructor(id: number, name: string, cost: number, element: Element, description: string, allyCardId: number, mainCardId: number, aoe: number,
-        minLevel: number, level: number) {
-        super(id, name, cost, element, description, allyCardId, mainCardId, aoe, minLevel);
+    public constructor(id: number, name: string, cost: number, element: Element, aoe: number, minLevel: number, description: string,
+        allyCardId: number, mainCardId: number, level: number) {
+        super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
         this.level = level;
     }
 
     public static copyConstructor(source: LeveledSkill): LeveledSkill {
-        return new LeveledSkill(source.id, source.name, source.cost, source.element, source.description, source.allyCardId, source.mainCardId,
-            source.aoe, source.minLevel, source.level);
+        return new LeveledSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
+            source.allyCardId, source.mainCardId, source.level);
+    }
+
+    public clone(): LeveledSkill {
+        return LeveledSkill.copyConstructor(this);
     }
 
     public isEqual(other: LeveledSkill) {
@@ -390,9 +422,15 @@ export class FullSkill {
             default:
                 console.error(`Failed to reconstruct FlatSkill for FullSkill ${source.skill.name}`);
         }
+
         const sourceArray: PersonaReference[] = [];
         source.personaSources.forEach(personaSource => sourceArray.push(PersonaReference.copyConstructor(personaSource)));
+
         return new FullSkill(realSkill, sourceArray, source.skillClass);
+    }
+
+    public clone(): FullSkill {
+        return FullSkill.copyConstructor(this);
     }
 
     public formatCost(): string {
@@ -409,16 +447,16 @@ export class FullSkill {
         return getElementName(this.skill.element);
     }
 
+    public getDescription(): string {
+        return this.skill.description;
+    }
+
     public getAllyCardName(): string {
         return `${this.skill.name} Ally`;
     }
 
     public geMainCardName(): string {
         return `${this.skill.name} Main`;
-    }
-
-    public getDescription(): string {
-        return this.skill.description;
     }
 
     public isEqual(other: FullSkill): boolean {

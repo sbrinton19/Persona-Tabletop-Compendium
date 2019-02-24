@@ -13,7 +13,6 @@
       <th class="filter-header left-border">
         <app-string-filter id="itemsFilter"
         [displayList]="displayList"
-        [masterList]="flatConsumableList.concat(flatLootList)"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -21,16 +20,20 @@
     </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let item of displayList">
-    <td>{{item.id}}</td>
-    <td class="left-border"><a href='/item/{{item.id}}'>{{item.name}}</a></td>
-    <td class="left-border mobile-hidden-3">{{item.getTypeName()}}</td>
-    <td class="left-border mobile-hidden-3">{{item.schedule}}</td>
-    <td class="left-border mobile-hidden-2">
-      <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-    </td>
-    <td class="left-border mobile-hidden-3">{{item.getConsumableTypeName()}}</td>
-    <td class="left-border">{{item.special}}</td>
-  </tr>
+    <ng-container *ngFor="let tuple of displayList">
+      <ng-container *ngIf="tuple[0]; let item">
+        <tr *ngIf="tuple[1]">
+          <td>{{item.id}}</td>
+          <td class="left-border"><a href='/item/{{item.id}}'>{{item.name}}</a></td>
+          <td class="left-border mobile-hidden-3">{{item.getTypeName()}}</td>
+          <td class="left-border mobile-hidden-3">{{item.schedule}}</td>
+          <td class="left-border mobile-hidden-2">
+            <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
+          </td>
+          <td class="left-border mobile-hidden-3">{{item.getConsumableTypeName()}}</td>
+          <td class="left-border">{{item.special}}</td>
+        </tr>
+      </ng-container>
+    </ng-container>
   </tbody>
 </table>

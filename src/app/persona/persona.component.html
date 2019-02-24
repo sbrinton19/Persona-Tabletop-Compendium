@@ -162,56 +162,45 @@
         </tbody>
     </table>
 
-    <app-pagination [listData]="persona.toRecipes" [header]="'Fusion(s) to this persona (| Recipes)'" [owner]="persona.name">
+    <app-pagination
+    [activeData]="persona.toRecipes"
+    [header]="'Fusion(s) to this persona (| Recipes)'"
+    [tableId]="'recipesToTable'"
+    [tableHeader]="recipeToHeaders">
         <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
-            <table id="recipesToTable" class="ui table unstackable striped recipe-table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Cost</th>
-                    <th colspan="6">Ingredients</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let recipe of displayData; index as i">
-                    <td>{{i + 1 + (currPage - 1) * perPage}}</td>
-                    <td>¥{{recipe.cost | number}}</td>
-                    <td *ngFor="let persona of recipe.sources">
-                        <a href='/persona/{{persona.id}}'>{{persona.name}}</a>
-                        ({{persona.level}} / {{persona.getArcanaName()}})
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <tbody>
+            <tr *ngFor="let recipe of displayData; index as i">
+                <td>{{i + 1 + (currPage - 1) * perPage}}</td>
+                <td>¥{{recipe.cost | number}}</td>
+                <td *ngFor="let persona of recipe.sources">
+                    <a href='/persona/{{persona.id}}'>{{persona.name}}</a>
+                    ({{persona.level}} / {{persona.getArcanaName()}})
+                </td>
+            </tr>
+            </tbody>
         </ng-template>
     </app-pagination>
     
-    <app-pagination [listData]="persona.fromRecipes" [header]="'Fusion(s) from this persona (| Recipes)'" [owner]="persona.name">
+    <app-pagination
+    [activeData]="persona.fromRecipes"
+    [header]="'Fusion(s) from this persona (| Recipes)'"
+    [tableId]="'recipesFromTable'"
+    [tableHeader]="recipeFromHeaders">
         <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
-            <table id="recipesFromTable" class="ui table unstackable striped recipe-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Cost</th>
-                        <th>Fuse with</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let recipe of displayData; index as i">
-                        <td>{{i + 1 + (currPage - 1) * perPage}}</td>
-                        <td>¥{{recipe.cost | number}}</td>
-                        <td>
-                            <a href='/persona/{{recipe.sources[1].id}}'>{{recipe.sources[1].name}}</a>
-                            ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
-                        </td>
-                        <td>
-                            <a href='/persona/{{recipe.result.id}}'>{{recipe.result.name}}</a>
-                            ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <tbody>
+                <tr *ngFor="let recipe of displayData; index as i">
+                    <td>{{i + 1 + (currPage - 1) * perPage}}</td>
+                    <td>¥{{recipe.cost | number}}</td>
+                    <td>
+                        <a href='/persona/{{recipe.sources[1].id}}'>{{recipe.sources[1].name}}</a>
+                        ({{recipe.sources[1].level}} / {{recipe.sources[1].getArcanaName()}})
+                    </td>
+                    <td>
+                        <a href='/persona/{{recipe.result.id}}'>{{recipe.result.name}}</a>
+                        ({{recipe.result.level}} / {{recipe.result.getArcanaName()}})
+                    </td>
+                </tr>
+            </tbody>
         </ng-template>
     </app-pagination>
 </div>

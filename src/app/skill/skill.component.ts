@@ -12,7 +12,6 @@ import { DamageMultiplier } from '../Enums/DamageMultiplier';
 })
 export class SkillComponent implements OnInit, OnDestroy {
   private skill: FullSkill;
-  private Math = Math;
   private subscription: ISubscription;
   private readonly baseDetail: string[] = ['Minimum Level', 'Area of Effect'];
   private readonly damageDetail: string[] = ['Max Damage Dice', 'Damage Multiplier', 'Damage Bonus', 'Damage Die'];

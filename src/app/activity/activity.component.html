@@ -27,29 +27,24 @@
   <div id="vendorList">
     <div *ngFor="let vendor of activity.vendors; let i = index" [id]="'vendor_'+i">
       <br>
-      <h3>
-        {{vendor.name}}
-      </h3>
-      <table cellspacing="0" class="ui table striped sortable unstackable">
-        <thead>
-          <tr>
-            <th class="mobile-hidden-1" (click)="orderBy('id', i)">ID</th>
-            <th (click)="orderBy('name', i)">Name</th>
-            <th (click)="orderBy('cost', i)">Cost</th>
-            <th>Restrictions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let itemRef of vendor.vendorItems">
-            <td class="mobile-hidden-1">{{itemRef.id}}</td>
-            <td class="left-border"><a href='/item/{{itemRef.id}}'>{{itemRef.name}}</a></td>
-            <td class="left-border">{{itemRef.cost}}</td>
-            <td class="left-border">
-              <label *ngFor="let restriction of itemRef.restrictions">{{restriction.getComposedRestriction()}}<ng-container *ngIf="!isLast"><br></ng-container></label>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <app-pagination
+        [activeData]="vendor.vendorItems"
+        [header]="vendor.name+' (Total |)'"
+        [tableId]="'vendorPageTable'"
+        [tableHeader]="vendorHeaders">
+          <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
+            <tbody>
+              <tr *ngFor="let itemRef of displayData">
+                <td class="mobile-hidden-1">{{itemRef.id}}</td>
+                <td class="left-border"><a href='/item/{{itemRef.id}}'>{{itemRef.name}}</a></td>
+                <td class="left-border">{{itemRef.cost}}</td>
+                <td class="left-border">
+                  <label *ngFor="let restriction of itemRef.restrictions">{{restriction.getComposedRestriction()}}<ng-container *ngIf="!isLast"><br></ng-container></label>
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+      </app-pagination>
     </div>
   </div>
 </div>

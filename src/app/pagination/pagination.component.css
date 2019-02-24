@@ -1,3 +1,22 @@
 .pagination span {
     cursor: pointer;
 }
+
+#vendorPageTable {
+    margin: auto;
+    margin-top: 1em;
+    text-align: center;
+    width: 90%;
+}
+
+#recipesToTable, #recipesFromTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 85%;
+}
+
+#recipesToTable td, #recipesToTable th,
+#recipesFromTable td, #recipesFromTable th {
+    padding-left: .5em;
+    padding-right: .5em;
+}

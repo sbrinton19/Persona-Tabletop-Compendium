@@ -1,4 +1,4 @@
-<h3>{{headerPart[0]}}{{activeData.length}}{{headerPart[1]}}</h3>
+<h3>{{headerPart[0]}}{{getVisibleCount()}}{{headerPart[1]}}</h3>
 <div class="caption">
     <div class="pagination" *ngIf="maxPage > 1">
         <span (click)="getFirstPage()">&#x25c4;<span style="position: relative; left: -0.4em;">&#x25c4;</span></span>
@@ -8,9 +8,27 @@
         <span (click)="getLastPage()"><span style="position: relative; right: -0.4em;">&#x25ba;</span>&#x25ba;</span>
     </div>
 </div>
-<app-string-filter id="paginationFilter"
-    [displayList]="activeData"
-    [masterList]="listData"
-    (filtered)="onFiltered($event)">
-</app-string-filter>
-<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{$implicit: displayData, currentPage: currPage, pageSize: perPage}"></ng-template>
+<table [id]="tableId" class="ui table striped sortable unstackable">
+    <thead>
+        <tr>
+            <th *ngFor="let header of tableHeader; let i = index"
+                [attr.rowspan]="header.rowSpan"
+                [attr.colspan]="header.columnSpan">
+                    {{header.name}}
+            </th>
+        </tr>
+        <tr>
+            <ng-container *ngFor="let header of tableHeader; let i = index">
+                <th class="left-border" *ngIf="header.filterType === FilterType.StringFilter"
+                    [attr.colspan]="header.columnSpan">
+                        <app-string-filter id="paginationFilter"
+                        [displayList]="_activeData"
+                        [fieldInfo]="header.fieldName"
+                        (filtered)="onFiltered($event)">
+                        </app-string-filter>
+                </th>                    
+            </ng-container>
+        </tr>
+    </thead>
+    <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{$implicit: displayData, currentPage: currPage, pageSize: perPage}"></ng-template>
+</table>

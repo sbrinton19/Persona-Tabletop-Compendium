@@ -1,9 +1,9 @@
 export class Drop {
     readonly itemId: number;
     readonly personaId: number;
-    readonly isDrop: boolean;
     readonly low: number;
     readonly high: number;
+    readonly isDrop: boolean;
 
     public constructor(itemid: number, personaid: number, low: number, high: number, isDrop: boolean) {
         this.itemId = itemid;
@@ -15,6 +15,10 @@ export class Drop {
 
     public static copyConstructor(source: Drop): Drop {
         return new Drop(source.itemId, source.personaId, source.low, source.high, source.isDrop);
+    }
+
+    public clone(): Drop {
+        return Drop.copyConstructor(this);
     }
 
     public isEqual(other: Drop): boolean {

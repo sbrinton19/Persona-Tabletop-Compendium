@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FlatLoot, FlatConsumable, FlatItem, FlatStatBoostItem, FlatTraitBoostItem } from '../Classes/FlatItem';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { SubscriptionLike } from 'rxjs';
+import { FlatItem } from '../Classes/FlatItem';
 
 @Component({
   selector: 'app-items',
@@ -10,11 +10,7 @@ import { SubscriptionLike } from 'rxjs';
   styleUrls: ['./items.component.css']
 })
 export class ItemsComponent implements OnInit, OnDestroy {
-  private displayList: FlatItem[];
-  private flatConsumableList: FlatConsumable[] = [];
-  private flatLootList: FlatLoot[] = [];
-  private flatStatBoostList: FlatStatBoostItem[] = [];
-  private flatTraitBoostList: FlatTraitBoostItem[] = [];
+  private displayList: Array<[FlatItem, boolean]> = [];
   private subscriptions: SubscriptionLike[] = [];
   private sortOrder = false;
   private readonly orderByPipe = new OrderByPipe();
@@ -35,8 +31,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   getFlatLoots(): void {
     this.subscriptions.push(
       this.itemService.getFlatLootList().subscribe(flatLoot => {
-        this.flatLootList = flatLoot;
-        this.displayList = this.flatConsumableList.concat(this.flatLootList).concat(this.flatTraitBoostList).concat(this.flatStatBoostList);
+        flatLoot.forEach(loot => this.displayList.push([loot, true]));
       })
     );
   }
@@ -44,8 +39,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   getFlatConsumables(): void {
     this.subscriptions.push(
       this.itemService.getFlatConsumableList().subscribe(flatConsumable => {
-        this.flatConsumableList = flatConsumable;
-        this.displayList = this.flatConsumableList.concat(this.flatLootList).concat(this.flatTraitBoostList).concat(this.flatStatBoostList);
+        flatConsumable.forEach(consumable => this.displayList.push([consumable, true]));
       })
     );
   }
@@ -53,8 +47,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   getFlatTraitBoostItems(): void {
     this.subscriptions.push(
       this.itemService.getFlatTraitBoostItemList().subscribe(flatTraitBoostItem => {
-        this.flatTraitBoostList = flatTraitBoostItem;
-        this.displayList = this.flatConsumableList.concat(this.flatLootList).concat(this.flatTraitBoostList).concat(this.flatStatBoostList);
+        flatTraitBoostItem.forEach(tBoost => this.displayList.push([tBoost, true]));
       })
     );
   }
@@ -62,19 +55,17 @@ export class ItemsComponent implements OnInit, OnDestroy {
   getFlatStatBoostItems(): void {
     this.subscriptions.push(
       this.itemService.getFlatStatBoostItemList().subscribe(flatStatBoostItem => {
-        this.flatStatBoostList = flatStatBoostItem;
-        this.displayList = this.flatConsumableList.concat(this.flatLootList).concat(this.flatTraitBoostList).concat(this.flatStatBoostList);
+        flatStatBoostItem.forEach(sBoost => this.displayList.push([sBoost, true]));
       })
     );
   }
 
   orderBy(field: string, idx = 0): void {
     this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform
-      (this.flatConsumableList.concat(this.flatLootList).concat(this.flatTraitBoostList).concat(this.flatStatBoostList), field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx, true);
   }
 
-  onFiltered(filteredData: FlatItem[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatItem, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
 }

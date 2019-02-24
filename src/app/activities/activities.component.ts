@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 import { SubscriptionLike } from 'rxjs';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { ActivityService } from '../activity.service';
@@ -8,6 +8,7 @@ import { AvailableTime, getDisplayAvailableTimes, getAvailableTimeName } from '.
 import { AvailableWeekDay, getAvailableWeekDayName, getDisplayAvailableWeekDays } from '../Enums/AvailableWeekDay';
 import { ActivityType, getActivityTypeName, getDisplayActivityTypes } from '../Enums/ActivityType';
 import { getDisplayLocations, Location, getLocationName } from '../Enums/Location';
+import { StringFilterComponent } from '../string-filter/string-filter.component';
 
 @Component({
   selector: 'app-activities',
@@ -15,8 +16,8 @@ import { getDisplayLocations, Location, getLocationName } from '../Enums/Locatio
   styleUrls: ['./activities.component.css']
 })
 export class ActivitiesComponent implements OnInit, OnDestroy {
+  @ViewChildren(StringFilterComponent) stringFilter: QueryList<StringFilterComponent<FlatActivity>>;
   private displayList: Array<[FlatActivity, boolean]> = [];
-  private flatActivityList: FlatActivity[] = [];
   private subscription: SubscriptionLike;
   private sortOrder = false;
   private filterMap = new Map<string, number>();
@@ -25,8 +26,6 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
   private readonly AvailableTimes = getDisplayAvailableTimes();
   private readonly AvailableWeekDays = getDisplayAvailableWeekDays();
   private readonly ActivityTypes = getDisplayActivityTypes();
-  // changing this value notifies the location filter to reapply itself
-  private reapplyNameFilter = false;
 
   constructor(private activityService: ActivityService, private restrictionService: RestrictionService) { }
 
@@ -42,7 +41,7 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  getFlatActivities(): void {
+  private getFlatActivities(): void {
     this.subscription = this.activityService.getFlatActivityList().subscribe(flatActivities =>
       flatActivities.forEach(act => this.displayList.push([act, true])));
   }
@@ -54,12 +53,12 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
 
   filterBy(field: string, value: number): void {
     this.filterMap.set(field, +value);
-    this.reapplyNameFilter = !this.reapplyNameFilter;
+    this.stringFilter.first.reapplyFilter();
   }
 
-  onFiltered(filteredData: Array<[FlatActivity, boolean]>): void {
-    this.reapplyFilterMap(filteredData);
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatActivity, boolean]>]): void {
+    this.reapplyFilterMap(filteredData[1]);
+    this.displayList = filteredData[1];
   }
 
   getLocationName(location: Location): string {

@@ -11,7 +11,6 @@
       <th class="filter-header left-border">
         <app-string-filter id="skillFilter"
         [displayList]="displayList"
-        [masterList]="flatSkillList"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -19,12 +18,16 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let skill of displayList">
-      <td class="mobile-hidden-1">{{skill.id}}</td>
-      <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
-      <td class="left-border">{{skill.getFormattedCost()}}</td>
-      <td class="left-border">{{skill.getSkillElement()}}</td>
-      <td class="left-border">{{skill.description}}</td>
-    </tr>
+    <ng-container *ngFor="let tuple of displayList">
+        <ng-container *ngIf="tuple[0]; let skill">
+          <tr *ngIf="tuple[1]">
+            <td class="mobile-hidden-1">{{skill.id}}</td>
+            <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
+            <td class="left-border">{{skill.getFormattedCost()}}</td>
+            <td class="left-border">{{skill.getSkillElement()}}</td>
+            <td class="left-border">{{skill.description}}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
   </tbody>
 </table>

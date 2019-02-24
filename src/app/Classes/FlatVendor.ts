@@ -15,6 +15,10 @@ export class FlatVendor {
         return new FlatVendor(source.id, source.name, source.activityId);
     }
 
+    public clone(): FlatVendor {
+        return FlatVendor.copyConstructor(this);
+    }
+
     public isEqual(other: FlatVendor): boolean {
         if (!other) {
             return false;
@@ -34,7 +38,12 @@ export class FullVendor extends FlatVendor {
     public static copyConstructor(source: FullVendor): FullVendor {
         const realVendorItems: VendorItemReference[] = [];
         source.vendorItems.forEach(vendItem => realVendorItems.push(VendorItemReference.copyConstructor(vendItem)));
+
         return new FullVendor(source.id, source.name, source.activityId, realVendorItems);
+    }
+
+    public clone(): FullVendor {
+        return FullVendor.copyConstructor(this);
     }
 
     public isEqual(other: FullVendor): boolean {

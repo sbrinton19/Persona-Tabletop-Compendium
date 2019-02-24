@@ -17,11 +17,11 @@ export class FlatPersona {
     readonly level: number;
     readonly stats: number[];
     readonly elems: ElemResist[];
-    readonly note: string;
     readonly special: boolean;
     readonly max: boolean;
     readonly dlc: boolean;
     readonly rare: boolean;
+    readonly note: string;
 
     public constructor(id: number, name: string, arcana: Arcana, level: number, stats: number[], elems: ElemResist[], special: boolean,
         max: boolean, dlc: boolean, rare: boolean, note: string) {
@@ -41,6 +41,10 @@ export class FlatPersona {
     public static copyConstructor(source: FlatPersona): FlatPersona {
         return new FlatPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc,
             source.rare, source.note);
+    }
+
+    public clone(): FlatPersona {
+        return FlatPersona.copyConstructor(this);
     }
 
     public getElemShort(elem: ElemResist): string {
@@ -119,28 +123,38 @@ export class FullPersona extends FlatPersona {
             }
             skills.push(LeveledSkill.copyConstructor(skill));
         });
+
         const drops: DropReference[] = [];
         source.drops.forEach(drop => {
             drops.push(DropReference.copyConstructor(drop));
         });
+
         const negotiates: DropReference[] = [];
         source.negotiates.forEach(negotiate => {
             negotiates.push(DropReference.copyConstructor(negotiate));
         });
+
         const transmutes: ItemReference[] = [];
         source.transmutes.forEach(transmute => {
             transmutes.push(ItemReference.copyConstructor(transmute));
         });
+
         const toRecipes: Recipe[] = [];
         source.toRecipes.forEach(recipe => {
             toRecipes.push(Recipe.copyConstructor(recipe));
         });
+
         const fromRecipes: Recipe[] = [];
         source.fromRecipes.forEach(recipe => {
             fromRecipes.push(Recipe.copyConstructor(recipe));
         });
+
         return new FullPersona(source.id, source.name, source.arcana, source.level, source.stats, source.elems, source.special, source.max, source.dlc,
             source.rare, source.note, skills, drops, negotiates, transmutes, toRecipes, fromRecipes);
+    }
+
+    public clone(): FullPersona {
+        return FullPersona.copyConstructor(this);
     }
 
     public isEqual(other: FullPersona) {

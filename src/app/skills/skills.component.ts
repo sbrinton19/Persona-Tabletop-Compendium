@@ -11,9 +11,8 @@ import { SubscriptionLike } from 'rxjs';
 })
 export class SkillsComponent implements OnInit, OnDestroy {
   private sortOrder = false;
-  private displayList: FlatSkill[];
+  private displayList: Array<[FlatSkill, boolean]> = [];
   private subscriptions: SubscriptionLike;
-  private flatSkillList: FlatSkill[];
   private readonly orderByPipe = new OrderByPipe();
 
   constructor(private skillService: SkillService) { }
@@ -28,17 +27,16 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   getFlatSkills(): void {
     this.subscriptions = this.skillService.getFlatSkillList().subscribe(skills => {
-      this.flatSkillList = skills;
-      this.displayList = this.flatSkillList;
+      skills.forEach(skill => this.displayList.push([skill, true]));
     });
   }
 
   orderBy(field: string, idx = 0): void {
     this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.flatSkillList, field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx, true);
   }
 
-  onFiltered(filteredData: FlatSkill[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatSkill, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
 }

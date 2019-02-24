@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { FlatAccessory } from '../Classes/FlatItem';
 import { ItemService } from '../item.service';
 import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { SubscriptionLike } from 'rxjs';
+import { StringFilterComponent } from '../string-filter/string-filter.component';
 
 @Component({
   selector: 'app-accessories',
@@ -10,8 +11,8 @@ import { SubscriptionLike } from 'rxjs';
   styleUrls: ['./accessories.component.css']
 })
 export class AccessoriesComponent implements OnInit, OnDestroy {
-  private flatAccessoriesList: FlatAccessory[];
-  private displayList: FlatAccessory[];
+  @ViewChildren(StringFilterComponent) filter: QueryList<StringFilterComponent<FlatAccessory>>;
+  private displayList: Array<[FlatAccessory, boolean]> = [];
   private subscription: SubscriptionLike;
   private sortOrder = false;
   private readonly orderByPipe: OrderByPipe = new OrderByPipe();
@@ -28,17 +29,16 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
 
   private getFlatAccessories(): void {
     this.subscription = this.itemService.getFlatAccessoryList().subscribe(accessories => {
-      this.flatAccessoriesList = accessories;
-      this.displayList = this.flatAccessoriesList;
+      accessories.forEach(acc => this.displayList.push([acc, true]));
     });
   }
 
   orderBy(field: string, idx = 0): void {
     this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.flatAccessoriesList, field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx);
   }
 
-  onFiltered(filteredData: FlatAccessory[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatAccessory, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
 }

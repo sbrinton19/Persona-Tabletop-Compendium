@@ -15,6 +15,10 @@ export class BoundRestriction {
         return new BoundRestriction(source.restrictionId, source.boundId, source.type);
     }
 
+    public clone(): BoundRestriction {
+        return BoundRestriction.copyConstructor(this);
+    }
+
     public isEqual(other: BoundRestriction): boolean {
         if (!other) {
             return false;

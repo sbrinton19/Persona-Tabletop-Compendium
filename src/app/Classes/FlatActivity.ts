@@ -37,12 +37,12 @@ export class FlatActivity {
             source.type, source.value, source.secondValue, source.description);
     }
 
-    public getLocationName(): string {
-        return getLocationName(this.location);
+    public clone(): FlatActivity {
+        return FlatActivity.copyConstructor(this);
     }
 
-    public getTypeName(): string {
-        return getActivityTypeName(this.type);
+    public getLocationName(): string {
+        return getLocationName(this.location);
     }
 
     public getAvailableTimes(): AvailableTime[] {
@@ -99,21 +99,25 @@ export class FlatActivity {
         return display;
     }
 
-    public getJobDescription() {
+    public getTypeName(): string {
+        return getActivityTypeName(this.type);
+    }
+
+    public getJobDescription(): string {
         return `Earn ${this.secondValue} Zenny${this.value === Trait.None ? '' : ` and +1 ${getTraitName(this.value)}`}`;
     }
 
-    public getTraitBoost() {
+    public getTraitBoost(): string {
         return this.secondValue === -1 ? this.description :
             (this.description ? `Gain +${this.secondValue} ${getTraitName(this.value)}; ${this.description}`
             : `Gain +1d${this.secondValue} ${getTraitName(this.value)}`);
     }
 
-    public getConfidantDescription() {
+    public getConfidantDescription(): string {
         return `Gain affinity with the ${getArcanaName(this.value)} Arcana`;
     }
 
-    public getStatBoost() {
+    public getStatBoost(): string {
         return this.value === Stat.Any ? `${this.description}` : `Gain +1 ${getStatName(this.value)}`;
     }
 
@@ -131,6 +135,7 @@ export class FlatActivity {
 export class FullActivity extends FlatActivity {
     restrictions: Restriction[];
     vendors: FullVendor[];
+
     public constructor(id: number, name: string, location: Location, availableTimes: number, availableDays: number, type: ActivityType,
         value: number, secondValue: number, description: string, restrictions: Restriction[], vendorReferences: FullVendor[] = []) {
         super(id, name, location, availableTimes, availableDays, type, value, secondValue, description);
@@ -143,10 +148,16 @@ export class FullActivity extends FlatActivity {
         source.restrictions.forEach(restriction => {
             realRestrictions.push(Restriction.copyConstructor(restriction));
         });
+
         const vendorReferences: FullVendor[] = [];
         source.vendors.forEach(vendorRef => vendorReferences.push(FullVendor.copyConstructor(vendorRef)));
+
         return new FullActivity(source.id, source.name, source.location, source.availableTimes, source.availableWeekDays,
             source.type, source.value, source.secondValue, source.description, realRestrictions, vendorReferences);
+    }
+
+    public clone(): FullActivity {
+        return FullActivity.copyConstructor(this);
     }
 
     public isEqual(other: FullActivity): boolean {
@@ -162,6 +173,10 @@ export class FullActivity extends FlatActivity {
             return matcher !== undefined;
         });
         if (!restrictionsMatch) {
+            return false;
+        }
+
+        if (this.vendors.length !== other.vendors.length) {
             return false;
         }
         const vendorsMatch = this.vendors.every(vendorRef => {

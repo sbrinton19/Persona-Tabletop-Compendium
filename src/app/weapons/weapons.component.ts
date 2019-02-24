@@ -10,9 +10,7 @@ import { SubscriptionLike } from 'rxjs';
   styleUrls: ['./weapons.component.css']
 })
 export class WeaponsComponent implements OnInit, OnDestroy {
-  private flatWeaponList: FlatWeapon[] = [];
-  private flatRangedWeaponList: FlatRangedWeapon[] = [];
-  private displayList: FlatWeapon[];
+  private displayList: Array<[FlatWeapon, boolean]> = [];
   private subscriptions: SubscriptionLike[] = [];
   private sortOrder = false;
   private orderByPipe = new OrderByPipe();
@@ -31,8 +29,7 @@ export class WeaponsComponent implements OnInit, OnDestroy {
   getFlatWeapons(): void {
     this.subscriptions.push(
       this.itemService.getFlatWeaponList().subscribe(weapons => {
-        this.flatWeaponList = weapons;
-        this.displayList = this.flatWeaponList.concat(this.flatRangedWeaponList);
+        weapons.forEach(weapon => this.displayList.push([weapon, true]));
       })
     );
   }
@@ -40,23 +37,17 @@ export class WeaponsComponent implements OnInit, OnDestroy {
   getFlatRangedWeapons(): void {
     this.subscriptions.push(
       this.itemService.getFlatRangedWeaponList().subscribe(weapons => {
-        this.flatRangedWeaponList = weapons;
-        this.displayList = this.flatWeaponList.concat(this.flatRangedWeaponList);
+        weapons.forEach(weapon => this.displayList.push([weapon, true]));
       })
     );
   }
 
   orderBy(field: string, idx = 0): void {
     this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.flatWeaponList.concat(this.flatRangedWeaponList), field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx, true);
   }
 
-  onFiltered(filteredData: FlatWeapon[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatWeapon, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
-
-  getSourceHtml(source: number) {
-    return `<a href='/persona/${source}'>${source}</a><br>`;
-  }
-
 }

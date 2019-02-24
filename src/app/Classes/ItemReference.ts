@@ -13,6 +13,10 @@ export class ItemReference {
         return new ItemReference(source.id, source.name);
     }
 
+    public clone(): ItemReference {
+        return ItemReference.copyConstructor(this);
+    }
+
     public isEqual(other: ItemReference) {
         if (!other) {
             return false;
@@ -37,7 +41,12 @@ export class VendorItemReference extends ItemReference {
     public static copyConstructor(source: VendorItemReference): VendorItemReference {
         const realRestrict: Restriction[] = [];
         source.restrictions.forEach(rest => realRestrict.push(Restriction.copyConstructor(rest)));
+
         return new VendorItemReference(source.id, source.name, source.cost, realRestrict);
+    }
+
+    public clone(): VendorItemReference {
+        return VendorItemReference.copyConstructor(this);
     }
 
     public isEqual(other: VendorItemReference) {
@@ -55,6 +64,7 @@ export class VendorItemReference extends ItemReference {
         if (!sourcesMatch) {
             return false;
         }
+
         return (super.isEqual(other) && this.cost === other.cost);
     }
 }
@@ -71,6 +81,10 @@ export class DropReference extends ItemReference {
 
     public static copyConstructor(source: DropReference): DropReference {
         return new DropReference(source.id, source.name, source.low, source.high);
+    }
+
+    public clone(): DropReference {
+        return DropReference.copyConstructor(this);
     }
 
     public getRollWinDisplay(): string {

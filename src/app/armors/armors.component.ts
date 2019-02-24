@@ -10,8 +10,7 @@ import { SubscriptionLike } from 'rxjs';
   styleUrls: ['./armors.component.css']
 })
 export class ArmorsComponent implements OnInit, OnDestroy {
-  private displayList: FlatArmor[];
-  private flatArmorsList: FlatArmor[];
+  private displayList: Array<[FlatArmor, boolean]> = [];
   private subscription: SubscriptionLike;
   private sortOrder = false;
   private readonly orderByPipe = new OrderByPipe();
@@ -28,17 +27,16 @@ export class ArmorsComponent implements OnInit, OnDestroy {
 
   getFlatArmors(): void {
     this.subscription = this.itemService.getFlatArmorList().subscribe(flatArmors => {
-      this.flatArmorsList = flatArmors;
-      this.displayList = this.flatArmorsList;
+      flatArmors.forEach(armor => this.displayList.push([armor, true]));
     });
   }
 
   orderBy(field: string, idx = 0): void {
     this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.flatArmorsList, field, this.sortOrder, idx);
+    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx, true);
   }
 
-  onFiltered(filteredData: FlatArmor[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatArmor, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
 }

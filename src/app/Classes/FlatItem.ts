@@ -12,15 +12,15 @@ export class FlatItem {
     readonly id: number;
     readonly name: string;
     readonly schedule: number;
-    readonly description: string;
-    readonly special: string;
+    readonly origins: number;
     readonly type: ItemType;
     readonly consumableType: ConsumableType;
-    readonly origins: number;
+    readonly description: string;
+    readonly special: string;
     readonly transmuteId: number;
 
-    public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, type: ItemType,
-        transmuteId: number, consumableType: ConsumableType) {
+    public constructor(id: number, name: string, schedule: number, origins: number, type: ItemType, consumableType: ConsumableType,
+        description: string, special: string, transmuteId: number) {
             this.id = id;
             this.name = name;
             this.schedule = schedule;
@@ -33,16 +33,12 @@ export class FlatItem {
     }
 
     public static copyConstructor(source: FlatItem): FlatItem {
-        return new FlatItem(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.type,
-            source.transmuteId, source.consumableType);
+        return new FlatItem(source.id, source.name, source.schedule, source.origins, source.type, source.consumableType,
+            source.description, source.special, source.transmuteId);
     }
 
-    public getTypeName(): string {
-        return getItemTypeName(this.type);
-    }
-
-    public getConsumableTypeName(): string {
-        return getConsumableTypeName(this.consumableType);
+    public clone(): FlatItem {
+        return FlatItem.copyConstructor(this);
     }
 
     public getOrigins(): OriginType[] {
@@ -51,6 +47,14 @@ export class FlatItem {
 
     public getOriginName(origin: OriginType) {
         return getOriginName(origin);
+    }
+
+    public getTypeName(): string {
+        return getItemTypeName(this.type);
+    }
+
+    public getConsumableTypeName(): string {
+        return getConsumableTypeName(this.consumableType);
     }
 
     public isEqual(other: FlatItem): boolean {
@@ -82,12 +86,19 @@ export class FullItem {
     public static copyConstructor(source: FullItem): FullItem {
         const droppers: PersonaReference[] = [];
         source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
+
         const negotiators: PersonaReference[] = [];
         source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
+
         const vendors: VendorItemReference[] = [];
         source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
+
         return new FullItem(FlatItem.copyConstructor(source.item), PersonaReference.copyConstructor(source.transmute),
             droppers, negotiators, vendors);
+    }
+
+    public clone(): FullItem {
+        return FullItem.copyConstructor(this);
     }
 
     public isEqual(other: FullItem): boolean {
@@ -142,7 +153,7 @@ export class FlatWeapon extends FlatItem {
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         baseDamage: number, maxDamageDice: number, damageDie: number, minRange: number, maxRange: number, failValue: number) {
-            super(id, name, schedule, origins, description, special, ItemType.Weapon, transmuteId, ConsumableType.None);
+            super(id, name, schedule, origins, ItemType.Weapon, ConsumableType.None, description, special, transmuteId);
             this.baseDamage = baseDamage;
             this.maxDamageDice = maxDamageDice;
             this.damageDie = damageDie;
@@ -157,8 +168,13 @@ export class FlatWeapon extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The weapon ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatWeapon(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.baseDamage, source.maxDamageDice, source.damageDie, source.minRange, source.maxRange, source.failValue);
+    }
+
+    public clone(): FlatWeapon {
+        return FlatWeapon.copyConstructor(this);
     }
 
     public getRangeString(): string {
@@ -194,6 +210,10 @@ export class FlatRangedWeapon extends FlatWeapon {
             source.baseDamage, source.maxDamageDice, source.damageDie, source.minRange, source.maxRange, source.failValue, source.magSize, source.magCount);
     }
 
+    public clone(): FlatRangedWeapon {
+        return FlatRangedWeapon.copyConstructor(this);
+    }
+
     public isEqual(other: FlatRangedWeapon): boolean {
         if (!other) {
             return false;
@@ -211,7 +231,7 @@ export class FlatArmor extends FlatItem {
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         armorClass: ArmorClass, damageReduction: number, moveAimPenalty: number, maxDodgeBonus: number, dirtyGearPool: GearPool) {
-            super(id, name, schedule, origins, description, special, ItemType.Armor, transmuteId, ConsumableType.None);
+            super(id, name, schedule, origins, ItemType.Armor, ConsumableType.None, description, special, transmuteId);
             this.armorClass = armorClass;
             this.damageReduction = damageReduction;
             this.moveAimPenalty = moveAimPenalty;
@@ -225,8 +245,13 @@ export class FlatArmor extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The armor ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatArmor(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.armorClass, source.damageReduction, source.moveAimPenalty, source.maxDodgeBonus, source.dirtyGearPool);
+    }
+
+    public clone(): FlatArmor {
+        return FlatArmor.copyConstructor(this);
     }
 
     public getArmorClassName(): string {
@@ -248,7 +273,7 @@ export class FlatArmor extends FlatItem {
 
 export class FlatAccessory extends FlatItem {
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number) {
-        super(id, name, schedule, origins, description, special, ItemType.Accessory, transmuteId, ConsumableType.None);
+        super(id, name, schedule, origins, ItemType.Accessory, ConsumableType.None, description, special, transmuteId);
     }
 
     public static copyConstructor(source: FlatAccessory): FlatAccessory {
@@ -257,7 +282,12 @@ export class FlatAccessory extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The accessory ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatAccessory(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId);
+    }
+
+    public clone(): FlatAccessory {
+        return FlatAccessory.copyConstructor(this);
     }
 
     public isEqual(other: FlatAccessory): boolean {
@@ -271,15 +301,20 @@ export class FlatAccessory extends FlatItem {
 export class FlatConsumable extends FlatItem {
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         consumableType: ConsumableType) {
-            super(id, name, schedule, origins, description, special, ItemType.Consumable, transmuteId, consumableType);
+            super(id, name, schedule, origins, ItemType.Consumable, consumableType, description, special, transmuteId);
     }
 
     public static copyConstructor(source: FlatConsumable): FlatConsumable {
         if (source.type !== ItemType.Consumable) {
             console.warn(`The consumable ${source.name} with id ${source.id} does not have the type consumable, check its source data`);
         }
+
         return new FlatConsumable(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.consumableType);
+    }
+
+    public clone(): FlatConsumable {
+        return FlatConsumable.copyConstructor(this);
     }
 
     public isEqual(other: FlatConsumable): boolean {
@@ -297,7 +332,7 @@ export class FlatSkillCard extends FlatItem {
     public constructor(id: number, skillName: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         cardType: SkillCardType) {
             const name = `${skillName} ${getSkillCardTypeName(cardType)}`;
-            super(id, name, schedule, origins, description, special, ItemType.SkillCard, transmuteId, ConsumableType.Both);
+            super(id, name, schedule, origins, ItemType.SkillCard, ConsumableType.Both, description, special, transmuteId);
             this.skillName = skillName;
             this.cardType = cardType;
     }
@@ -308,8 +343,13 @@ export class FlatSkillCard extends FlatItem {
         } else if (source.consumableType !== ConsumableType.Both) {
             console.warn(`The skill card ${source.name} with id ${source.id} does not have the consumable type both, check its source data`);
         }
+
         return new FlatSkillCard(source.id, source.skillName, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.cardType);
+    }
+
+    public clone(): FlatSkillCard {
+        return FlatSkillCard.copyConstructor(this);
     }
 
     public isEqual(other: FlatSkillCard): boolean {
@@ -325,7 +365,7 @@ export class FlatLoot extends FlatItem {
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         arcanaSources: Arcana[]) {
-        super(id, name, schedule, origins, description, special, ItemType.Loot, transmuteId, ConsumableType.None);
+        super(id, name, schedule, origins, ItemType.Loot, ConsumableType.None, description, special, transmuteId);
         this.arcanaSources = arcanaSources;
     }
 
@@ -335,8 +375,13 @@ export class FlatLoot extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The loot ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatLoot(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.arcanaSources);
+    }
+
+    public clone(): FlatLoot {
+        return FlatLoot.copyConstructor(this);
     }
 
     public isEqual(other: FlatLoot): boolean {
@@ -362,7 +407,7 @@ export class FlatLoot extends FlatItem {
 export class FlatTraitBoostItem extends FlatItem {
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number) {
-        super(id, name, schedule, origins, description, special, ItemType.TraitBoost, transmuteId, ConsumableType.None);
+        super(id, name, schedule, origins, ItemType.TraitBoost, ConsumableType.None, description, special, transmuteId);
     }
 
     public static copyConstructor(source: FlatTraitBoostItem): FlatTraitBoostItem {
@@ -371,7 +416,12 @@ export class FlatTraitBoostItem extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The trait boost item ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatTraitBoostItem(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId);
+    }
+
+    public clone(): FlatTraitBoostItem {
+        return FlatTraitBoostItem.copyConstructor(this);
     }
 
     public isEqual(other: FlatTraitBoostItem): boolean {
@@ -385,7 +435,7 @@ export class FlatTraitBoostItem extends FlatItem {
 export class FlatStatBoostItem extends FlatItem {
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number) {
-        super(id, name, schedule, origins, description, special, ItemType.StatBoost, transmuteId, ConsumableType.None);
+        super(id, name, schedule, origins, ItemType.StatBoost, ConsumableType.None, description, special, transmuteId);
     }
 
     public static copyConstructor(source: FlatStatBoostItem): FlatStatBoostItem {
@@ -394,7 +444,12 @@ export class FlatStatBoostItem extends FlatItem {
         } else if (source.consumableType !== ConsumableType.None) {
             console.warn(`The stat boost item ${source.name} with id ${source.id} does not have the consumable type none, check its source data`);
         }
+
         return new FlatStatBoostItem(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId);
+    }
+
+    public clone(): FlatStatBoostItem {
+        return FlatStatBoostItem.copyConstructor(this);
     }
 
     public isEqual(other: FlatStatBoostItem): boolean {

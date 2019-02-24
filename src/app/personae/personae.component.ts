@@ -10,8 +10,7 @@ import { SkillService } from '../skill.service';
   styleUrls: ['./personae.component.css'],
 })
 export class PersonaeComponent implements OnInit, OnDestroy {
-  private displayList: FlatPersona[];
-  private flatPersonaeList: FlatPersona[];
+  private displayList: Array<[FlatPersona, boolean]> = [];
   private subscriptions: SubscriptionLike;
   private statList = FlatPersona.STATNAMES;
   private elemList = FlatPersona.ELEMNAMES;
@@ -28,19 +27,18 @@ export class PersonaeComponent implements OnInit, OnDestroy {
   }
 
   getFlatPersonae(): void {
-    this.subscriptions = this.personaService.getFlatPersonaList().subscribe(resp => {
-      this.flatPersonaeList = resp;
-      this.displayList = this.flatPersonaeList;
+    this.subscriptions = this.personaService.getFlatPersonaList().subscribe(flatPersonae => {
+      flatPersonae.forEach(persona => this.displayList.push([persona, true]));
     });
   }
 
   orderBy(field: string, idx = 0): void {
     const pipe = new OrderByPipe();
     this.sortOrder = !this.sortOrder;
-    this.displayList = pipe.transform(this.flatPersonaeList, field, this.sortOrder, idx);
+    this.displayList = pipe.transform(this.displayList, field, this.sortOrder, idx, true);
   }
 
-  onFiltered(filteredData: FlatPersona[]): void {
-    this.displayList = filteredData;
+  onFiltered(filteredData: [string, Array<[FlatPersona, boolean]>]): void {
+    this.displayList = filteredData[1];
   }
 }

@@ -18,7 +18,6 @@
       <th class="filter-header left-border">
         <app-string-filter id="weaponFilter"
         [displayList]="displayList"
-        [masterList]="flatWeaponList.concat(flatRangedWeaponList)"
         [fieldInfo]="'name'"
         (filtered)="onFiltered($event)">
         </app-string-filter>
@@ -26,27 +25,31 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let weapon of displayList">
-      <td class="mobile-hidden-3">{{weapon.id}}</td>
-      <td class="left-border"><a href='/item/{{weapon.id}}'>{{weapon.name}}</a></td>
-      <td class="left-border mobile-hidden-3">{{weapon.schedule}}</td>
-      <td class="left-border mobile-hidden-3">
-        <label *ngFor="let origin of weapon.getOrigins(); last as isLast">{{weapon.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
-      </td>
-      <td class="left-border">{{weapon.baseDamage}}</td>
-      <td class="left-border">{{weapon.maxDamageDice}}</td>
-      <td class="left-border mobile-hidden-1">{{weapon.damageDie}}</td>
-      <td class="left-border">{{weapon.getRangeString()}}</td>
-      <td class="left-border mobile-hidden-2">{{weapon.failValue}}</td>
-      <td class="left-border">
-        <label *ngIf="weapon.magSize;else empty">{{weapon.magSize}}</label>
-        <ng-template #empty>-</ng-template>
-      </td>
-      <td class="left-border mobile-hidden-1">
-          <label *ngIf="weapon.magCount;else empty">{{weapon.magCount}}</label>
-          <ng-template #empty>-</ng-template>
-        </td>
-      <td class="left-border mobile-hidden-1">{{weapon.special}}</td>
-    </tr>
+    <ng-container *ngFor="let tuple of displayList">
+        <ng-container *ngIf="tuple[0]; let weapon">
+          <tr *ngIf="tuple[1]">
+            <td class="mobile-hidden-3">{{weapon.id}}</td>
+            <td class="left-border"><a href='/item/{{weapon.id}}'>{{weapon.name}}</a></td>
+            <td class="left-border mobile-hidden-3">{{weapon.schedule}}</td>
+            <td class="left-border mobile-hidden-3">
+              <label *ngFor="let origin of weapon.getOrigins(); last as isLast">{{weapon.getOriginName(origin)}}<label *ngIf="!isLast">,<br></label></label>
+            </td>
+            <td class="left-border">{{weapon.baseDamage}}</td>
+            <td class="left-border">{{weapon.maxDamageDice}}</td>
+            <td class="left-border mobile-hidden-1">{{weapon.damageDie}}</td>
+            <td class="left-border">{{weapon.getRangeString()}}</td>
+            <td class="left-border mobile-hidden-2">{{weapon.failValue}}</td>
+            <td class="left-border">
+              <label *ngIf="weapon.magSize;else empty">{{weapon.magSize}}</label>
+              <ng-template #empty>-</ng-template>
+            </td>
+            <td class="left-border mobile-hidden-1">
+                <label *ngIf="weapon.magCount;else empty">{{weapon.magCount}}</label>
+                <ng-template #empty>-</ng-template>
+              </td>
+            <td class="left-border mobile-hidden-1">{{weapon.special}}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
   </tbody>
 </table>

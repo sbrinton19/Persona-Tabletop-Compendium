@@ -13,18 +13,22 @@ export class Restriction {
     bonus: boolean;
     description: string;
 
-    public constructor(id: number, type: RestrictionType, value = -1, secondValue = -1, negate = false, bonus = false, descriptor = '') {
+    public constructor(id: number, type: RestrictionType, value = -1, secondValue = -1, negate = false, bonus = false, description = '') {
         this.id = id;
         this.type = type;
         this.value = value;
         this.secondValue = secondValue;
         this.negate = negate;
         this.bonus = bonus;
-        this.description = descriptor;
+        this.description = description;
     }
 
     public static copyConstructor(source: Restriction): Restriction {
         return new Restriction(source.id, source.type, source.value, source.secondValue, source.negate, source.bonus, source.description);
+    }
+
+    public clone(): Restriction {
+        return Restriction.copyConstructor(this);
     }
 
     public getComposedRestriction(): string {
