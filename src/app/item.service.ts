@@ -1,26 +1,27 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatItem, FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
+import { FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
   FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from './Classes/FlatItem';
 import { Drop } from './Classes/Drop';
 import { SkillCardType } from './Enums/SkillCardType';
 import { WebsocketService } from './websocket.service';
-import { Payload } from './Classes/Payload';
-import { Subject, Observable, of } from 'rxjs';
+import { ServerRequestResponse } from './Classes/ServerRequestReponse';
+import { Subject } from 'rxjs';
 import { Globals } from './Classes/Globals';
+import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
 
 @Injectable()
 export class ItemService implements OnDestroy {
-  private flatAccessoryList: Subject<FlatAccessory[]> = new Subject<FlatAccessory[]>();
+  private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
+  private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
   private flatArmorList: Subject<FlatArmor[]> = new Subject<FlatArmor[]>();
+  private flatAccessoryList: Subject<FlatAccessory[]> = new Subject<FlatAccessory[]>();
   private flatConsumableList: Subject<FlatConsumable[]> = new Subject<FlatConsumable[]>();
   private flatLootList: Subject<FlatLoot[]> = new Subject<FlatLoot[]>();
+  private flatSkillCardList: Subject<FlatSkillCard[]> = new Subject<FlatSkillCard[]>();
   private flatStatBoostList: Subject<FlatStatBoostItem[]> = new Subject<FlatStatBoostItem[]>();
   private flatTraitBoostList: Subject<FlatTraitBoostItem[]> = new Subject<FlatTraitBoostItem[]>();
-  private flatSkillCardList: Subject<FlatSkillCard[]> = new Subject<FlatSkillCard[]>();
-  private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
-  private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
-  private fullItemMapSubject: Subject<Map<number, FullItem>> = new Subject<Map<number, FullItem>>();
   private fullItemMap: Map<number, FullItem> = new Map<number, FullItem>();
+  private fullItemMapSubject: Subject<Map<number, FullItem>> = new Subject<Map<number, FullItem>>();
 
   constructor(private sockService: WebsocketService) {
     this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
@@ -35,189 +36,173 @@ export class ItemService implements OnDestroy {
       // TODO: Actually do something graceful
       return null;
     }
-    const data = <Payload> JSON.parse(response.data);
-    if (data.PayloadType === 'FlatAccessory[]') {
-      const payload = <FlatAccessory[]> data.Payload;
-      const returnData: FlatAccessory[] = [];
-      payload.forEach(element => {
-        const accessory: FlatAccessory = FlatAccessory.copyConstructor(element);
-        returnData.push(accessory);
-      });
-      this.flatAccessoryList.next(returnData);
-    } else if (data.PayloadType === 'FlatArmor[]') {
-      const payload = <FlatArmor[]> data.Payload;
-      const returnData: FlatArmor[] = [];
-      payload.forEach(element => {
-        const armor: FlatArmor = FlatArmor.copyConstructor(element);
-        returnData.push(armor);
-      });
-      this.flatArmorList.next(returnData);
-    } else if (data.PayloadType === 'FlatConsumable[]') {
-      const payload = <FlatConsumable[]> data.Payload;
-      const returnData: FlatConsumable[] = [];
-      payload.forEach(element => {
-        const consumable: FlatConsumable = FlatConsumable.copyConstructor(element);
-        returnData.push(consumable);
-      });
-      this.flatConsumableList.next(returnData);
-    } else if (data.PayloadType === 'FlatLoot[]') {
-      const payload = <FlatLoot[]> data.Payload;
-      const returnData: FlatLoot[] = [];
-      payload.forEach(element => {
-        const loot: FlatLoot = FlatLoot.copyConstructor(element);
-        returnData.push(loot);
-      });
-      this.flatLootList.next(returnData);
-    } else if (data.PayloadType === 'FlatStatBoostItem[]') {
-      const payload = <FlatStatBoostItem[]> data.Payload;
-      const returnData: FlatStatBoostItem[] = [];
-      payload.forEach(element => {
-        const statBoost: FlatStatBoostItem = FlatStatBoostItem.copyConstructor(element);
-        returnData.push(statBoost);
-      });
-      this.flatStatBoostList.next(returnData);
-    } else if (data.PayloadType === 'FlatTraitBoostItem[]') {
-      const payload = <FlatTraitBoostItem[]> data.Payload;
-      const returnData: FlatTraitBoostItem[] = [];
-      payload.forEach(element => {
-        const traitBoost: FlatTraitBoostItem = FlatTraitBoostItem.copyConstructor(element);
-        returnData.push(traitBoost);
-      });
-      this.flatTraitBoostList.next(returnData);
-    } else if (data.PayloadType === 'FlatSkillCard[]') {
-      const payload = <FlatSkillCard[]> data.Payload;
-      const returnData: FlatSkillCard[] = [];
-      payload.forEach(element => {
-        const split: string[] = element.name.split(' ');
-        let name = '';
-        for (let i = 0; i < split.length - 1; i++) {
+    const reqResp = JSON.parse(response.data) as ServerRequestResponse;
+    // ServerRequestResponse.payload objects do not "autobox" into their respective object types
+    // This means they don't have their member functions autodefined
+    // So you have to use the static copyConstructor() rather than the member clone()
+    let payload: any[];
+    const returnData: any[] = [];
+    switch (reqResp.payloadType) {
+      case 'FlatWeapon[]':
+        payload = reqResp.payload as FlatWeapon[];
+        payload.forEach(weapon => returnData.push(FlatWeapon.copyConstructor(weapon)));
+        this.flatWeaponList.next(returnData);
+        break;
+      case 'FlatRangedWeapon[]':
+        payload = reqResp.payload as FlatRangedWeapon[];
+        payload.forEach(rangedWeapon => returnData.push(FlatRangedWeapon.copyConstructor(rangedWeapon)));
+        this.flatRangedWeaponList.next(returnData);
+        break;
+      case 'FlatArmor[]':
+        payload = reqResp.payload as FlatArmor[];
+        payload.forEach(armor => returnData.push(FlatArmor.copyConstructor(armor)));
+        this.flatArmorList.next(returnData);
+        break;
+      case 'FlatAccessory[]':
+        payload = reqResp.payload as FlatAccessory[];
+        payload.forEach(accessory => returnData.push(FlatAccessory.copyConstructor(accessory)));
+        this.flatAccessoryList.next(returnData);
+        break;
+      case 'FlatConsumable[]':
+        payload = reqResp.payload as FlatConsumable[];
+        payload.forEach(consumable => returnData.push(FlatConsumable.copyConstructor(consumable)));
+        this.flatConsumableList.next(returnData);
+        break;
+      case 'FlatLoot[]':
+        payload = reqResp.payload as FlatLoot[];
+        payload.forEach(loot => returnData.push(FlatLoot.copyConstructor(loot)));
+        this.flatLootList.next(returnData);
+        break;
+      case 'FlatSkillCard[]':
+        payload = reqResp.payload as FlatSkillCard[];
+        payload.forEach(skillCard => {
+          // TODO: Probably should do this server-side
+          const split: string[] = skillCard.name.split(' ');
+          let name = '';
+          for (let i = 0; i < split.length - 1; i++) {
             name += split[i];
             name += ' ';
-        }
-        element.skillName = name.trim();
-        element.cardType = SkillCardType[split[split.length - 1]];
-        const skillCard: FlatSkillCard = FlatSkillCard.copyConstructor(element);
-        returnData.push(skillCard);
-      });
-      this.flatSkillCardList.next(returnData);
-    } else if (data.PayloadType === 'FlatRangedWeapon[]') {
-      const payload = <FlatRangedWeapon[]> data.Payload;
-      const returnData: FlatRangedWeapon[] = [];
-      payload.forEach(element => {
-        const rangedWeapon: FlatRangedWeapon = FlatRangedWeapon.copyConstructor(element);
-        returnData.push(rangedWeapon);
-      });
-      this.flatRangedWeaponList.next(returnData);
-    } else if (data.PayloadType === 'FlatWeapon[]') {
-      const payload = <FlatWeapon[]> data.Payload;
-      const returnData: FlatWeapon[] = [];
-      payload.forEach(element => {
-        const rangedWeapon: FlatWeapon = FlatWeapon.copyConstructor(element);
-        returnData.push(rangedWeapon);
-      });
-      this.flatWeaponList.next(returnData);
-    } else if (data.PayloadType === 'FullItem[]') {
-      let payload = <FullItem[]> data.Payload;
-      let returnData: FullItem[] = [];
-      payload.forEach(element => {
-        let fullItem: FullItem = FullItem.copyConstructor(element);
-        this.fullItemMap.set(fullItem.item.id, fullItem);
-      });
-      this.fullItemMapSubject.next(this.fullItemMap);
+          }
+          skillCard.skillName = name.trim();
+          skillCard.cardType = SkillCardType[split[split.length - 1]];
+          returnData.push(FlatSkillCard.copyConstructor(skillCard));
+        });
+        this.flatSkillCardList.next(returnData);
+        break;
+      case 'FlatStatBoostItem[]':
+        payload = reqResp.payload as FlatStatBoostItem[];
+        payload.forEach(statBoostItem => returnData.push(FlatStatBoostItem.copyConstructor(statBoostItem)));
+        this.flatStatBoostList.next(returnData);
+        break;
+      case 'FlatTraitBoostItem[]':
+        payload = reqResp.payload as FlatTraitBoostItem[];
+        payload.forEach(traitBoostItem => returnData.push(FlatTraitBoostItem.copyConstructor(traitBoostItem)));
+        this.flatTraitBoostList.next(returnData);
+        break;
+      case 'FullItem[]':
+        payload = reqResp.payload as FullItem[];
+        payload.forEach(item => this.fullItemMap.set(item.item.id, FullItem.copyConstructor(item)));
+        this.fullItemMapSubject.next(this.fullItemMap);
+        break;
     }
   }
 
   getFlatWeaponList(): Subject<FlatWeapon[]> {
-    this.sockService.sendMessage('get|FlatWeapon|[]');
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatWeapon.name, []).toString());
     return this.flatWeaponList;
   }
 
-  addFlatWeapon(weapon: FlatWeapon): void {
-    this.sockService.sendMessage('add|FlatWeapon|' + JSON.stringify(weapon));
+  addFlatWeapon(flatWeapon: FlatWeapon): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatWeapon.constructor.name, flatWeapon).toString());
   }
 
   getFlatRangedWeaponList(): Subject<FlatRangedWeapon[]> {
-    this.sockService.sendMessage('get|FlatRangedWeapon|[]');
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatRangedWeapon.name, []).toString());
     return this.flatRangedWeaponList;
   }
 
-  addFlatRangedWeapon(weapon: FlatRangedWeapon): void {
-    this.sockService.sendMessage('add|FlatRangedWeapon|' + JSON.stringify(weapon));
+  addFlatRangedWeapon(flatRangedWeapon: FlatRangedWeapon): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatRangedWeapon.constructor.name, flatRangedWeapon).toString());
   }
 
   getFlatArmorList(): Subject<FlatArmor[]> {
-    this.sockService.sendMessage('get|FlatArmor|[]');
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatArmor.name, []).toString());
     return this.flatArmorList;
   }
 
-  addFlatArmor(armor: FlatArmor): void {
-    this.sockService.sendMessage('add|FlatArmor|' + JSON.stringify(armor));
+  addFlatArmor(flatArmor: FlatArmor): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatArmor.constructor.name, flatArmor).toString());
   }
 
   getFlatAccessoryList(): Subject<FlatAccessory[]> {
-    this.sockService.sendMessage('get|FlatAccessory|[]');
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatAccessory.name, []).toString());
     return this.flatAccessoryList;
   }
 
-  addFlatAccessory(accessory: FlatAccessory): void {
-    this.sockService.sendMessage('add|FlatAccessory|' + JSON.stringify(accessory));
-  }
-
-  addFlatItemList(item: FlatItem) {
-    this.sockService.sendMessage('add|FlatItem|' + JSON.stringify(item));
+  addFlatAccessory(flatAccessory: FlatAccessory): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatAccessory.constructor.name, flatAccessory).toString());
   }
 
   getFlatConsumableList(): Subject<FlatConsumable[]> {
-    this.sockService.sendMessage('get|FlatConsumable|[]');
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatConsumable.name, []).toString());
     return this.flatConsumableList;
   }
 
-  addFlatConsumable(consumable: FlatConsumable): void {
-    this.sockService.sendMessage('add|FlatConsumable|' + JSON.stringify(consumable));
+  addFlatConsumable(flatConsumable: FlatConsumable): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatConsumable.constructor.name, flatConsumable).toString());
   }
 
-  getFlatSkillCardList(): Subject<FlatSkillCard[]> {
-    this.sockService.sendMessage('get|FlatSkillCard|[]');
-    return this.flatSkillCardList;
-  }
-
-  addFlatSkillCard(skillCard: FlatSkillCard): void {
-    this.sockService.sendMessage('add|FlatSkillCard|' + JSON.stringify(skillCard));
-  }
-
-  getFlatTraitBoostItemList(): Subject<FlatTraitBoostItem[]> {
-    this.sockService.sendMessage('get|FlatTraitBoostItem|[]');
-    return this.flatTraitBoostList;
-  }
-
-  addFlatTraitBoostItem(traitBoostItem: FlatTraitBoostItem): void {
-    this.sockService.sendMessage('add|FlatTraitBoostItem|' + JSON.stringify(traitBoostItem));
-  }
-
-  getFlatStatBoostItemList(): Subject<FlatStatBoostItem[]> {
-    this.sockService.sendMessage('get|FlatStatBoostItem|[]');
-    return this.flatStatBoostList;
-  }
-
-  addFlatStatBoostItem(StatBoostItem: FlatStatBoostItem): void {
-    this.sockService.sendMessage('add|FlatStatBoostItem|' + JSON.stringify(StatBoostItem));
-  }
-
-  getFlatLootList(): Observable<FlatLoot[]> {
-    this.sockService.sendMessage('get|FlatLoot|[]');
+  getFlatLootList(): Subject<FlatLoot[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatLoot.name, []).toString());
     return this.flatLootList;
   }
 
-  addFlatLoot(loot: FlatLoot) {
-    this.sockService.sendMessage('add|FlatLoot|' + JSON.stringify(loot));
+  addFlatLoot(flatLoot: FlatLoot) {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatLoot.constructor.name, flatLoot).toString());
   }
 
-  addDrop(drop: Drop) {
-    this.sockService.sendMessage('add|Drop|' + JSON.stringify(drop));
+  getFlatSkillCardList(): Subject<FlatSkillCard[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatSkillCard.name, []).toString());
+    return this.flatSkillCardList;
   }
 
-  getFullItem(itemid: number): Subject<Map<number, FullItem>> {
-    this.sockService.sendMessage(`get|FullItem|[${itemid}]`);
+  addFlatSkillCard(flatSkillCard: FlatSkillCard): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatSkillCard.constructor.name, flatSkillCard).toString());
+  }
+
+  getFlatStatBoostItemList(): Subject<FlatStatBoostItem[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatStatBoostItem.name, []).toString());
+    return this.flatStatBoostList;
+  }
+
+  addFlatStatBoostItem(flatStatBoostItem: FlatStatBoostItem): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatStatBoostItem.constructor.name, flatStatBoostItem).toString());
+  }
+
+  getFlatTraitBoostItemList(): Subject<FlatTraitBoostItem[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatTraitBoostItem.name, []).toString());
+    return this.flatTraitBoostList;
+  }
+
+  addFlatTraitBoostItem(flatTraitBoostItem: FlatTraitBoostItem): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatTraitBoostItem.constructor.name, flatTraitBoostItem).toString());
+  }
+
+  /**
+   * This is a debug method; it should not be called in production code
+   */
+  getFullItemList(): Subject<Map<number, FullItem>> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullItem.name, []).toString());
     return this.fullItemMapSubject;
+  }
+
+  getFullItem(itemId: number): Subject<Map<number, FullItem>> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullItem.name, [itemId]).toString());
+    return this.fullItemMapSubject;
+  }
+
+  // Drops are tightly bound to items so they are a part of the item service
+  addDrop(drop: Drop) {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, drop.constructor.name, drop).toString());
   }
 }

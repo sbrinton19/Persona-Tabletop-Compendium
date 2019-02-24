@@ -2,15 +2,16 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { FlatPersona, FullPersona } from './Classes/FlatPersona';
 import { WebsocketService } from './websocket.service';
 import { Subject } from 'rxjs';
-import { Payload } from './Classes/Payload';
+import { ServerRequestResponse } from './Classes/ServerRequestReponse';
 import { Globals } from './Classes/Globals';
+import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
 
 @Injectable()
 export class PersonaService implements OnDestroy {
-  private flatPersonaeList: Subject<FlatPersona[]> = new Subject<FlatPersona[]>();
-  private fullPersonaeMapSubject: Subject<Map<number, FullPersona>> = new Subject<Map<number, FullPersona>>();
-  private fullPersonaeMap: Map<number, FullPersona> = new Map<number, FullPersona>();
-
+  private flatPersonaList: Subject<FlatPersona[]> = new Subject<FlatPersona[]>();
+  private fullPersonaMap: Map<number, FullPersona> = new Map<number, FullPersona>();
+  private fullPersonaMapSubject: Subject<Map<number, FullPersona>> = new Subject<Map<number, FullPersona>>();
+  
   constructor(private sockService: WebsocketService) {
     this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
   }
@@ -24,43 +25,45 @@ export class PersonaService implements OnDestroy {
       // TODO: Actually do something graceful
       return null;
     }
-
-    const data = <Payload> JSON.parse(message.data);
-    if (data.PayloadType === 'FlatPersona[]') {
-      const payload = <FlatPersona[]> data.Payload;
-      const returnData: FlatPersona[] = [];
-      payload.forEach(element => {
-        const persona: FlatPersona = FlatPersona.copyConstructor(element);
-        returnData.push(persona);
-      });
-      this.flatPersonaeList.next(returnData);
-    } else if (data.PayloadType === 'FullPersona[]') {
-      const payload = <FullPersona[]> data.Payload;
-      payload.forEach(element => {
-        const persona: FullPersona = FullPersona.copyConstructor(element);
-        this.fullPersonaeMap.set(persona.id, persona);
-      });
-      this.fullPersonaeMapSubject.next(this.fullPersonaeMap);
+    const reqResp = JSON.parse(message.data) as ServerRequestResponse;
+    // ServerRequestResponse.payload objects do not "autobox" into their respective object types
+    // This means they don't have their member functions autodefined
+    // So you have to use the static copyConstructor() rather than the member clone()
+    let payload: any[];
+    const returnData: any[] = [];
+    switch (reqResp.payloadType) {
+      case 'FlatPersona[]':
+        payload = reqResp.payload as FlatPersona[];
+        payload.forEach(persona => returnData.push(FlatPersona.copyConstructor(persona)));
+        this.flatPersonaList.next(returnData);
+        break;
+      case 'FullPersona[]':
+        payload = reqResp.payload as FullPersona[];
+        payload.forEach(persona => this.fullPersonaMap.set(persona.id, FullPersona.copyConstructor(persona)));
+        this.fullPersonaMapSubject.next(this.fullPersonaMap);
+        break;
     }
   }
 
   getFlatPersonaList(): Subject<FlatPersona[]> {
-    this.sockService.sendMessage('get|FlatPersona|[]');
-    return this.flatPersonaeList;
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatPersona.name, []).toString());
+    return this.flatPersonaList;
   }
 
-  addFlatPersona(persona: FlatPersona): void {
-    this.sockService.sendMessage('add|FlatPersona|' + JSON.stringify(persona));
+  addFlatPersona(flatPersona: FlatPersona): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatPersona.constructor.name, flatPersona).toString());
   }
 
-  getFullPersona(personaid: number): Subject<Map<number, FullPersona>> {
-    this.sockService.sendMessage(`get|FullPersona|[${personaid}]`);
-    return this.fullPersonaeMapSubject;
+  /**
+   * This is a debug method; it should not be called in production code
+   */
+  getFullPersonaList(): Subject<Map<number, FullPersona>> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullPersona.name, []).toString());
+    return this.fullPersonaMapSubject;
   }
 
-  // This is a validation method it should not be called
-  private getFullPersonaeList(): Subject<Map<number, FullPersona>> {
-    this.sockService.sendMessage(`get|FullPersona|[]`);
-    return this.fullPersonaeMapSubject;
+  getFullPersona(personaId: number): Subject<Map<number, FullPersona>> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullPersona.name, [personaId]).toString());
+    return this.fullPersonaMapSubject;
   }
 }

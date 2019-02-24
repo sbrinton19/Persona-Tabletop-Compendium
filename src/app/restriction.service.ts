@@ -1,10 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { Globals } from './Classes/Globals';
-import { Payload } from './Classes/Payload';
+import { ServerRequestResponse } from './Classes/ServerRequestReponse';
 import { Restriction } from './Classes/Restriction';
 import { BoundRestriction } from './Classes/BoundRestriction';
 import { Subject } from 'rxjs';
+import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -25,28 +26,31 @@ export class RestrictionService implements OnDestroy {
       // TODO: Actually do something graceful
       return null;
     }
-    const payloadObject = <Payload> JSON.parse(response.data);
-    if (payloadObject.PayloadType === 'Restriction[]') {
-      const payloadData = <Restriction[]> payloadObject.Payload;
-      const returnData: Restriction[] = [];
-      payloadData.forEach(data => {
-        const restrict: Restriction = Restriction.copyConstructor(data);
-        returnData.push(restrict);
-      });
-      this.restrictionList.next(returnData);
+    const reqResp = JSON.parse(response.data) as ServerRequestResponse;
+    // ServerRequestResponse.payload objects do not "autobox" into their respective object types
+    // This means they don't have their member functions autodefined
+    // So you have to use the static copyConstructor() rather than the member clone()
+    let payload: any[];
+    const returnData: any[] = [];
+    switch (reqResp.payloadType) {
+      case 'Restriction[]':
+        payload = reqResp.payload as Restriction[];
+        payload.forEach(restriction => returnData.push(Restriction.copyConstructor(restriction)));
+        this.restrictionList.next(returnData);
+        break;
     }
   }
 
-  addRestriction(restriction: Restriction): void {
-    this.sockService.sendMessage('add|Restriction|' + JSON.stringify(restriction));
-  }
-
-  getRestrictionsList(): Subject<Restriction[]> {
-    this.sockService.sendMessage(`get|Restriction|[]`);
+  getRestrictionList(): Subject<Restriction[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, Restriction.name, []).toString());
     return this.restrictionList;
   }
 
+  addRestriction(restriction: Restriction): void {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, restriction.constructor.name, restriction).toString());
+  }
+
   addBoundRestriction(boundRestriction: BoundRestriction): void {
-    this.sockService.sendMessage('add|BoundRestriction|' + JSON.stringify(boundRestriction));
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, boundRestriction.constructor.name, boundRestriction).toString());
   }
 }

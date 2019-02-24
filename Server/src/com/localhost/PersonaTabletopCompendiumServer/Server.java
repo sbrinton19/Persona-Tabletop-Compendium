@@ -274,10 +274,10 @@ public class Server extends WebSocketServer {
 	 */
 	private static void sendResponseWithPayload(WebSocket conn, String payloadType, String jsonifiedObject) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{ \"PayloadType\": ");
+		sb.append("{ \"payloadType\": ");
 		sb.append("\"");
 		sb.append(payloadType);
-		sb.append("\", \"Payload\": ");
+		sb.append("\", \"payload\": ");
 		sb.append(jsonifiedObject);
 		sb.append(" }");
 		String resp = sb.toString();
