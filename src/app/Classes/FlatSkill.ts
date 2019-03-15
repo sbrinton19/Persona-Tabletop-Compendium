@@ -405,19 +405,19 @@ export class FullSkill {
         let realSkill: FlatSkill;
         switch (source.skillClass) {
             case 'FlatDamageSkill':
-                realSkill = FlatDamageSkill.copyConstructor(<FlatDamageSkill> source.skill);
+                realSkill = FlatDamageSkill.copyConstructor(source.skill as FlatDamageSkill);
                 break;
             case 'FlatDamageAilmentSkill':
-                realSkill = FlatDamageAilmentSkill.copyConstructor(<FlatDamageAilmentSkill> source.skill);
+                realSkill = FlatDamageAilmentSkill.copyConstructor(source.skill as FlatDamageAilmentSkill);
                 break;
             case 'FlatSupportSkill':
-                realSkill = FlatSupportSkill.copyConstructor(<FlatSupportSkill> source.skill);
+                realSkill = FlatSupportSkill.copyConstructor(source.skill as FlatSupportSkill);
                 break;
             case 'FlatAilmentSkill':
-                realSkill = FlatAilmentSkill.copyConstructor(<FlatAilmentSkill> source.skill);
+                realSkill = FlatAilmentSkill.copyConstructor(source.skill as FlatAilmentSkill);
                 break;
             case 'FlatPassiveSkill':
-                realSkill = FlatPassiveSkill.copyConstructor(<FlatPassiveSkill> source.skill);
+                realSkill = FlatPassiveSkill.copyConstructor(source.skill as FlatPassiveSkill);
                 break;
             default:
                 console.error(`Failed to reconstruct FlatSkill for FullSkill ${source.skill.name}`);

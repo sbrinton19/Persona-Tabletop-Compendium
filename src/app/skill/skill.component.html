@@ -54,20 +54,20 @@
       </thead>
       <tbody>
         <tr>
-          <td class="left-border">Standard</td>
+          <td>Standard</td>
           <td *ngFor="let value of standardDamage">{{value}}</td>
         </tr>
         <tr>
-          <td class="left-border">Weak</td>
+          <td>Weak</td>
           <td *ngFor="let value of standardDamage">{{value*1.5}}</td>
         </tr>
         <tr>
-          <td class="left-border">Charged</td>
-          <td *ngFor="let value of standardDamage">{{value*2.5}}</td>
+          <td>Charged</td>
+          <td *ngFor="let value of standardDamage">{{value*2}}</td>
         </tr>
         <tr>
-          <td class="left-border">Weak Charged</td>
-          <td *ngFor="let value of standardDamage">{{value*1.5*2.5}}</td>
+          <td>Weak Charged</td>
+          <td *ngFor="let value of standardDamage">{{value*1.5*2}}</td>
         </tr>
       </tbody>
     </table>

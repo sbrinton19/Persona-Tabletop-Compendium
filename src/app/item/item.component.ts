@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FullItem } from '../Classes/FlatItem';
 import { SubscriptionLike } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { ItemType } from '../Enums/ItemType';
+import { OriginType } from '../Enums/OriginType';
 
 @Component({
   selector: 'app-item',
@@ -9,9 +11,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit, OnDestroy {
-
   private item: FullItem;
   private subscription: SubscriptionLike;
+  private ItemType = ItemType;
+  private OriginType = OriginType;
+  private readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
 
   constructor(private route: ActivatedRoute) { }
 
@@ -23,6 +27,10 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  checkFlag(value: number, flag: number): boolean {
+    return !!(value & flag);
   }
 
 }

@@ -2,5 +2,13 @@
     margin: auto;
     margin-top: 1em;
     text-align: center;
-    width: 92%;
+    width: 90%;
+}
+
+.selectFilter {
+    width: 100%;
+    overflow: hidden;
+    word-wrap: normal !important;
+    white-space: normal;
+    text-align-last: center;
 }

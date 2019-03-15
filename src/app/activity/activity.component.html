@@ -35,7 +35,7 @@
           <ng-template let-displayData let-currPage="currentPage" let-perPage="pageSize">
             <tbody>
               <tr *ngFor="let itemRef of displayData">
-                <td class="mobile-hidden-1">{{itemRef.id}}</td>
+                <td>{{itemRef.id}}</td>
                 <td class="left-border"><a href='/item/{{itemRef.id}}'>{{itemRef.name}}</a></td>
                 <td class="left-border">{{itemRef.cost}}</td>
                 <td class="left-border">

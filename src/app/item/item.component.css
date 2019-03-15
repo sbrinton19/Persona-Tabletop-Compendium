@@ -1,0 +1,71 @@
+#itemPage {
+    margin-bottom: 1em;
+}
+
+#itemTitle {
+    margin-bottom: 0em;
+    padding-bottom: 0em;
+}
+
+#itemSubtitle {
+    margin: 0em;
+    font-size: 180%;
+    font-weight: bold;
+}
+
+#itemDescription {
+    margin-top: .25em;
+    margin-bottom: .25em;
+}
+
+#weaponTable, #armorTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 25%;
+}
+
+#lootArcanaTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 18%;
+}
+
+#weaponTable td, #weaponTable th,
+#armorTable td, #armorTable th,
+#lootArcanaTable td, #lootArcanaTable th {
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+#damageAnalysisTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 40%;
+}
+
+#damageAnalysisTable td, #damageAnalysisTable th {
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+#personaSourcesTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 40%;
+}
+
+#personaSourcesTable td, #perosnaSourcesTable th {
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+#vendorSourcesTable {
+    margin: 1em auto auto;
+    text-align: center;
+    width: 40%;
+}
+
+#vendorSourcesTable td, #vendorSourcesTable th {
+    padding-left: .5em;
+    padding-right: .5em;
+}

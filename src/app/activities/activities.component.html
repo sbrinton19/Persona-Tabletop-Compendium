@@ -17,7 +17,7 @@
         </app-string-filter>
       </th>
       <th class="filter-header">
-        <select (change)="filterBy('location', $event.target.value)">
+        <select class="selectFilter" (change)="filterBy('location', $event.target.value)">
             <option [value]="-1">
               Any Location
             </option>
@@ -27,7 +27,7 @@
         </select>
       </th>
       <th class="filter-header">
-        <select (change)="filterBy('availableTimes', $event.target.value)">
+        <select class="selectFilter" (change)="filterBy('availableTimes', $event.target.value)">
             <option [value]="-1">
               Any Time
             </option>
@@ -37,7 +37,7 @@
         </select>
       </th>
       <th class="filter-header">
-        <select (change)="filterBy('availableWeekDays', $event.target.value)">
+        <select class="selectFilter" (change)="filterBy('availableWeekDays', $event.target.value)">
           <option [value]="-1">
             Any Day
           </option>
@@ -47,7 +47,7 @@
         </select>
       </th>
       <th class="mobile-hidden-1 filter-header">
-          <select (change)="filterBy('type', $event.target.value)">
+          <select class="selectFilter" (change)="filterBy('type', $event.target.value)">
             <option [value]="-1">
               Any Type
             </option>

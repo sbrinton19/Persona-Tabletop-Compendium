@@ -1,3 +1,215 @@
-<p>
-  item works!
-</p>
+<div id="itemPage" *ngIf="item; else notFound" style="margin-top:10px">
+  <h1 id="itemTitle">{{item.item.name}}</h1>
+  <h2 id="itemSubtitle">({{item.item.getTypeName()}} / Schedule {{item.item.schedule}})</h2>
+  <h3 id="itemDescription">{{item.item.description}}</h3>
+  <ng-container [ngSwitch]="item.item.type">
+    <div id="weaponDetails" *ngSwitchCase="ItemType.Weapon">
+        <table id="weaponTable" cellspacing="0" class="ui table striped sortable unstackable">
+          <thead>
+            <tr>
+              <th>Value Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base Damage</td>
+              <td class="left-border">{{item.item.baseDamage}}</td>
+            </tr>
+            <tr>
+              <td>Maximum # of<br>Damage Dice</td>
+              <td class="left-border">{{item.item.maxDamageDice}}</td>
+            </tr>
+            <tr>
+              <td>Damage Die</td>
+              <td class="left-border">{{item.item.damageDie}}</td>
+            </tr>
+            <tr>
+              <td>Range</td>
+              <td class="left-border">{{item.item.getRangeString()}}</td>
+            </tr>
+            <tr>
+              <td>Failure Value</td>
+              <td class="left-border">{{item.item.failValue}}</td>
+            </tr>
+            <ng-container *ngIf="item.item.magSize">
+                <tr>
+                  <td>Magazine Size</td>
+                  <td class="left-border">{{item.item.magSize}}</td>
+                </tr>
+                <tr>
+                  <td>Magazine Count</td>
+                  <td class="left-border">{{item.item.magCount}}</td>
+                </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <h2>
+          Damage Analysis
+        </h2>
+        <h4 *ngIf="item.item.special">Keep in mind this weapon's special effect:<br>{{item.item.special}}</h4>
+        <table id="damageAnalysisTable" class="ui table unstackable striped skill-table">
+          <thead>
+            <tr>
+              <th [class.left-border]="!isFirst" *ngFor="let header of damageAnalysis; first as isFirst">{{header}}</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="item.item.magSize == null; else rangedBody">
+            <tr>
+              <td>Without FV</td>
+              <td *ngFor="let value of item.item.damageAnalysis">{{value}}</td>
+            </tr>
+            <tr>
+              <td>With FV</td>
+              <td *ngFor="let value of item.item.damageAnalysis">{{item.item.applyFV(value)}}</td>
+            </tr>
+          </tbody>
+          <ng-template #rangedBody>
+            <tbody>
+              <tr>
+                <td>Per Round Without FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{value}}</td>
+              </tr>
+              <tr>
+                <td>Per Round With FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{item.item.applyFV(value)}}</td>
+              </tr>
+              <tr>
+                <td>Per Turn Without FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{value*item.item.magSize}}</td>
+              </tr>
+              <tr>
+                <td>Per Turn With FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{item.item.applyFV(value)*item.item.magSize}}</td>
+              </tr>
+              <tr>
+                <td>Per Day Without FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{value*item.item.magSize*item.item.magCount}}</td>
+              </tr>
+              <tr>
+                <td>Per Day With FV</td>
+                <td *ngFor="let value of item.item.damageAnalysis">{{item.item.applyFV(value)*item.item.magSize*item.item.magCount}}</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </table>
+    </div>
+    <div id="armorDetails" *ngSwitchCase="ItemType.Armor">
+      <h4 *ngIf="item.item.special">{{item.item.special}}</h4>
+      <table id="armorTable" cellspacing="0" class="ui table striped sortable unstackable">
+        <thead>
+          <tr>
+            <th>Value Name</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Armor Class</td>
+            <td class="left-border">{{item.item.getArmorClassName()}}</td>
+          </tr>
+          <tr>
+            <td>Damage Reduction</td>
+            <td class="left-border">{{item.item.damageReduction}}</td>
+          </tr>
+          <tr>
+            <td>Move & Aim Penalty</td>
+            <td class="left-border">{{item.item.moveAimPenalty}}</td>
+          </tr>
+          <tr>
+            <td>Max Dodge Bonus</td>
+            <td class="left-border">{{item.item.maxDodgeBonus}}</td>
+          </tr>
+          <tr>
+            <td>Dirty Gear Pool</td>
+            <td class="left-border">{{item.item.getGearPoolName()}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="accessoryDetails" *ngSwitchCase="ItemType.Accessory">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+    </div>
+    <div id="consumableDetails" *ngSwitchCase="ItemType.Consumable">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+    </div>
+    <div id="skillCardDetails" *ngSwitchCase="ItemType.SkillCard">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+    </div>
+    <div id="lootDetails" *ngSwitchCase="ItemType.Loot">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+      <table id="lootArcanaTable" class="ui table unstackable striped">
+        <thead>
+          <tr>
+            <th>Arcana</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let arcana of item.item.arcanaSources">
+            <td>{{item.item.getArcanaName(arcana)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="traitBoostDetails" *ngSwitchCase="ItemType.TraitBoost">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+    </div>
+    <div id="traitBoostDetails" *ngSwitchCase="ItemType.StatBoost">
+      <h3 *ngIf="item.item.special">{{item.item.special}}</h3>
+    </div>
+  </ng-container>
+  <h2>Sources</h2>
+  <h3 *ngIf="!item.item.origins">This item has no declared sources</h3>
+  <div id="sourcesDiv">
+    <h5 *ngIf="checkFlag(item.item.origins, OriginType.Chest)">Can be found in treasure chests</h5>
+    <h5 *ngIf="checkFlag(item.item.origins, OriginType.Confidant)">Can be received from a confidant</h5>
+    <div *ngIf="checkFlag(item.item.origins, OriginType.Store)">
+      <h3>Vendor Sources</h3>
+      <table id="vendorSourcesTable" class="ui table unstackable striped">
+        <thead>
+          <tr>
+            <th>Vendor</th>
+            <th class="left-border">Cost</th>
+            <th class="left-border">Restrictions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vendor of item.vendorSources">
+            <td><a href='/activity/{{vendor.id}}'>{{vendor.name}}</a></td>
+            <td class="left-border">{{vendor.cost}}</td>
+            <td class="left-border">
+                <label *ngFor="let restriction of vendor.restrictions">{{restriction.getComposedRestriction()}}<ng-container *ngIf="!isLast"><br></ng-container></label>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br>
+    <div *ngIf="checkFlag(item.item.origins, OriginType.Transmute) || checkFlag(item.item.origins, OriginType.Drop) || checkFlag(item.item.origins, OriginType.Negotiate)">
+      <h3>Persona Sources</h3>
+      <table id="personaSourcesTable" class="ui table unstackable striped">
+        <thead>
+          <tr>
+            <th>Origin Type</th>
+            <th class="left-border">Persona</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="checkFlag(item.item.origins, OriginType.Transmute)">
+            <td>Transmutation</td>
+            <td class="left-border" colspan="3"><a href='/persona/{{item.transmute.id}}'>{{item.transmute.name}}</a></td>
+          </tr>
+          <tr *ngFor="let drop of item.droppers">
+            <td>Enemy Drop</td>
+            <td class="left-border" colspan="3"><a href='/persona/{{drop.id}}'>{{drop.name}}</a></td>
+          </tr>
+          <tr *ngFor="let negot of item.negotiators">
+            <td>Enemy Negotiate</td>
+            <td class="left-border" colspan="3"><a href='/persona/{{negot.id}}'>{{negot.name}}</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<ng-template #notFound>"{{item.item.name}}" not found!</ng-template>

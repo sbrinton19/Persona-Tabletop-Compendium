@@ -919,7 +919,7 @@ public class DatabaseHandler {
 						item = getItems(FlatTraitBoostItem.class, new int[] { itemId })[0];
 						break;
 					case WEAPON:
-						item = getItems(FlatWeapon.class, new int[] { itemId })[0];
+						item = getItems(FlatRangedWeapon.class, new int[] { itemId })[0];
 						break;
 					default:
 						break;
@@ -950,8 +950,9 @@ public class DatabaseHandler {
 				PersonaReference[] negotRefTemp = new PersonaReference[negotRefs.size()];
 				dropRefs.toArray(dropRefTemp);
 				negotRefs.toArray(negotRefTemp);
+				// We don't really care about the vendor's id as it isn't relevant to the UI, we do want the activity ID because it is.
 				PreparedStatement vendor = _conn.prepareStatement(
-						"SELECT vendor.id, vendor.name, vendor_item.cost, vendor_item.id AS vendorItemId FROM (SELECT vendor_item.id, vendor_item.vendorId, vendor_item.cost FROM vendor_item WHERE vendor_item.itemId=?) vendor_item INNER JOIN vendor ON vendor_item.vendorId=vendor.id");
+						"SELECT vendor.activityId AS id, vendor.name, vendor_item.cost, vendor_item.id AS vendorItemId FROM (SELECT vendor_item.id, vendor_item.vendorId, vendor_item.cost FROM vendor_item WHERE vendor_item.itemId=?) vendor_item INNER JOIN vendor ON vendor_item.vendorId=vendor.id");
 				vendor.setInt(1, itemId);
 				ResultSet vendors = vendor.executeQuery();
 				ArrayList<VendorItemReference> vendorRefs = new ArrayList<VendorItemReference>();

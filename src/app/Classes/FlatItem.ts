@@ -1,4 +1,4 @@
-import { Arcana } from '../Enums/Arcana';
+import { Arcana, getArcanaName } from '../Enums/Arcana';
 import { PersonaReference } from './PersonaReference';
 import { OriginType, getOriginName, getOrigins } from '../Enums/OriginType';
 import { GearPool, getGearPoolName } from '../Enums/GearPool';
@@ -30,6 +30,9 @@ export class FlatItem {
             this.type = type;
             this.transmuteId = transmuteId;
             this.consumableType = consumableType;
+            if ((origins & OriginType.Transmute) && transmuteId === -1) {
+                console.warn(`The item ${this.name} has transmutation listed as a possible origin, but no valid transmuteId`);
+            }
     }
 
     public static copyConstructor(source: FlatItem): FlatItem {
@@ -86,14 +89,57 @@ export class FullItem {
     public static copyConstructor(source: FullItem): FullItem {
         const droppers: PersonaReference[] = [];
         source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
+        if ((source.item.origins & OriginType.Drop) && !droppers.length) {
+            console.warn(`The item ${source.item.name} has drop listed as an origin, but is not dropped by anything`);
+        }
 
         const negotiators: PersonaReference[] = [];
         source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
+        if ((source.item.origins & OriginType.Negotiate) && !negotiators.length) {
+            console.warn(`The item ${source.item.name} has negotiate listed as an origin, but is not dropped through negotiation by anything`);
+        }
 
         const vendors: VendorItemReference[] = [];
         source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
+        if ((source.item.origins & OriginType.Store) && !vendors.length) {
+            console.warn(`The item ${source.item.name} has store listed as an origin, but is not sold anywhere`);
+        }
 
-        return new FullItem(FlatItem.copyConstructor(source.item), PersonaReference.copyConstructor(source.transmute),
+        let realItem: FlatItem;
+        switch (source.item.type) {
+            case ItemType.Weapon:
+                if ((source.item as any).magSize === -1) {
+                    realItem = FlatWeapon.copyConstructor(source.item as FlatWeapon);
+                } else {
+                    realItem = FlatRangedWeapon.copyConstructor(source.item as FlatRangedWeapon);
+                }
+                break;
+            case ItemType.Armor:
+                realItem = FlatArmor.copyConstructor(source.item as FlatArmor);
+                break;
+            case ItemType.Accessory:
+                realItem = FlatAccessory.copyConstructor(source.item as FlatAccessory);
+                break;
+            case ItemType.Consumable:
+                realItem = FlatConsumable.copyConstructor(source.item as FlatConsumable);
+                break;
+            case ItemType.Loot:
+                realItem = FlatLoot.copyConstructor(source.item as FlatLoot);
+                break;
+            case ItemType.SkillCard:
+                realItem = FlatSkillCard.copyConstructor(source.item as FlatSkillCard);
+                break;
+            case ItemType.StatBoost:
+                realItem = FlatStatBoostItem.copyConstructor(source.item as FlatStatBoostItem);
+                break;
+            case ItemType.TraitBoost:
+                realItem = FlatTraitBoostItem.copyConstructor(source.item as FlatTraitBoostItem);
+                break;
+            default:
+                console.error(`Failed to reconstruct FlatItem for FullItem ${source.item.name}`);
+        }
+
+        return new FullItem(realItem, PersonaReference.copyConstructor(source.transmute),
             droppers, negotiators, vendors);
     }
 
@@ -150,6 +196,8 @@ export class FlatWeapon extends FlatItem {
     readonly minRange: number;
     readonly maxRange: number;
     readonly failValue: number;
+    damageAnalysis: number[] = [];
+
 
     public constructor(id: number, name: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         baseDamage: number, maxDamageDice: number, damageDie: number, minRange: number, maxRange: number, failValue: number) {
@@ -160,6 +208,7 @@ export class FlatWeapon extends FlatItem {
             this.minRange = minRange;
             this.maxRange = maxRange;
             this.failValue = failValue;
+            this.damageAnalysis = this.initDamageAnalysis();
     }
 
     public static copyConstructor(source: FlatWeapon): FlatWeapon {
@@ -182,6 +231,18 @@ export class FlatWeapon extends FlatItem {
             return this.minRange.toString();
         }
         return `${this.minRange}-${this.maxRange}`;
+    }
+
+    public initDamageAnalysis(): number[] {
+        // *2 because of + STR Bonus
+        const minDamage = (this.baseDamage + this.maxDamageDice * 2);
+        // + 1 because of + STR Bonus
+        const maxDamage = (this.baseDamage + this.maxDamageDice * (this.damageDie + 1));
+        return [minDamage, (minDamage + maxDamage) / 2, maxDamage];
+    }
+
+    public applyFV(damage: number): number {
+        return damage * (1 - this.failValue / 20);
     }
 
     public isEqual(other: FlatWeapon): boolean {
@@ -329,12 +390,17 @@ export class FlatSkillCard extends FlatItem {
     skillName: string;
     cardType: SkillCardType;
 
-    public constructor(id: number, skillName: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
+    public constructor(id: number, name: string, skillName: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
         cardType: SkillCardType) {
-            const name = `${skillName} ${getSkillCardTypeName(cardType)}`;
-            super(id, name, schedule, origins, ItemType.SkillCard, ConsumableType.Both, description, special, transmuteId);
-            this.skillName = skillName;
-            this.cardType = cardType;
+            if (!name) {
+                name = `${skillName} ${getSkillCardTypeName(cardType)}`;
+                super(id, name, schedule, origins, ItemType.SkillCard, ConsumableType.Both, description, special, transmuteId);
+                this.skillName = skillName;
+                this.cardType = cardType;
+            } else {
+                super(id, name, schedule, origins, ItemType.SkillCard, ConsumableType.Both, description, special, transmuteId);
+                this.getFieldsFromName();
+            }
     }
 
     public static copyConstructor(source: FlatSkillCard): FlatSkillCard {
@@ -344,8 +410,19 @@ export class FlatSkillCard extends FlatItem {
             console.warn(`The skill card ${source.name} with id ${source.id} does not have the consumable type both, check its source data`);
         }
 
-        return new FlatSkillCard(source.id, source.skillName, source.schedule, source.origins, source.description, source.special, source.transmuteId,
+        return new FlatSkillCard(source.id, source.name, source.skillName, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.cardType);
+    }
+
+    public getFieldsFromName(): void {
+        const split: string[] = this.name.split(' ');
+        this.skillName = '';
+        for (let i = 0; i < split.length - 1; i++) {
+            this.skillName += split[i];
+            this.skillName += ' ';
+        }
+        this.skillName = this.skillName.trim();
+        this.cardType = SkillCardType[split[split.length - 1]];
     }
 
     public clone(): FlatSkillCard {
@@ -382,6 +459,10 @@ export class FlatLoot extends FlatItem {
 
     public clone(): FlatLoot {
         return FlatLoot.copyConstructor(this);
+    }
+
+    public getArcanaName(arcana: Arcana): string {
+        return getArcanaName(arcana);
     }
 
     public isEqual(other: FlatLoot): boolean {

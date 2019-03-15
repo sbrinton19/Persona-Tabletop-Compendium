@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
   FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from './Classes/FlatItem';
 import { Drop } from './Classes/Drop';
-import { SkillCardType } from './Enums/SkillCardType';
 import { WebsocketService } from './websocket.service';
 import { ServerRequestResponse } from './Classes/ServerRequestReponse';
 import { Subject } from 'rxjs';
@@ -77,14 +76,7 @@ export class ItemService implements OnDestroy {
         payload = reqResp.payload as FlatSkillCard[];
         payload.forEach(skillCard => {
           // TODO: Probably should do this server-side
-          const split: string[] = skillCard.name.split(' ');
-          let name = '';
-          for (let i = 0; i < split.length - 1; i++) {
-            name += split[i];
-            name += ' ';
-          }
-          skillCard.skillName = name.trim();
-          skillCard.cardType = SkillCardType[split[split.length - 1]];
+          skillCard.getFieldsFromName();
           returnData.push(FlatSkillCard.copyConstructor(skillCard));
         });
         this.flatSkillCardList.next(returnData);
