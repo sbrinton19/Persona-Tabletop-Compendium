@@ -363,6 +363,12 @@ public class DatabaseHandler {
 				sb.append("WHERE item.type = ");
 				sb.append(ItemType.TRAITBOOST.getValue());
 			}
+		} else if (clazz == FlatItem.class) {
+			sb.append("item ");
+			if (ids.length == 0) {
+				sb.append("WHERE item.type = ");
+				sb.append(ItemType.NONE.getValue());
+			}
 		}
 		try {
 			PreparedStatement search = _conn.prepareStatement(sb.toString());
@@ -921,6 +927,8 @@ public class DatabaseHandler {
 					case WEAPON:
 						item = getItems(FlatRangedWeapon.class, new int[] { itemId })[0];
 						break;
+					case NONE:
+						item = getItems(FlatItem.class, new int[] { itemId })[0];
 					default:
 						break;
 				}

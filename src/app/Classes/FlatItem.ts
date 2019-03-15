@@ -91,18 +91,24 @@ export class FullItem {
         source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
         if ((source.item.origins & OriginType.Drop) && !droppers.length) {
             console.warn(`The item ${source.item.name} has drop listed as an origin, but is not dropped by anything`);
+        } else if (!(source.item.origins & OriginType.Drop) && droppers.length) {
+            console.error(`The item ${source.item.name} does not have drop listed as an origin, but is dropped by something`);
         }
 
         const negotiators: PersonaReference[] = [];
         source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
         if ((source.item.origins & OriginType.Negotiate) && !negotiators.length) {
             console.warn(`The item ${source.item.name} has negotiate listed as an origin, but is not dropped through negotiation by anything`);
+        } else if (!(source.item.origins & OriginType.Negotiate) && negotiators.length) {
+            console.warn(`The item ${source.item.name} does not have negotiate listed as an origin, but is dropped through negotiation by something`);
         }
 
         const vendors: VendorItemReference[] = [];
         source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
         if ((source.item.origins & OriginType.Store) && !vendors.length) {
             console.warn(`The item ${source.item.name} has store listed as an origin, but is not sold anywhere`);
+        } else if (!(source.item.origins & OriginType.Store) && vendors.length) {
+            console.warn(`The item ${source.item.name} does not have store listed as an origin, but is sold somewhere`);
         }
 
         let realItem: FlatItem;
@@ -134,6 +140,9 @@ export class FullItem {
                 break;
             case ItemType.TraitBoost:
                 realItem = FlatTraitBoostItem.copyConstructor(source.item as FlatTraitBoostItem);
+                break;
+            case ItemType.None:
+                realItem = FlatItem.copyConstructor(source.item as FlatItem);
                 break;
             default:
                 console.error(`Failed to reconstruct FlatItem for FullItem ${source.item.name}`);
