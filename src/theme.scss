@@ -1,0 +1,194 @@
+@import '../node_modules/@angular/material/theming';
+@import 'app/app.component.scss';
+@import 'app/personae/personae.component.scss';
+@import 'app/skills/skills.component.scss';
+@import 'app/weapons/weapons.component.scss';
+@import 'app/armors/armors.component.scss';
+@import 'app/accessories//accessories.component.scss';
+@import 'app/items/items.component.scss';
+@import 'app/activities/activities.component.scss';
+@import 'app/filtered-table/filtered-table.component.scss';
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin);
+@include mat-core();
+
+$persona-red: (
+  50: #F6E0E0,
+  100: #E9B3B3,
+  200: #DB8080,
+  300: #CC4D4D,
+  400: #C12626,
+  500: #B60000,
+  600: #AF0000,
+  700: #A60000,
+  800: #9E0000,
+  900: #8E0000,
+  A100: #FFBABA,
+  A200: #FF8787,
+  A400: #FF5454,
+  A700: #FF3B3B,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
+$persona-black: (
+  50: #E0E0E0,
+  100: #B3B3B3,
+  200: #808080,
+  300: #4D4D4D,
+  400: #262626,
+  500: #000000,
+  600: #000000,
+  700: #000000,
+  800: #000000,
+  900: #000000,
+  A100: #A6A6A6,
+  A200: #8C8C8C,
+  A400: #737373,
+  A700: #666666,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
+$persona-app-primary: mat-palette($persona-red);
+$persona-app-accent: mat-palette($persona-black);
+$persona-app-warn: mat-palette($mat-yellow);
+
+$persona-app-theme: mat-dark-theme($persona-app-primary, $persona-app-accent, $persona-app-warn);
+
+@include app-theme($persona-app-theme);
+@include filtered-table-theme($persona-app-theme);
+@include personae-theme($persona-app-theme);
+@include skills-theme($persona-app-theme);
+@include weapons-theme($persona-app-theme);
+@include armors-theme($persona-app-theme);
+@include accessories-theme($persona-app-theme);
+@include items-theme($persona-app-theme);
+@include activities-theme($persona-app-theme);
+@include angular-material-theme($persona-app-theme);
+
+/*
+ * body governs everything in the app
+ */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: .9em;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+}
+
+.body-page {
+    margin-top: 10px;
+}
+
+div.mat-form-field-infix {
+    width: 100%;
+}
+
+mat-form-field.mat-form-field {
+    width: 100%;
+    max-width: 12em;
+    min-width: 4.15em;
+}
+
+mat-select.mat-select {
+    width: 100%;
+    min-width: 8.4vw;
+    text-align: center;
+}
+
+.passive-note {
+    color: slateblue;
+}
+
+.add-icon {
+    font-size: 1em;
+}
+
+tr:hover td {
+    background: rgba(97, 182, 142, 0.13);
+}
+
+.caption {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+}
+
+.add-row {
+    text-align: left;
+}
+
+.wk, .rs, .nu, .rp, .ab,
+.Weak, .Resist, .Null, .Repel, .Absorb {
+    font-weight: bold;
+}
+
+.wk, .Weak { color: #db2828 !important; }
+.rs, .Resist { color: #2185d0 !important; }
+.nu, .Null { color: #b0b0b0 !important; }
+.rp, .Repel { color: #fbbd08 !important; }
+.ab, .Absorb { color: #21ba45 !important; }
+
+.left-border {
+    border-left: .125em solid rgba(34,36,38,.1) !important;
+}
+
+@media only screen and (max-width: 375px) {
+    .mobile-hidden-1 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .mobile-hidden-2 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+    .mobile-hidden-3 {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 991px) {
+    .desktop-hidden {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .midsized-hidden {
+        display: none;
+    }
+}
+
+

@@ -23,10 +23,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private readonly orderByPipe = new OrderByPipe();
   private readonly ActivityType = ActivityType;
   private readonly vendorHeaders = [
-    new TableHeader(1, 2, 'ID', FilterType.NoFilter, 'id'),
-    new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name'),
-    new TableHeader(1, 2, 'Cost', FilterType.NoFilter, 'cost'),
-    new TableHeader(1, 2, 'Restrictions', FilterType.NoFilter, 'restrictions'),
+    new TableHeader(1, 2, 'ID', FilterType.NoFilter, 'id', '', false),
+    new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name', '', false),
+    new TableHeader(1, 2, 'Cost', FilterType.NoFilter, 'cost', '', false),
+    new TableHeader(1, 2, 'Restrictions', FilterType.NoFilter, 'restrictions', '', false),
   ];
 
   constructor(private route: ActivatedRoute) { }

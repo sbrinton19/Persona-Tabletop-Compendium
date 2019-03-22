@@ -1,33 +1,11 @@
-<table id="personaTable" cellspacing="0" class="ui table striped sortable unstackable">
-  <thead>
-    <tr>
-      <th rowspan="2" (click)="orderBy('level')">Level</th>
-      <th (click)="orderBy('name')">Name</th>
-      <th rowspan="2" (click)="orderBy('arcana')">Arcana</th>
-      <th rowspan="2" *ngFor="let stat of statList; index as i" class="mobile-hidden-2" (click)="orderBy('stats', i)">{{stat}}</th>
-      <th rowspan="2" *ngFor="let elem of elemList; index as i" class="mobile-hidden-3" (click)="orderBy('elems', i)">{{elem}}</th>
-    </tr>
-    <tr>
-      <th class="filter-header left-border">
-        <app-string-filter id="personaFilter"
-        [displayList]="displayList"
-        [fieldInfo]="'name'"
-        (filtered)="onFiltered($event)">
-        </app-string-filter>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let tuple of displayList">
-        <ng-container *ngIf="tuple[0]; let persona">
-          <tr *ngIf="tuple[1]">
-            <td>{{persona.level}}</td>
-            <td class="left-border"><a href='/persona/{{persona.id}}'>{{persona.name}}</a></td>
-            <td class="left-border">{{persona.getArcanaName()}}</td>
-            <td *ngFor="let stat of persona.stats; first as isFirst" class="mobile-hidden-2" [class.left-border]="isFirst">{{stat}}</td>
-            <td *ngFor="let elem of persona.elems; first as isFirst" class="mobile-hidden-3 {{persona.getElemShort(elem)}}" [class.left-border]="isFirst">{{persona.getElemShort(elem)}}</td>
-          </tr>
-        </ng-container>
-    </ng-container>
-  </tbody>
-</table>
+<mat-card id='personaeCard'>
+  <app-filtered-table id='personaeFilterTable'
+  [tableId]='"personaeTable"'
+  [tableHeaders]='tableHeaders'
+  [dataSource]='dataSource'
+  [routerLinkName]='"name"'
+  [routerLinkValue]='"id"'
+  [routerLinkClass]='"persona"'
+  [selectOptions]='selectOptions'>
+  </app-filtered-table>
+</mat-card>

@@ -1,17 +1,17 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatPersona, FullPersona } from './Classes/FlatPersona';
+import { FlatPersona, FullPersona } from '../Classes/FlatPersona';
 import { WebsocketService } from './websocket.service';
 import { Subject } from 'rxjs';
-import { ServerRequestResponse } from './Classes/ServerRequestReponse';
-import { Globals } from './Classes/Globals';
-import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
+import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
+import { Globals } from '../Classes/Globals';
+import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable()
 export class PersonaService implements OnDestroy {
   private flatPersonaList: Subject<FlatPersona[]> = new Subject<FlatPersona[]>();
   private fullPersonaMap: Map<number, FullPersona> = new Map<number, FullPersona>();
   private fullPersonaMapSubject: Subject<Map<number, FullPersona>> = new Subject<Map<number, FullPersona>>();
-  
+
   constructor(private sockService: WebsocketService) {
     this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
   }

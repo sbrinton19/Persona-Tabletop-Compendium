@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FlatActivity, FullActivity } from './Classes/FlatActivity';
+import { FlatActivity, FullActivity } from '../Classes/FlatActivity';
 import { Subject } from 'rxjs';
 import { WebsocketService } from './websocket.service';
-import { Globals } from './Classes/Globals';
-import { ServerRequestResponse } from './Classes/ServerRequestReponse';
-import { FlatVendor } from './Classes/FlatVendor';
-import { FlatVendorItem } from './Classes/FlatVendorItem';
-import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
+import { Globals } from '../Classes/Globals';
+import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
+import { FlatVendor } from '../Classes/FlatVendor';
+import { FlatVendorItem } from '../Classes/FlatVendorItem';
+import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable({
   providedIn: 'root'

@@ -1,17 +1,25 @@
-<ul id="masterNav" class="top-nav">
+
+<ul id="masterNav" class="top-nav app-nav">
     <li><a routerLink="/personae">Personae</a></li>
     <li><a routerLink="/skills">Skills</a></li>
     <li id="itens" [ngStyle]="{'background': color}" (click)="openCloseSubNav()"><a>Items</a></li>
+    <ul id="itemSubNav" class="sub-nav midsized-hidden" *ngIf="opened">
+        <li><a routerLink="/weapons">Weapons</a></li>
+        <li><a routerLink="/armors">Armors</a></li>
+        <li><a routerLink="/accessories">Accessories</a></li>
+        <li><a routerLink="/items">Miscellaneous Items</a></li>
+    </ul>
     <li><a routerLink="/activities">Activities</a></li>
+    <li><a routerLink="/shadows">Shadows</a></li>
 </ul>
-<ul id="itemSubNav" class="sub-nav" *ngIf="opened">
+<ul id="itemSubNav" class="sub-nav mobile-hidden-2" *ngIf="opened">
     <li><a routerLink="/weapons">Weapons</a></li>
     <li><a routerLink="/armors">Armors</a></li>
     <li><a routerLink="/accessories">Accessories</a></li>
     <li><a routerLink="/items">Miscellaneous Items</a></li>
 </ul>
 <div id="pageHeader">
-    <h2 id="title"><a href="index.html">{{title}}</a></h2>
+    <h2 id="title"><a routerLink="index.html">{{title}}</a></h2>
 </div>
 <div id="routedItem">
     <router-outlet></router-outlet>

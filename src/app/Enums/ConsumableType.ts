@@ -5,6 +5,12 @@ export enum ConsumableType {
     None
 }
 
+const DisplayConsumableTypes = [ConsumableType.Battle, ConsumableType.Roam, ConsumableType.Both, ConsumableType.None];
+
+export function getDisplayConsumableTypes(): ConsumableType[] {
+    return DisplayConsumableTypes;
+}
+
 export function getConsumableTypeName(consumableType: ConsumableType): string {
     switch (consumableType) {
         case ConsumableType.Battle:

@@ -37,6 +37,27 @@ export class FlatActivity {
             source.type, source.value, source.secondValue, source.description);
     }
 
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'location') {
+                return this.getLocationName();
+            } else if (fieldName === 'type') {
+                return this.getTypeName();
+            } else if (fieldName === 'availableTimes') {
+                return this.getAvailableTimesDisplayString();
+            } else if (fieldName === 'availableWeekDays') {
+                return this.getAvailableWeekDaysDisplayString();
+            } 
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        return '';
+    }
+
     public clone(): FlatActivity {
         return FlatActivity.copyConstructor(this);
     }

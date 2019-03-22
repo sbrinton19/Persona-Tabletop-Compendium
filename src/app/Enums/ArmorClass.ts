@@ -5,6 +5,12 @@ export enum ArmorClass {
     Shield
 }
 
+const DisplayArmorClasses = [ArmorClass.Mystic, ArmorClass.Light, ArmorClass.Heavy, ArmorClass.Shield];
+
+export function getDisplayArmorClasses(): ArmorClass[] {
+    return DisplayArmorClasses;
+}
+
 export function getArmorClassName(armorClass: ArmorClass): string {
     switch (armorClass) {
         case ArmorClass.Light:

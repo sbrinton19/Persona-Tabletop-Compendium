@@ -1,0 +1,36 @@
+@mixin filtered-table-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    th.mat-header-cell.mat-table-sticky {
+        padding-top: 1em;
+        text-align: center;
+        padding-left: .1em;
+        padding-right: .1em;
+    }
+
+    th.mat-header-cell.mat-table-sticky:first-of-type,
+    td.mat-cell.clear-left-right-padding:first-of-type {
+        padding-left: 0;
+    }
+    th.mat-header-cell.mat-table-sticky:last-of-type,
+    td.mat-cell.clear-left-right-padding:last-of-type {
+        padding-right: 0;
+    }
+
+    #filterHeaderRow .mat-input-element {
+        text-align: center;
+    }
+
+    label.mat-form-field-label {
+        text-align: center;
+    }
+
+    .mat-sort-header-container {
+        justify-content: center;
+    }
+
+}

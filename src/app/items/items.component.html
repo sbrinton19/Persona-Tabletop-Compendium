@@ -1,39 +1,11 @@
-<table id="itemTable" cellspacing="0" class="ui table striped sortable unstackable" sticky-table>
-  <thead>
-    <tr>
-      <th rowspan="2" (click)="orderBy('id')">ID</th>
-      <th (click)="orderBy('name')">Name</th>
-      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('type')">Item Type</th>
-      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('schedule')">Schedule</th>
-      <th rowspan="2" class="mobile-hidden-2" (click)="orderBy('origins')">Origins</th>
-      <th rowspan="2" class="mobile-hidden-3" (click)="orderBy('consumableType')">Consumable Type</th>
-      <th rowspan="2" (click)="orderBy('special')">Special</th>
-    </tr>
-    <tr>
-      <th class="filter-header left-border">
-        <app-string-filter id="itemsFilter"
-        [displayList]="displayList"
-        [fieldInfo]="'name'"
-        (filtered)="onFiltered($event)">
-        </app-string-filter>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let tuple of displayList">
-      <ng-container *ngIf="tuple[0]; let item">
-        <tr *ngIf="tuple[1]">
-          <td>{{item.id}}</td>
-          <td class="left-border"><a href='/item/{{item.id}}'>{{item.name}}</a></td>
-          <td class="left-border mobile-hidden-3">{{item.getTypeName()}}</td>
-          <td class="left-border mobile-hidden-3">{{item.schedule}}</td>
-          <td class="left-border mobile-hidden-2">
-            <label *ngFor="let origin of item.getOrigins(); last as isLast">{{item.getOriginName(origin)}}<ng-container *ngIf="!isLast">,<br></ng-container></label>
-          </td>
-          <td class="left-border mobile-hidden-3">{{item.getConsumableTypeName()}}</td>
-          <td class="left-border">{{item.special}}</td>
-        </tr>
-      </ng-container>
-    </ng-container>
-  </tbody>
-</table>
+<mat-card id='itemsCard'>
+  <app-filtered-table id='itemsFilterTable'
+  [tableId]='"itemsTable"'
+  [tableHeaders]='tableHeaders'
+  [dataSource]='dataSource'
+  [routerLinkName]='"name"'
+  [routerLinkValue]='"id"'
+  [routerLinkClass]='"item"'
+  [selectOptions]='selectOptions'>
+  </app-filtered-table>
+</mat-card>

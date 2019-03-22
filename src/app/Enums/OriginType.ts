@@ -10,6 +10,13 @@ export enum OriginType {
     None = 0
 }
 
+const DisplayOriginTypes = [OriginType.Chest, OriginType.Confidant, OriginType.Drop, OriginType.Negotiate, OriginType.Store,
+    OriginType.Transmute, OriginType.None];
+
+export function getDisplayOriginTypes(): OriginType[] {
+    return DisplayOriginTypes;
+}
+
 export function getOrigins(orig: number): OriginType[] {
     const origins: OriginType[] = [];
     for (const origin in OriginType) {

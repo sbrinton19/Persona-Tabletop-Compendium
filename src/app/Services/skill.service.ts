@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FlatSkill, FlatDamageSkill, FlatDamageAilmentSkill, FlatSupportSkill,
-  FlatAilmentSkill, FlatPassiveSkill, PersonaSkill, FullSkill } from './Classes/FlatSkill';
+  FlatAilmentSkill, FlatPassiveSkill, PersonaSkill, FullSkill } from '../Classes/FlatSkill';
 import { WebsocketService } from './websocket.service';
-import { ServerRequestResponse } from './Classes/ServerRequestReponse';
+import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
 import { Subject } from 'rxjs';
-import { Globals } from './Classes/Globals';
-import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
+import { Globals } from '../Classes/Globals';
+import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable()
 export class SkillService implements OnDestroy {

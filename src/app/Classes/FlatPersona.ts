@@ -43,6 +43,36 @@ export class FlatPersona {
             source.rare, source.note);
     }
 
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (val === undefined) {
+            const split = fieldName.split('[');
+            fieldName = split[0];
+            const index = +split[1].charAt(0);
+            val = this[fieldName][index];
+        }
+        if (asDisplay) {
+            if (fieldName === 'arcana') {
+                return getArcanaName(val);
+            } else if (fieldName.indexOf('elem') !== -1) {
+                return getElemShort(val);
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        if (fieldName.indexOf('elem') !== -1) {
+            const split = fieldName.split('[');
+            fieldName = split[0];
+            const index = +split[1].charAt(0);
+            const val = this[fieldName][index];
+            return getElemShort(val);
+        }
+        return '';
+    }
+
     public clone(): FlatPersona {
         return FlatPersona.copyConstructor(this);
     }

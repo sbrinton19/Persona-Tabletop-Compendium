@@ -1,0 +1,18 @@
+@mixin weapons-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    #weaponsCard, #weaponsTable {
+        margin: auto;
+        margin-top: 1em;
+        width: 90%;
+    }
+
+    #weaponsTable .mat-table {
+        margin: 1em 0;
+    }
+}
+

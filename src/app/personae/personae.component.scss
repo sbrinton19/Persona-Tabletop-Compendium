@@ -1,0 +1,17 @@
+@mixin personae-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    #personaeCard, #personaeTable {
+        margin: auto;
+        margin-top: 1em;
+        width: 90%;
+    }
+
+    #personaeTable .mat-table {
+        margin: 1em 0;
+    }
+}

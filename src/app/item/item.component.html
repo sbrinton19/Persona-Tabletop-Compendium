@@ -175,7 +175,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let vendor of item.vendorSources">
-            <td><a href='/activity/{{vendor.id}}'>{{vendor.name}}</a></td>
+            <td><a routerLink='/activity/{{vendor.id}}'>{{vendor.name}}</a></td>
             <td class="left-border">{{vendor.cost}}</td>
             <td class="left-border">
                 <label *ngFor="let restriction of vendor.restrictions">{{restriction.getComposedRestriction()}}<ng-container *ngIf="!isLast"><br></ng-container></label>
@@ -197,15 +197,15 @@
         <tbody>
           <tr *ngIf="checkFlag(item.item.origins, OriginType.Transmute)">
             <td>Transmutation</td>
-            <td class="left-border" colspan="3"><a href='/persona/{{item.transmute.id}}'>{{item.transmute.name}}</a></td>
+            <td class="left-border" colspan="3"><a routerLink='/persona/{{item.transmute.id}}'>{{item.transmute.name}}</a></td>
           </tr>
           <tr *ngFor="let drop of item.droppers">
             <td>Enemy Drop</td>
-            <td class="left-border" colspan="3"><a href='/persona/{{drop.id}}'>{{drop.name}}</a></td>
+            <td class="left-border" colspan="3"><a routerLink='/persona/{{drop.id}}'>{{drop.name}}</a></td>
           </tr>
           <tr *ngFor="let negot of item.negotiators">
             <td>Enemy Negotiate</td>
-            <td class="left-border" colspan="3"><a href='/persona/{{negot.id}}'>{{negot.name}}</a></td>
+            <td class="left-border" colspan="3"><a routerLink='/persona/{{negot.id}}'>{{negot.name}}</a></td>
           </tr>
         </tbody>
       </table>

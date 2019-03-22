@@ -10,6 +10,12 @@ export enum ItemType {
     None
 }
 
+const DisplayMiscItemTypes = [ItemType.Consumable, ItemType.Loot, ItemType.TraitBoost, ItemType.StatBoost];
+
+export function getDisplayMiscItemTypes(): ItemType[] {
+    return DisplayMiscItemTypes;
+}
+
 export function getItemTypeName(itemType: ItemType): string {
     switch (itemType) {
         case ItemType.SkillCard:

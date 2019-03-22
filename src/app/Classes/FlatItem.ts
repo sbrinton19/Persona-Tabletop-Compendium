@@ -40,6 +40,25 @@ export class FlatItem {
             source.description, source.special, source.transmuteId);
     }
 
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'origins') {
+                return this.getOriginsString();
+            } else if (fieldName === 'type') {
+                return this.getTypeName();
+            } else if (fieldName === 'consumableType') {
+                return this.getConsumableTypeName();
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        return '';
+    }
+
     public clone(): FlatItem {
         return FlatItem.copyConstructor(this);
     }
@@ -48,8 +67,14 @@ export class FlatItem {
         return getOrigins(this.origins);
     }
 
-    public getOriginName(origin: OriginType) {
+    public getOriginName(origin: OriginType): string {
         return getOriginName(origin);
+    }
+
+    public getOriginsString(): string {
+        let compile = '';
+        this.getOrigins().forEach(origin => compile += getOriginName(origin) + ', ');
+        return compile.substring(0, compile.length - 2);
     }
 
     public getTypeName(): string {
@@ -67,134 +92,6 @@ export class FlatItem {
         return (this.id === other.id && this.name === other.name && this.schedule === other.schedule && this.origins === other.origins &&
             this.description === other.description && this.special === other.special && this.type === other.type && this.transmuteId === other.transmuteId &&
             this.consumableType === other.consumableType);
-    }
-}
-
-export class FullItem {
-    readonly item: FlatItem;
-    readonly transmute: PersonaReference;
-    readonly droppers: PersonaReference[];
-    readonly negotiators: PersonaReference[];
-    readonly vendorSources: VendorItemReference[];
-
-    public constructor(item: FlatItem, transmute: PersonaReference, droppers: PersonaReference[],
-        negotiators: PersonaReference[], vendorSources: VendorItemReference[]) {
-        this.item = item;
-        this.transmute = transmute;
-        this.droppers = droppers;
-        this.negotiators = negotiators;
-        this.vendorSources = vendorSources;
-    }
-
-    public static copyConstructor(source: FullItem): FullItem {
-        const droppers: PersonaReference[] = [];
-        source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
-        if ((source.item.origins & OriginType.Drop) && !droppers.length) {
-            console.warn(`The item ${source.item.name} has drop listed as an origin, but is not dropped by anything`);
-        } else if (!(source.item.origins & OriginType.Drop) && droppers.length) {
-            console.error(`The item ${source.item.name} does not have drop listed as an origin, but is dropped by something`);
-        }
-
-        const negotiators: PersonaReference[] = [];
-        source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
-        if ((source.item.origins & OriginType.Negotiate) && !negotiators.length) {
-            console.warn(`The item ${source.item.name} has negotiate listed as an origin, but is not dropped through negotiation by anything`);
-        } else if (!(source.item.origins & OriginType.Negotiate) && negotiators.length) {
-            console.warn(`The item ${source.item.name} does not have negotiate listed as an origin, but is dropped through negotiation by something`);
-        }
-
-        const vendors: VendorItemReference[] = [];
-        source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
-        if ((source.item.origins & OriginType.Store) && !vendors.length) {
-            console.warn(`The item ${source.item.name} has store listed as an origin, but is not sold anywhere`);
-        } else if (!(source.item.origins & OriginType.Store) && vendors.length) {
-            console.warn(`The item ${source.item.name} does not have store listed as an origin, but is sold somewhere`);
-        }
-
-        let realItem: FlatItem;
-        switch (source.item.type) {
-            case ItemType.Weapon:
-                if ((source.item as any).magSize === -1) {
-                    realItem = FlatWeapon.copyConstructor(source.item as FlatWeapon);
-                } else {
-                    realItem = FlatRangedWeapon.copyConstructor(source.item as FlatRangedWeapon);
-                }
-                break;
-            case ItemType.Armor:
-                realItem = FlatArmor.copyConstructor(source.item as FlatArmor);
-                break;
-            case ItemType.Accessory:
-                realItem = FlatAccessory.copyConstructor(source.item as FlatAccessory);
-                break;
-            case ItemType.Consumable:
-                realItem = FlatConsumable.copyConstructor(source.item as FlatConsumable);
-                break;
-            case ItemType.Loot:
-                realItem = FlatLoot.copyConstructor(source.item as FlatLoot);
-                break;
-            case ItemType.SkillCard:
-                realItem = FlatSkillCard.copyConstructor(source.item as FlatSkillCard);
-                break;
-            case ItemType.StatBoost:
-                realItem = FlatStatBoostItem.copyConstructor(source.item as FlatStatBoostItem);
-                break;
-            case ItemType.TraitBoost:
-                realItem = FlatTraitBoostItem.copyConstructor(source.item as FlatTraitBoostItem);
-                break;
-            case ItemType.None:
-                realItem = FlatItem.copyConstructor(source.item as FlatItem);
-                break;
-            default:
-                console.error(`Failed to reconstruct FlatItem for FullItem ${source.item.name}`);
-        }
-
-        return new FullItem(realItem, PersonaReference.copyConstructor(source.transmute),
-            droppers, negotiators, vendors);
-    }
-
-    public clone(): FullItem {
-        return FullItem.copyConstructor(this);
-    }
-
-    public isEqual(other: FullItem): boolean {
-        if (!other) {
-            return false;
-        }
-
-        if (this.droppers.length !== other.droppers.length) {
-            return false;
-        }
-        const refMatch = this.droppers.every(source => {
-            const matcher = other.droppers.find(otherSource => source.isEqual(otherSource));
-            return matcher !== undefined;
-        });
-        if (!refMatch) {
-            return false;
-        }
-
-        if (this.negotiators.length !== other.negotiators.length) {
-            return false;
-        }
-        const negotMatch = this.negotiators.every(source => {
-            const matcher = other.negotiators.find(otherSource => source.isEqual(otherSource));
-            return matcher !== undefined;
-        });
-        if (!negotMatch) {
-            return false;
-        }
-
-        if (this.vendorSources.length !== other.vendorSources.length) {
-            return false;
-        }
-        const vendorMatch = this.vendorSources.every(source => {
-            const matcher = other.vendorSources.find(otherSource => source.isEqual(otherSource));
-            return matcher !== undefined;
-        });
-        if (!vendorMatch) {
-            return false;
-        }
-
-        return (this.item.isEqual(other.item) && this.transmute.isEqual(other.transmute));
     }
 }
 
@@ -229,6 +126,25 @@ export class FlatWeapon extends FlatItem {
 
         return new FlatWeapon(source.id, source.name, source.schedule, source.origins, source.description, source.special, source.transmuteId,
             source.baseDamage, source.maxDamageDice, source.damageDie, source.minRange, source.maxRange, source.failValue);
+    }
+
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'range') {
+                return this.getRangeString();
+            } else if (fieldName === 'origins') {
+                return this.getOriginsString();
+            } else if (val === undefined) {
+                return '-';
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        return '';
     }
 
     public clone(): FlatWeapon {
@@ -320,6 +236,25 @@ export class FlatArmor extends FlatItem {
             source.armorClass, source.damageReduction, source.moveAimPenalty, source.maxDodgeBonus, source.dirtyGearPool);
     }
 
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'armorClass') {
+                return this.getArmorClassName();
+            } else if (fieldName === 'origins') {
+                return this.getOriginsString();
+            } else if (fieldName === 'dirtyGearPool') {
+                return this.getGearPoolName();
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        return '';
+    }
+
     public clone(): FlatArmor {
         return FlatArmor.copyConstructor(this);
     }
@@ -399,8 +334,8 @@ export class FlatSkillCard extends FlatItem {
     skillName: string;
     cardType: SkillCardType;
 
-    public constructor(id: number, name: string, skillName: string, schedule: number, origins: number, description: string, special: string, transmuteId: number,
-        cardType: SkillCardType) {
+    public constructor(id: number, name: string, skillName: string, schedule: number, origins: number, description: string, special: string,
+        transmuteId: number, cardType: SkillCardType) {
             if (!name) {
                 name = `${skillName} ${getSkillCardTypeName(cardType)}`;
                 super(id, name, schedule, origins, ItemType.SkillCard, ConsumableType.Both, description, special, transmuteId);
@@ -419,8 +354,8 @@ export class FlatSkillCard extends FlatItem {
             console.warn(`The skill card ${source.name} with id ${source.id} does not have the consumable type both, check its source data`);
         }
 
-        return new FlatSkillCard(source.id, source.name, source.skillName, source.schedule, source.origins, source.description, source.special, source.transmuteId,
-            source.cardType);
+        return new FlatSkillCard(source.id, source.name, source.skillName, source.schedule, source.origins, source.description, source.special,
+            source.transmuteId, source.cardType);
     }
 
     public getFieldsFromName(): void {
@@ -550,3 +485,131 @@ export class FlatStatBoostItem extends FlatItem {
     }
 }
 // (this.item.origins & OriginType.Drop) && this.item.name !== '-'
+
+export class FullItem {
+    readonly item: FlatItem;
+    readonly transmute: PersonaReference;
+    readonly droppers: PersonaReference[];
+    readonly negotiators: PersonaReference[];
+    readonly vendorSources: VendorItemReference[];
+
+    public constructor(item: FlatItem, transmute: PersonaReference, droppers: PersonaReference[],
+        negotiators: PersonaReference[], vendorSources: VendorItemReference[]) {
+        this.item = item;
+        this.transmute = transmute;
+        this.droppers = droppers;
+        this.negotiators = negotiators;
+        this.vendorSources = vendorSources;
+    }
+
+    public static copyConstructor(source: FullItem): FullItem {
+        const droppers: PersonaReference[] = [];
+        source.droppers.forEach(pSource => droppers.push(PersonaReference.copyConstructor(pSource)));
+        if ((source.item.origins & OriginType.Drop) && !droppers.length) {
+            console.warn(`The item ${source.item.name} has drop listed as an origin, but is not dropped by anything`);
+        } else if (!(source.item.origins & OriginType.Drop) && droppers.length) {
+            console.error(`The item ${source.item.name} does not have drop listed as an origin, but is dropped by something`);
+        }
+
+        const negotiators: PersonaReference[] = [];
+        source.negotiators.forEach(pSource => negotiators.push(PersonaReference.copyConstructor(pSource)));
+        if ((source.item.origins & OriginType.Negotiate) && !negotiators.length) {
+            console.warn(`The item ${source.item.name} has negotiate listed as an origin, but is not dropped through negotiation by anything`);
+        } else if (!(source.item.origins & OriginType.Negotiate) && negotiators.length) {
+            console.warn(`The item ${source.item.name} does not have negotiate listed as an origin, but is dropped through negotiation by something`);
+        }
+
+        const vendors: VendorItemReference[] = [];
+        source.vendorSources.forEach(vSource => vendors.push(VendorItemReference.copyConstructor(vSource)));
+        if ((source.item.origins & OriginType.Store) && !vendors.length) {
+            console.warn(`The item ${source.item.name} has store listed as an origin, but is not sold anywhere`);
+        } else if (!(source.item.origins & OriginType.Store) && vendors.length) {
+            console.warn(`The item ${source.item.name} does not have store listed as an origin, but is sold somewhere`);
+        }
+
+        let realItem: FlatItem;
+        switch (source.item.type) {
+            case ItemType.Weapon:
+                if ((source.item as any).magSize === -1) {
+                    realItem = FlatWeapon.copyConstructor(source.item as FlatWeapon);
+                } else {
+                    realItem = FlatRangedWeapon.copyConstructor(source.item as FlatRangedWeapon);
+                }
+                break;
+            case ItemType.Armor:
+                realItem = FlatArmor.copyConstructor(source.item as FlatArmor);
+                break;
+            case ItemType.Accessory:
+                realItem = FlatAccessory.copyConstructor(source.item as FlatAccessory);
+                break;
+            case ItemType.Consumable:
+                realItem = FlatConsumable.copyConstructor(source.item as FlatConsumable);
+                break;
+            case ItemType.Loot:
+                realItem = FlatLoot.copyConstructor(source.item as FlatLoot);
+                break;
+            case ItemType.SkillCard:
+                realItem = FlatSkillCard.copyConstructor(source.item as FlatSkillCard);
+                break;
+            case ItemType.StatBoost:
+                realItem = FlatStatBoostItem.copyConstructor(source.item as FlatStatBoostItem);
+                break;
+            case ItemType.TraitBoost:
+                realItem = FlatTraitBoostItem.copyConstructor(source.item as FlatTraitBoostItem);
+                break;
+            case ItemType.None:
+                realItem = FlatItem.copyConstructor(source.item as FlatItem);
+                break;
+            default:
+                console.error(`Failed to reconstruct FlatItem for FullItem ${source.item.name}`);
+        }
+
+        return new FullItem(realItem, PersonaReference.copyConstructor(source.transmute),
+            droppers, negotiators, vendors);
+    }
+
+    public clone(): FullItem {
+        return FullItem.copyConstructor(this);
+    }
+
+    public isEqual(other: FullItem): boolean {
+        if (!other) {
+            return false;
+        }
+
+        if (this.droppers.length !== other.droppers.length) {
+            return false;
+        }
+        const refMatch = this.droppers.every(source => {
+            const matcher = other.droppers.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!refMatch) {
+            return false;
+        }
+
+        if (this.negotiators.length !== other.negotiators.length) {
+            return false;
+        }
+        const negotMatch = this.negotiators.every(source => {
+            const matcher = other.negotiators.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!negotMatch) {
+            return false;
+        }
+
+        if (this.vendorSources.length !== other.vendorSources.length) {
+            return false;
+        }
+        const vendorMatch = this.vendorSources.every(source => {
+            const matcher = other.vendorSources.find(otherSource => source.isEqual(otherSource));
+            return matcher !== undefined;
+        });
+        if (!vendorMatch) {
+            return false;
+        }
+
+        return (this.item.isEqual(other.item) && this.transmute.isEqual(other.transmute));
+    }
+}

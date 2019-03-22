@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FullSkill, FlatDamageSkill, FlatAilmentSkill, FlatSupportSkill, FlatPassiveSkill } from '../Classes/FlatSkill';
 import { ActivatedRoute } from '@angular/router';
-import { SkillService } from '../skill.service';
+import { SkillService } from '../Services/skill.service';
 import { SubscriptionLike as ISubscription } from 'rxjs';
 import { DamageMultiplier } from '../Enums/DamageMultiplier';
 

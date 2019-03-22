@@ -1,23 +1,33 @@
-import { Component, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FlatAccessory } from '../Classes/FlatItem';
-import { ItemService } from '../item.service';
-import { OrderByPipe } from '../Pipes/order-by-pipe';
+import { ItemService } from '../Services/item.service';
 import { SubscriptionLike } from 'rxjs';
-import { StringFilterComponent } from '../string-filter/string-filter.component';
+import { MatTableDataSource } from '@angular/material';
+import { TableHeader } from '../Classes/TableHeader';
+import { FilterType } from '../Enums/FilterType';
+import { getDisplayOriginTypes, getOriginName } from '../Enums/OriginType';
 
 @Component({
   selector: 'app-accessories',
   templateUrl: './accessories.component.html',
-  styleUrls: ['./accessories.component.css']
+  styleUrls: ['./accessories.component.scss']
 })
 export class AccessoriesComponent implements OnInit, OnDestroy {
-  @ViewChildren(StringFilterComponent) filter: QueryList<StringFilterComponent<FlatAccessory>>;
-  private displayList: Array<[FlatAccessory, boolean]> = [];
+  dataSource: MatTableDataSource<FlatAccessory> = new MatTableDataSource([]);
+  tableHeaders: TableHeader[] = [
+    new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name', '', true),
+    new TableHeader(1, 1, 'Origins', FilterType.FlagSelectFilter, 'origins', '', true),
+    new TableHeader(1, 2, 'Schedule', FilterType.NoFilter, 'schedule', '', true),
+    new TableHeader(1, 2, 'Special', FilterType.NoFilter, 'special', '', true),
+  ];
+  selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
   private subscription: SubscriptionLike;
-  private sortOrder = false;
-  private readonly orderByPipe: OrderByPipe = new OrderByPipe();
 
-  constructor(private itemService: ItemService) { }
+  constructor(private itemService: ItemService) {
+    const originsMap: [string, any][] = [['Any Origin', -1]];
+    getDisplayOriginTypes().forEach(origin => originsMap.push([getOriginName(origin), origin]));
+    this.selectOptions.set('origins', originsMap);
+  }
 
   ngOnInit() {
     this.getFlatAccessories();
@@ -28,17 +38,7 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
   }
 
   private getFlatAccessories(): void {
-    this.subscription = this.itemService.getFlatAccessoryList().subscribe(accessories => {
-      accessories.forEach(acc => this.displayList.push([acc, true]));
-    });
-  }
-
-  orderBy(field: string, idx = 0): void {
-    this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx);
-  }
-
-  onFiltered(filteredData: [string, Array<[FlatAccessory, boolean]>]): void {
-    this.displayList = filteredData[1];
+    this.subscription =
+      this.itemService.getFlatAccessoryList().subscribe(flatAccessories => this.dataSource.data = flatAccessories);
   }
 }

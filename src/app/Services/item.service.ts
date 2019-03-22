@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
-  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from './Classes/FlatItem';
-import { Drop } from './Classes/Drop';
+  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from '../Classes/FlatItem';
+import { Drop } from '../Classes/Drop';
 import { WebsocketService } from './websocket.service';
-import { ServerRequestResponse } from './Classes/ServerRequestReponse';
+import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
 import { Subject } from 'rxjs';
-import { Globals } from './Classes/Globals';
-import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
+import { Globals } from '../Classes/Globals';
+import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable()
 export class ItemService implements OnDestroy {

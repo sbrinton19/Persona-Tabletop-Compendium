@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { WebsocketService } from './websocket.service';
-import { Globals } from './Classes/Globals';
-import { ServerRequestResponse } from './Classes/ServerRequestReponse';
-import { Restriction } from './Classes/Restriction';
-import { BoundRestriction } from './Classes/BoundRestriction';
+import { Globals } from '../Classes/Globals';
+import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
+import { Restriction } from '../Classes/Restriction';
+import { BoundRestriction } from '../Classes/BoundRestriction';
 import { Subject } from 'rxjs';
-import { ServerRequest, ServerRequestType } from './Classes/ServerRequest';
+import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable({
   providedIn: 'root'

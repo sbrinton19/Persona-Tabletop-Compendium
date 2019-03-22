@@ -7,6 +7,12 @@ export enum ElemResist {
     Absorb
 }
 
+const DisplayElemResists = [ElemResist.Weak, ElemResist.Neutral, ElemResist.Resist, ElemResist.Null, ElemResist.Repel, ElemResist.Absorb];
+
+export function getDisplayElemResists(): ElemResist[] {
+    return DisplayElemResists;
+}
+
 export function getElemShort(elem: ElemResist): string {
     switch (elem) {
         case ElemResist.Weak:

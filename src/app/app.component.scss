@@ -1,0 +1,62 @@
+@mixin app-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    .mat-focused .mat-form-field-label {
+        color: mat-color($primary, 100) !important;
+    }
+
+    .app-nav {
+        background-color: mat-color($primary, 500);
+    }
+
+    .top-nav li a:hover {
+        background-color: mat-color($accent, 500);
+    }
+    
+    .sub-nav {
+        background-color: mat-color($accent, 500);
+        transition: all 0.5s ease-in-out;
+    }
+    
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    li {
+        float: left;
+    }
+    
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 1.25em;
+        font-weight: bold;
+        transition: .4s ease-in-out background-color;
+    }
+    
+    #pageHeader {
+        display: inline-block;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    
+    #routedItem {
+        padding-bottom: 1em;
+    }
+    
+    @media screen and (max-width: 600px){
+        .top-nav li {float: none;}
+        .sub-nav li {float: none;}
+    }
+}

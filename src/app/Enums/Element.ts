@@ -18,6 +18,14 @@ export enum Element {
     AllDamage
 }
 
+const DisplayElements = [Element.Physical, Element.Gun, Element.Fire, Element.Ice, Element.Elec, Element.Wind,
+    Element.Psy, Element.Nuke, Element.Bless, Element.Curse, Element.Almighty, Element.Healing, Element.Support,
+    Element.Ailment, Element.Passive];
+
+export function getDisplayElements(): Element[] {
+    return DisplayElements;
+}
+
 export function getElementName(element: Element): string {
     switch (element) {
         case Element.Elec:

@@ -22,6 +22,15 @@ export enum Arcana {
     Judgement
 }
 
+const DisplayArcana = [Arcana.Fool, Arcana.Magician, Arcana.Priestess, Arcana.Empress, Arcana.Emperor,
+    Arcana.Hierophant, Arcana.Lovers, Arcana.Chariot, Arcana.Strength, Arcana.Hermit, Arcana.Fortune,
+    Arcana.Judgement, Arcana.Hanged, Arcana.Death, Arcana.Temperance, Arcana.Devil, Arcana.Tower,
+    Arcana.Star, Arcana.Moon, Arcana.Sun, Arcana.Judgement];
+
+export function getDisplayArcana(): Arcana[] {
+    return DisplayArcana;
+}
+
 export function getArcanaName(arcana: Arcana): string {
     switch (arcana) {
         case Arcana.Priestess:

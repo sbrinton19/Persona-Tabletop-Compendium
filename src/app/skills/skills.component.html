@@ -1,33 +1,11 @@
-<table id="skillTable" cellspacing="0" class="ui table striped sortable unstackable">
-  <thead>
-    <tr>
-      <th rowspan="2" class="mobile-hidden-1" (click)="orderBy('id')">ID</th>
-      <th (click)="orderBy('name')">Name</th>
-      <th rowspan="2" (click)="orderBy('cost')">Cost</th>
-      <th rowspan="2" (click)="orderBy('element')">Element</th>
-      <th rowspan="2" (click)="orderBy('description')">Skill Description</th>
-    </tr>
-    <tr>
-      <th class="filter-header left-border">
-        <app-string-filter id="skillFilter"
-        [displayList]="displayList"
-        [fieldInfo]="'name'"
-        (filtered)="onFiltered($event)">
-        </app-string-filter>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let tuple of displayList">
-        <ng-container *ngIf="tuple[0]; let skill">
-          <tr *ngIf="tuple[1]">
-            <td class="mobile-hidden-1">{{skill.id}}</td>
-            <td class="left-border"><a href='/skill/{{skill.id}}'>{{skill.name}}</a></td>
-            <td class="left-border">{{skill.getFormattedCost()}}</td>
-            <td class="left-border">{{skill.getSkillElement()}}</td>
-            <td class="left-border">{{skill.description}}</td>
-          </tr>
-        </ng-container>
-      </ng-container>
-  </tbody>
-</table>
+<mat-card id='skillsCard'>
+  <app-filtered-table id='skillsFilterTable'
+  [tableId]='"skillsTable"'
+  [tableHeaders]='tableHeaders'
+  [dataSource]='dataSource'
+  [routerLinkName]='"name"'
+  [routerLinkValue]='"id"'
+  [routerLinkClass]='"skill"'
+  [selectOptions]='selectOptions'>
+  </app-filtered-table>
+</mat-card>

@@ -1,42 +1,44 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SkillService } from '../skill.service';
+import { SkillService } from '../Services/skill.service';
 import { FlatSkill } from '../Classes/FlatSkill';
-import { OrderByPipe } from '../Pipes/order-by-pipe';
 import { SubscriptionLike } from 'rxjs';
+import { MatTableDataSource } from '@angular/material';
+import { TableHeader } from '../Classes/TableHeader';
+import { FilterType } from '../Enums/FilterType';
+import { getDisplayElements, getElementName } from '../Enums/Element';
 
 @Component({
   selector: 'app-skills',
   templateUrl: './skills.component.html',
-  styleUrls: ['./skills.component.css']
+  styleUrls: ['./skills.component.scss']
 })
 export class SkillsComponent implements OnInit, OnDestroy {
-  private sortOrder = false;
-  private displayList: Array<[FlatSkill, boolean]> = [];
-  private subscriptions: SubscriptionLike;
-  private readonly orderByPipe = new OrderByPipe();
+  dataSource: MatTableDataSource<FlatSkill> = new MatTableDataSource([]);
+  tableHeaders: TableHeader[] = [
+    new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name', '', true),
+    new TableHeader(1, 1, 'Element', FilterType.SelectFilter, 'element', '', true),
+    new TableHeader(1, 2, 'Cost', FilterType.NoFilter, 'cost', '', true),
+    new TableHeader(1, 2, 'Skill Description', FilterType.NoFilter, 'description', '', true),
+  ];
+  selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  private subscription: SubscriptionLike;
 
-  constructor(private skillService: SkillService) { }
+  constructor(private skillService: SkillService) {
+    const elementMap: [string, any][] = [['Any Element', -1]];
+    getDisplayElements().forEach(element => elementMap.push([getElementName(element), element]));
+    this.selectOptions.set('element', elementMap);
+  }
 
   public ngOnInit() {
     this.getFlatSkills();
   }
 
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   getFlatSkills(): void {
-    this.subscriptions = this.skillService.getFlatSkillList().subscribe(skills => {
-      skills.forEach(skill => this.displayList.push([skill, true]));
-    });
-  }
-
-  orderBy(field: string, idx = 0): void {
-    this.sortOrder = !this.sortOrder;
-    this.displayList = this.orderByPipe.transform(this.displayList, field, this.sortOrder, idx, true);
-  }
-
-  onFiltered(filteredData: [string, Array<[FlatSkill, boolean]>]): void {
-    this.displayList = filteredData[1];
+    this.subscription =
+      this.skillService.getFlatSkillList().subscribe(flatSkills => this.dataSource.data = flatSkills);
   }
 }

@@ -83,7 +83,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let persona of skill.personaSources">
-        <td><a href="/persona/{{persona.id}}">{{persona.name}}</a></td>
+        <td><a routerLink="/persona/{{persona.id}}">{{persona.name}}</a></td>
         <td class="left-border">{{persona.level}}</td>
       </tr>
     </tbody>
@@ -98,8 +98,8 @@
       </thead>
       <tbody>
         <tr>
-          <td><a href="/item/{{skill.skill.allyCardId}}">{{skill.getAllyCardName()}}</a></td>
-          <td class="left-border"><a href="/item/{{skill.skill.mainCardId}}">{{skill.geMainCardName()}}</a></td>
+          <td><a routerLink="/item/{{skill.skill.allyCardId}}">{{skill.getAllyCardName()}}</a></td>
+          <td class="left-border"><a routerLink="/item/{{skill.skill.mainCardId}}">{{skill.geMainCardName()}}</a></td>
         </tr>
       </tbody>
     </table>

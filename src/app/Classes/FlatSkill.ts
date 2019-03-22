@@ -34,9 +34,30 @@ export class FlatSkill {
             this.mainCardId = mainCardId;
     }
 
+    public static emptyConstructor(): FlatSkill {
+        return new FlatSkill(-1, 'Blank Skill', -1, Element.AllDamage, -1, -1, '', -1, -1);
+    }
+
     public static copyConstructor(source: FlatSkill): FlatSkill {
         return new FlatSkill(source.id, source.name, source.cost, source.element, source.aoe, source.minLevel, source.description,
             source.allyCardId, source.mainCardId);
+    }
+
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'cost') {
+                return this.getFormattedCost();
+            } else if (fieldName === 'element') {
+                return this.getSkillElement();
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string): string {
+        return '';
     }
 
     public clone(): FlatSkill {
@@ -371,6 +392,10 @@ export class LeveledSkill extends FlatSkill {
         allyCardId: number, mainCardId: number, level: number) {
         super(id, name, cost, element, aoe, minLevel, description, allyCardId, mainCardId);
         this.level = level;
+    }
+
+    public static emptyConstructor(): LeveledSkill {
+        return new LeveledSkill(-1, 'Blank Skill', -1, Element.AllDamage, -1, -1, '', -1, -1, -1);
     }
 
     public static copyConstructor(source: LeveledSkill): LeveledSkill {

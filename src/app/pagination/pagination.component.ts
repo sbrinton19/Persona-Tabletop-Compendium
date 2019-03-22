@@ -35,10 +35,10 @@ export class PaginationComponent<T> implements OnInit {
   // If the paginator contains objects that have an owner
   // e.g., a Recipe, it may need its name for filtering
   readonly FilterType = FilterType;
-  private currPage = 1;
-  private maxPage: number;
-  private readonly orderBy = new OrderByPipe();
-  private readonly filter = new FilterPipe();
+  currPage = 1;
+  maxPage: number;
+  readonly orderBy = new OrderByPipe();
+  readonly filter = new FilterPipe();
   headerPart: string[];
 
   constructor() { }
