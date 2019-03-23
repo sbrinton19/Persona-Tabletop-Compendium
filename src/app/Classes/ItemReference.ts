@@ -83,19 +83,34 @@ export class DropReference extends ItemReference {
         return new DropReference(source.id, source.name, source.low, source.high);
     }
 
+    public getFieldByName(fieldName: string, asDisplay = false): any {
+        let val: any;
+        val = this[fieldName];
+        if (asDisplay) {
+            if (fieldName === 'roll') {
+                return this.getRollWinDisplay();
+            }
+        }
+        return val;
+    }
+
+    public getFieldStyle(fieldName: string) {
+        return '';
+    }
+
     public clone(): DropReference {
         return DropReference.copyConstructor(this);
     }
 
     public getRollWinDisplay(): string {
-        if (this.id !== 0) {
+        if (this.id === 0 || this.high === 0 && this.low === 0) {
+            return 'All'
+        } else {
             if (this.low === this.high) {
                 return `${this.high}`;
             } else {
                 return `${this.low}-${this.high}`;
             }
-        } else {
-            return 'All';
         }
     }
 

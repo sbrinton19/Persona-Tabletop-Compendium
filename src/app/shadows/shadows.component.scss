@@ -1,0 +1,29 @@
+@mixin shadows-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    #shadowsCard, #shadowsTable {
+        margin: auto;
+        margin-top: 1em;
+        width: 90%;
+    }
+
+    #shadowActions {
+        justify-content: left;
+        align-content: left;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+    }
+
+    .add-row{
+        font-size: 1.5em;
+    }
+
+    #shadowsTable .mat-table {
+        margin: 1em 0;
+    }
+}

@@ -17,6 +17,7 @@ import { ItemComponent } from './item/item.component';
 import { ItemResolver } from './item.resolver';
 import { ShadowsComponent } from './shadows/shadows.component';
 import { ShadowComponent } from './shadow/shadow.component';
+import { ShadowResolver } from './shadow.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: '/personae', pathMatch: 'full' },
@@ -32,13 +33,14 @@ const routes: Routes = [
   { path: 'activities', component: ActivitiesComponent },
   { path: 'activity/:id', component: ActivityComponent, resolve: { activityData: ActivityResolver } },
   { path: 'shadows', component: ShadowsComponent },
-  { path: 'shadow/edit', component: ShadowComponent, data: { isEdit: true } },
+  { path: 'shadow/edit', pathMatch: 'full', component: ShadowComponent, data: { isEdit: true } },
+  { path: 'shadow/:id', component: ShadowComponent, data: { isEdit: false }, resolve: { shadowData: ShadowResolver } },
   { path: '**', component: PersonaeComponent }, // TODO: Replace this with a 404 Style component
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [PersonaResolver, SkillResolver, ActivityResolver, ItemResolver]
+  providers: [PersonaResolver, SkillResolver, ActivityResolver, ItemResolver, ShadowResolver]
 })
 export class AppRoutingModule { }

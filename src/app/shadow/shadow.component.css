@@ -1,0 +1,33 @@
+#shadowToolbar {
+    font-size: 1.25em;
+}
+
+#nameInput {
+    margin-bottom: .4em;
+}
+
+#arcanaSelect {
+    margin-bottom: .4em;
+    width: 100%;
+}
+
+#nameInput, #arcanaSelect, #noteInput {
+    text-align: center;
+}
+
+.mat-card {
+    margin: auto;
+    margin-top: 1em;
+    width: 90%;
+}
+
+#meleeCard.mat-card {
+    width: 30%;
+    min-width: fit-content;
+}
+
+.mat-table {
+    margin: auto;
+    width: 95%;
+    margin: 1em 0;
+}

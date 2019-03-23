@@ -1,0 +1,14 @@
+<mat-card id='shadowsCard'>
+  <mat-card-actions id='shadowActions'>
+    <button mat-icon-button matTooltip='Add New Shadow' class='add-row' (click)='editShadow()'><i class='material-icons'>add_box</i></button>
+  </mat-card-actions>
+  <app-filtered-table id='shadowsFilterTable'
+  [tableId]='"shadowsTable"'
+  [tableHeaders]='tableHeaders'
+  [dataSource]='dataSource'
+  [routerLinkName]='"name"'
+  [routerLinkValue]='"id"'
+  [routerLinkClass]='"shadow"'
+  [selectOptions]='selectOptions'>
+  </app-filtered-table>
+</mat-card>

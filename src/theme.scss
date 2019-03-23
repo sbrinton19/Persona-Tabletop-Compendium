@@ -7,7 +7,10 @@
 @import 'app/accessories//accessories.component.scss';
 @import 'app/items/items.component.scss';
 @import 'app/activities/activities.component.scss';
+@import 'app/shadows/shadows.component.scss';
+@import 'app/editable-table/editable-table.component.scss';
 @import 'app/filtered-table/filtered-table.component.scss';
+@import 'app/splitable-single-row-table/splitable-single-row-table.component.scss';
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin);
 @include mat-core();
 
@@ -84,7 +87,6 @@ $persona-app-warn: mat-palette($mat-yellow);
 $persona-app-theme: mat-dark-theme($persona-app-primary, $persona-app-accent, $persona-app-warn);
 
 @include app-theme($persona-app-theme);
-@include filtered-table-theme($persona-app-theme);
 @include personae-theme($persona-app-theme);
 @include skills-theme($persona-app-theme);
 @include weapons-theme($persona-app-theme);
@@ -92,7 +94,14 @@ $persona-app-theme: mat-dark-theme($persona-app-primary, $persona-app-accent, $p
 @include accessories-theme($persona-app-theme);
 @include items-theme($persona-app-theme);
 @include activities-theme($persona-app-theme);
+@include shadows-theme($persona-app-theme);
+
+@include editable-table-theme($persona-app-theme);
+@include filtered-table-theme($persona-app-theme);
+@include splitable-single-row-table-theme($persona-app-theme);
+
 @include angular-material-theme($persona-app-theme);
+
 
 /*
  * body governs everything in the app
@@ -107,6 +116,20 @@ body {
 
 .body-page {
     margin-top: 10px;
+}
+
+.flex-horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.flex-horizontal-child {
+    margin: .25em;
+}
+
+.fill-toolbar {
+    flex: 1 1 auto;
 }
 
 div.mat-form-field-infix {

@@ -359,18 +359,20 @@ export class FlatPassiveSkill extends FlatSkill {
 }
 
 export class PersonaSkill {
-    readonly personaid: number;
-    readonly skillid: number;
+    readonly sourceId: number;
+    readonly skillId: number;
     readonly level: number;
+    readonly isPersona: boolean;
 
-    public constructor(personaid: number, skillid: number, level: number) {
-        this.personaid = personaid;
-        this.skillid = skillid;
+    public constructor(sourceId: number, skillid: number, level: number, isPersona: boolean) {
+        this.sourceId = sourceId;
+        this.skillId = skillid;
         this.level = level;
+        this.isPersona = isPersona;
     }
 
     public static copyConstructor(source: PersonaSkill): PersonaSkill {
-        return new PersonaSkill(source.personaid, source.skillid, source.level);
+        return new PersonaSkill(source.sourceId, source.skillId, source.level, source.isPersona);
     }
 
     public clone(): PersonaSkill {
@@ -381,7 +383,7 @@ export class PersonaSkill {
         if (!other) {
             return false;
         }
-        return (this.personaid === other.personaid && this.skillid === other.skillid && this.level === other.level);
+        return (this.sourceId === other.sourceId && this.skillId === other.skillId && this.level === other.level && this.isPersona === other.isPersona);
     }
 }
 

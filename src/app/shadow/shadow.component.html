@@ -1,0 +1,174 @@
+<mat-toolbar id='shadowToolbar'>
+  <span>Shadow Page</span>
+  <span class='fill-toolbar'></span>
+  <button mat-button [disabled]='progress<100' [matMenuTriggerFor]='shadowOptions'>Options</button>
+  <mat-menu #shadowOptions='matMenu'>
+    <button mat-menu-item [disabled]='!isEdit' (click)='loadDialog()'>Load Shadow from Persona</button>
+    <button mat-menu-item [disabled]='!changesToSave()' (click)='saveDialog()'>Save Shadow</button>
+  </mat-menu>
+</mat-toolbar>
+<div id='shadowPage' *ngIf='shadow; else notFound' class='body-page'>
+  <mat-progress-bar *ngIf='progress<100; else loaded' mode="indeterminate"></mat-progress-bar>
+  <ng-template #loaded>
+    <div *ngIf='!isEdit; else topEditFields'>
+      <h1>
+        {{shadow.name}} ({{shadow.level}} / {{shadow.getArcanaName()}})
+      </h1>
+      <ng-container id='shadowInfo' *ngIf='shadow.note'>
+        <h3>
+          Note
+        </h3>
+        <span class='passive-note'>
+          {{shadow.note}}
+        </span>
+      </ng-container>
+    </div>
+    <ng-template #topEditFields>
+      <mat-form-field floatLabel='never'>
+        <input matInput maxlength='45' [(ngModel)]='shadow.name' placeholder='Shadow Name' id='nameInput' autocorrect='off' autocomplete='off' spellcheck='false' required>
+      </mat-form-field>
+      <br/>
+      <mat-form-field floatLabel='never'>
+        <input matInput type='number' [(ngModel)]='shadow.level' placeholder='Shadow Level' id='levelInput' required>
+      </mat-form-field>
+      <br/>
+      <mat-form-field floatLabel='never'>
+        <mat-select id='arcanaSelect' [(ngModel)]='shadow.arcana'>
+          <mat-option *ngFor='let option of Arcana' [value]='option'>
+            {{getArcanaName(option)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br/>
+      <mat-form-field floatLabel='never'>
+        <input matInput maxlength='90' [(ngModel)]='shadow.note' placeholder='Shadow Note' id='noteInput' autocorrect='off' autocomplete='off' spellcheck='false'>
+      </mat-form-field>
+    </ng-template>
+    <mat-card id='statsCard'>
+      <mat-card-title>
+        Stats
+      </mat-card-title>
+      <app-splitable-single-row-table id='statsSplitableRowTable'
+      [tableId]='"Stats"'
+      [tableHeaders]='statTableHeaders'
+      [isSplitable]='true'
+      [dataSource]='statSource'
+      [(boundArray)]='shadow.stats'
+      [isEdit]='isEdit'
+      [mobileVisibility]='"midsized-hidden"'
+      [desktopVisibility]='"mobile-hidden-2"'>
+      </app-splitable-single-row-table>
+    </mat-card>
+    <mat-card id='elemsCard'>
+      <mat-card-title>
+        Elementals
+      </mat-card-title>
+      <app-splitable-single-row-table id='elemsSplitableRowTable'
+      [tableId]='"Elems"'
+      [tableHeaders]='elemTableHeaders'
+      [isSplitable]='true'
+      [dataSource]='elemSource'
+      [(boundArray)]='shadow.elems'
+      [isEdit]='isEdit'
+      [mobileVisibility]='"desktop-hidden"'
+      [desktopVisibility]='"mobile-hidden-3"'
+      [selectOptions]='elemSelectOptions'
+      [selectFormatFunction]='shadow.getElemFull'>
+      </app-splitable-single-row-table>
+    </mat-card>
+    <mat-card id='meleeCard'>
+      <mat-card-title>
+        Melee Attack
+      </mat-card-title>
+      <div *ngIf='!isEdit; else meleeEditFields'>
+        <h3>
+          {{shadow.maxDamageDice}}d{{shadow.damageDie}} + STR Bonus
+        </h3>
+      </div>
+      <ng-template #meleeEditFields>
+        <div class='flex-horizontal'>
+          <mat-form-field class='flex-horizontal-child'>
+            <input matInput type='number' [(ngModel)]='shadow.maxDamageDice' placeholder='Max Damage Dice' id='maxDamageDiceInput' required>
+          </mat-form-field>
+          <br/>
+          <mat-form-field class='flex-horizontal-child'>
+              <input matInput type='number' [(ngModel)]='shadow.damageDie' placeholder='Damage Die' id='damageDieInput' required>
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </mat-card>
+    <mat-card id='skillsCard'>
+      <mat-card-title>
+        Skills
+      </mat-card-title>
+      <app-editable-table id='skillsEditTable'
+      [id]='"skill"'
+      [selectRows]='isEdit'
+      [displayField]='"name"'
+      [routerLinkValue]='"id"'
+      [routerLinkClass]='"skill"'
+      [masterList]='skillList'
+      [tableHeaders]='skillTableHeaders'
+      [dataSource]='skillSource'
+      [(boundArray)]='shadow.shadowSkills'
+      [selectOptions]='selectOptions'
+      [typeConversion]='skillConversion'>
+      </app-editable-table>
+    </mat-card>
+    <mat-card id='negotiationCard'>
+      <mat-card-title>
+        Negotiation Drops
+      </mat-card-title>
+      <app-editable-table [hidden]='!isEdit' id='negotiationEditTable'
+      [id]='"negotiation"'
+      [selectRows]='true'
+      [displayField]='"name"'
+      [routerLinkValue]='"id"'
+      [routerLinkClass]='"item"'
+      [masterList]='itemList'
+      [tableHeaders]='negotTableHeadersEdit'
+      [dataSource]='negotSource'
+      [(boundArray)]='shadow.negotiates'
+      [selectOptions]='selectOptions'
+      [typeConversion]='negotConversion'>
+      </app-editable-table>
+      <app-filtered-table *ngIf='!isEdit' id='negotiationFilterTable'
+      [tableId]='"negotiationTable"'
+      [tableHeaders]='negotTableHeaders'
+      [dataSource]='negotSource'
+      [routerLinkName]='"name"'
+      [routerLinkValue]='"id"'
+      [routerLinkClass]='"item"'
+      [selectOptions]='selectOptions'>
+      </app-filtered-table>
+    </mat-card>
+    <mat-card id='negotiationCard'>
+      <mat-card-title>
+        Drops
+      </mat-card-title>
+      <app-editable-table [hidden]='!isEdit' id='dropEditTable'
+      [id]='"drop"'
+      [selectRows]='true'
+      [displayField]='"name"'
+      [routerLinkValue]='"id"'
+      [routerLinkClass]='"item"'
+      [masterList]='itemList'
+      [tableHeaders]='negotTableHeadersEdit'
+      [dataSource]='dropSource'
+      [(boundArray)]='shadow.drops'
+      [selectOptions]='selectOptions'
+      [typeConversion]='negotConversion'>
+      </app-editable-table>
+      <app-filtered-table *ngIf='!isEdit' id='dropFilterTable'
+      [tableId]='"dropTable"'
+      [tableHeaders]='negotTableHeaders'
+      [dataSource]='dropSource'
+      [routerLinkName]='"name"'
+      [routerLinkValue]='"id"'
+      [routerLinkClass]='"item"'
+      [selectOptions]='selectOptions'>
+      </app-filtered-table>
+    </mat-card>
+  </ng-template>
+</div>
+<ng-template #notFound>"{{shadow.name}}" not found!</ng-template>
