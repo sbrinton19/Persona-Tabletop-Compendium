@@ -1,0 +1,38 @@
+
+<ng-container *ngTemplateOutlet='tableTemplate;context:getFullContext()'>
+</ng-container>
+<ng-container *ngTemplateOutlet='tableTemplate;context:getSplit1Context()'>
+</ng-container>
+<ng-container *ngTemplateOutlet='tableTemplate;context:getSplit2Context()'>
+</ng-container>
+<ng-template #tableTemplate let-tableId='tableId' let-visibility='visibility' let-start='start' let-finish='finish'>
+<table [id]='tableId' mat-table [ngClass]='visibility' [dataSource]='dataSource'>
+  <ng-container *ngFor='let header of tableHeaders | slice:start:finish; let i = index' [matColumnDef]='header.fieldName'>
+    <th mat-header-cell class='clear-left-right-padding' *matHeaderCellDef>
+      {{header.name}}
+    </th>
+    <td mat-cell class='clear-left-right-padding' *matCellDef>
+      <mat-form-field *ngIf='header.inputType!=="select"' floatLabel='never'>
+        <input matInput *ngIf='header.inputType==="number"' type='number' [(ngModel)]='boundArray[i+start]' disabled='{{!isEdit}}' placeholder='{{header.name}}' id='{{tableId}}Input{{i}}' autocorrect='off' autocomplete='off' spellcheck='false' required>
+        <input matInput *ngIf='header.inputType==="text"' type='text' [(ngModel)]='boundArray[i+start]' disabled='{{!isEdit}}' placeholder='{{header.name}}' id='{{tableId}}Input{{i}}' autocorrect='off' autocomplete='off' spellcheck='false' required>
+      </mat-form-field>
+      <ng-container *ngIf='header.inputType==="select"'>
+        <mat-form-field *ngIf='isEdit; else labelDisplay' floatLabel='never'>
+          <mat-select id='{{tableId}}Select{{i+start}}' [(ngModel)]='boundArray[i+start]'>
+            <mat-option type='number' *ngFor='let option of selectOptions' [value]='option'>
+              {{selectFormatFunction(option)}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <ng-template #labelDisplay>
+          <label class='{{selectFormatFunction(boundArray[i+start])}}'>
+            {{selectFormatFunction(boundArray[i+start])}}
+          </label>
+        </ng-template>
+      </ng-container>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef='headerNames | slice:start:finish'></tr>
+  <tr mat-row *matRowDef='let myRowData; columns: headerNames | slice:start:finish'></tr>
+</table>
+</ng-template>

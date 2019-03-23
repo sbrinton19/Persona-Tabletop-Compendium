@@ -19,3 +19,21 @@ export class TableHeader {
         this.sortable = sortable;
     }
 }
+
+export class SingleRowTableHeader extends TableHeader {
+    readonly inputType: string;
+    
+    constructor(name: string, fieldName: string, inputType: string) {
+        super(1, 1, name, FilterType.NoFilter, fieldName, '', false);
+        this.inputType = inputType;
+    }
+}
+
+export class EditTableHeader extends SingleRowTableHeader {
+    readonly editable: boolean;
+    
+    constructor(name: string, fieldName: string, inputType: string, editable: boolean) {
+        super(name, fieldName, inputType);
+        this.editable = editable;
+    }
+}

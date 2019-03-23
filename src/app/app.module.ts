@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatPaginatorModule, MatProgressSpinnerModule,
-  MatSortModule, MatTableModule, MatCardModule, MatButtonModule, MatSelectModule } from '@angular/material';
+  MatSortModule, MatTableModule, MatCardModule, MatButtonModule, MatSelectModule, MatTooltipModule, MatProgressBarModule, MatToolbarModule, MatMenuModule, MatDialogModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { PersonaeComponent } from './personae/personae.component';
@@ -36,6 +36,10 @@ import { ShadowsComponent } from './shadows/shadows.component';
 import { ShadowService } from './Services/shadow.service';
 import { FilteredTableComponent } from './filtered-table/filtered-table.component';
 import { RouterLinkComponent } from './router-link/router-link.component';
+import { SplitableSingleRowTableComponent } from './splitable-single-row-table/splitable-single-row-table.component';
+import { EditableTableComponent } from './editable-table/editable-table.component';
+import { LoadFromDialogComponent } from './load-from-dialog/load-from-dialog.component';
+import { AlertDialogComponent } from './alert-dialog/alert-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +63,14 @@ import { RouterLinkComponent } from './router-link/router-link.component';
     ShadowsComponent,
     FilteredTableComponent,
     RouterLinkComponent,
+    SplitableSingleRowTableComponent,
+    EditableTableComponent,
+    LoadFromDialogComponent,
+    AlertDialogComponent,
+  ],
+  entryComponents: [
+    LoadFromDialogComponent,
+    AlertDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +86,12 @@ import { RouterLinkComponent } from './router-link/router-link.component';
     MatCardModule,
     MatButtonModule,
     MatSelectModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatDialogModule,
   ],
   providers: [
     WebsocketService,

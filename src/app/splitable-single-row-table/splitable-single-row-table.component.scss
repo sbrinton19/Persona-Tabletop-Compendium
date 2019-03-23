@@ -1,0 +1,31 @@
+@mixin splitable-single-row-table-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    th.mat-header-cell.clear-left-right-padding {
+        padding-top: 1em;
+        text-align: center;
+        padding-left: .1em;
+        padding-right: .1em;
+    }
+
+    th.mat-header-cell.clear-left-right-padding:first-of-type,
+    td.mat-cell.clear-left-right-padding:first-of-type {
+        padding-left: 0;
+    }
+    th.mat-header-cell.clear-left-right-padding:last-of-type,
+    td.mat-cell.clear-left-right-padding:last-of-type {
+        padding-right: 0;
+    }
+
+    label.mat-form-field-label {
+        text-align: center;
+    }
+
+    input[id*='Input'] {
+        text-align: center;
+    }
+}

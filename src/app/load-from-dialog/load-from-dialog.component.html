@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Load From {{data.sourceType}}</h1>
+<div mat-dialog-content>
+  <p>Give the ID of the {{data.sourceType}} to load from</p>
+  <mat-form-field>
+    <input type='number' matInput [formControl]='idControl' required>
+    <mat-error *ngIf='!idControl.hasError("required") && idControl.hasError("min")'>
+      Please enter an id greater than 0
+    </mat-error>
+    <mat-error *ngIf='idControl.hasError("required")'>
+      An ID is required
+    </mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)='cancelClick()'>Cancel</button>
+  <button mat-button (click)='loadClick()' cdkFocusInitial>Load</button>
+</div>
