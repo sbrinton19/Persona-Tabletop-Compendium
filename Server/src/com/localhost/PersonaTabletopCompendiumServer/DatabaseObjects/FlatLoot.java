@@ -247,12 +247,11 @@ public class FlatLoot extends FlatItem {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(FlatLoot._LOOTINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -268,12 +267,11 @@ public class FlatLoot extends FlatItem {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(FlatLoot._LOOTUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -315,10 +313,11 @@ public class FlatLoot extends FlatItem {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
+	 * @return True if the operation completed successfully, false if otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -334,17 +333,19 @@ public class FlatLoot extends FlatItem {
 		if (!insert) {
 			prep.setInt(7, this.getId());
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return count == 1;
 	}
 
 	/**
 	 * Unimplemented function to delete Loot table rows.
 	 * 
 	 * @param conn
+	 * @return 
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-
+	public boolean databaseDelete(Connection conn) {
+		return false;
 	}
 }

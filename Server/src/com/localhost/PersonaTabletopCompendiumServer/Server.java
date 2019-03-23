@@ -64,6 +64,7 @@ public class Server extends WebSocketServer {
 			.registerTypeAdapter(Drop.class, new DropTypeAdapter())
 			.registerTypeAdapter(FullSkill.class, new FullSkillTypeAdapter())
 			.registerTypeAdapter(FullActivity.class, new FullActivityTypeAdapter())
+			.registerTypeAdapter(FullShadow.class, new FullShadowTypeAdapter())
 			.setPrettyPrinting();
 		_gson = gsonB.create();
 		FusionCalculator.getCalculator();
@@ -193,7 +194,20 @@ public class Server extends WebSocketServer {
 							_gson.toJson(result));
 				}
 				return;
-			}
+			}  else if (FlatShadow.class.isAssignableFrom(pMess.getResolvedClass())) {
+				int retry = 0;
+				Object[] result = null;
+				while (result == null && retry++ < 5) {
+					result = _dbh.getShadows(pMess.getResolvedClass(), ids);
+				}
+				if (result == null) {
+					conn.send("Failed to read database");
+				} else {
+					Server.sendResponseWithPayload(conn, pMess.getResolvedClass().getSimpleName() + "[]",
+							_gson.toJson(result));
+				}
+				return;
+			} 
 		}
 		// Post Get
 		if (pMess.getResolvedClass() == FlatPersona.class) {
@@ -225,6 +239,14 @@ public class Server extends WebSocketServer {
 			FlatVendorItem vendorItem = (FlatVendorItem) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
 				_dbh.addVendorItem(vendorItem);
+			}
+		} else if (FlatShadow.class.isAssignableFrom(pMess.getResolvedClass())) {
+			FlatShadow flatShadow = (FlatShadow) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
+			if (pMess.getCommand() == ProtocolCommand.ADD) {
+				logResponse("INBOUND SHADOW\n");
+				logResponse(pMess.getPayload());
+				logResponse("END SHADOW\n");
+				_dbh.addShadow(flatShadow);
 			}
 		} else if (pMess.getResolvedClass() == Restriction.class) {
 			Restriction restriction = (Restriction) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());

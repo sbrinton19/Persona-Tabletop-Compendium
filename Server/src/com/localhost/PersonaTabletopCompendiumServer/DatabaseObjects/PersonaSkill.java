@@ -21,27 +21,34 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class PersonaSkill extends DatabaseObject {
-	protected int personaid;
-	protected int skillid;
+	protected int sourceId;
+	protected int skillId;
+	protected boolean isPersona;
 	protected byte level;
+	
 	private static String _PERSONASKILLSEARCH = null;
 	private static String _PERSONASKILLINSERT = null;
 	private static String _PERSONASKILLUPDATE = null;
+	private static String _PERSONASKILLDELETE = null;
 
 	/**
 	 * Constructor for a complete {@link PersonaSkill}
 	 * 
-	 * @param personaid
-	 *            The id of the persona
+	 * @param sourceId
+	 *            The id of the source
 	 * @param skillid
 	 *            The id of the skill
 	 * @param level
 	 *            The level the skill is learned by the persona
+	 * @param isPersona
+	 *            If the source is a persona, if not it is a shadow
 	 */
-	public PersonaSkill(int personaid, int skillid, byte level) {
-		this.personaid = personaid;
-		this.skillid = skillid;
+	public PersonaSkill(int sourceId, int skillid, byte level, boolean isPersona) {
+		initSUIDStrings();
+		this.sourceId = sourceId;
+		this.skillId = skillid;
 		this.level = level;
+		this.isPersona = isPersona;
 	}
 
 	/**
@@ -59,21 +66,22 @@ public class PersonaSkill extends DatabaseObject {
 	 *            PersonaSkill out of
 	 */
 	public PersonaSkill(ResultSet rs) {
+		initSUIDStrings();
 		fieldReader(rs, PersonaSkill.class);
 	}
 
 	/**
-	 * @return The id of the persona
+	 * @return The id of the source
 	 */
-	public int getPersonaid() {
-		return personaid;
+	public int getSourceId() {
+		return sourceId;
 	}
 
 	/**
 	 * @return The id of the skill
 	 */
 	public int getSkillid() {
-		return skillid;
+		return skillId;
 	}
 
 	/**
@@ -81,6 +89,13 @@ public class PersonaSkill extends DatabaseObject {
 	 */
 	public byte getLevel() {
 		return level;
+	}
+	
+	/**
+	 * @return If the source is a persona, if not it is a shadow
+	 */
+	public boolean isPersona() {
+		return isPersona;
 	}
 
 	/**
@@ -137,9 +152,10 @@ public class PersonaSkill extends DatabaseObject {
 	private void initSUIDStrings() {
 		if (PersonaSkill._PERSONASKILLSEARCH != null)
 			return;
-		PersonaSkill._PERSONASKILLSEARCH = "SELECT * FROM persona_skill WHERE persona_skill.personaid = ? AND persona_skill.skillid = ?";
+		PersonaSkill._PERSONASKILLSEARCH = "SELECT * FROM persona_skill WHERE persona_skill.sourceid = ? AND persona_skill.skillId = ? AND persona_skill.isPersona = ?";
+		PersonaSkill._PERSONASKILLDELETE = "DELETE FROM persona_skill WHERE persona_skill.sourceid = ? AND persona_skill.skillId = ? AND persona_skill.isPersona = ?";
 		String insertTemplate = "INSERT INTO persona_skill(%s) VALUES(%s)";
-		String updateTemplate = "UPDATE persona_skill SET %s WHERE personaid = ? AND skillid = ?";
+		String updateTemplate = "UPDATE persona_skill SET %s WHERE sourceId = ? AND skillId = ? AND isPersona = ?";
 		String[] built = fieldBuilder(PersonaSkill.class);
 		PersonaSkill._PERSONASKILLINSERT = String.format(insertTemplate, built[0], built[1]);
 		PersonaSkill._PERSONASKILLUPDATE = String.format(updateTemplate, built[2]);
@@ -203,8 +219,8 @@ public class PersonaSkill extends DatabaseObject {
 	 */
 	@Override
 	protected boolean isIgnoredUpdateField(String name) {
-		// We search on personaid, skillid so we don't update them
-		return name.equals("personaid") || name.equals("skillid");
+		// We search on sourceId, skillId, and isPersona so we don't update them
+		return name.equals("sourceId") || name.equals("skillId") || name.equals("isPersona");
 	}
 
 	/**
@@ -219,8 +235,9 @@ public class PersonaSkill extends DatabaseObject {
 	@Override
 	protected ResultSet databaseSelect(Connection conn) throws SQLException {
 		PreparedStatement search = conn.prepareStatement(PersonaSkill._PERSONASKILLSEARCH);
-		search.setInt(1, this.personaid);
-		search.setInt(2, this.skillid);
+		search.setInt(1, this.sourceId);
+		search.setInt(2, this.skillId);
+		search.setBoolean(3, this.isPersona);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
@@ -238,12 +255,11 @@ public class PersonaSkill extends DatabaseObject {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(PersonaSkill._PERSONASKILLINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -259,12 +275,11 @@ public class PersonaSkill extends DatabaseObject {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(PersonaSkill._PERSONASKILLUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -275,33 +290,50 @@ public class PersonaSkill extends DatabaseObject {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are performing an insert or update
+	 * @return True if the operation completes successfully false if otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
-			prep.setInt(1, this.personaid);
-			prep.setInt(2, this.skillid);
-			bump = 2;
+			prep.setInt(1, this.sourceId);
+			prep.setInt(2, this.skillId);
+			prep.setBoolean(3, this.isPersona);
+			bump = 3;
 		}
 		prep.setByte(1 + bump, this.level);
 		if (!insert) {
-
-			prep.setInt(2, this.personaid);
-			prep.setInt(3, this.skillid);
+			prep.setInt(2, this.sourceId);
+			prep.setInt(3, this.skillId);
+			prep.setBoolean(4, this.isPersona);
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return count == 1;
 	}
 
 	/**
-	 * Unimplemented function to delete persona_skill table rows.
+	 * Searches the database for this {@link PersonaSkill PersonaSkill's} id
+	 * and deletes that entry
 	 * 
 	 * @param conn
+	 *            A connection to the Database
+	 * @return True if the operation succeeded false otherwise
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-		
+	public boolean databaseDelete(Connection conn) {
+		PreparedStatement delete;
+		try {
+			delete = conn.prepareStatement(PersonaSkill._PERSONASKILLDELETE);
+			delete.setInt(1, this.sourceId);
+			delete.setInt(2, this.skillId);
+			delete.setBoolean(3, this.isPersona);
+			int count = delete.executeUpdate();
+			return count == 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

@@ -13,14 +13,15 @@ import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.Arcan
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.Enums.ElemResist;
 
 /**
- * The FlatPersona class is the server representation of the DB Table persona
+ * The FlatShadow class is the server representation of the DB Table shadow
  * with added DB & JSON support
  * 
  * @author Stefan
  *
  */
-public class FlatPersona extends DatabaseObject {
+public class FlatShadow extends DatabaseObject {
 	protected int id;
+	protected int personaId;
 	protected String name;
 	protected Arcana arcana;
 	protected byte level;
@@ -45,47 +46,41 @@ public class FlatPersona extends DatabaseObject {
 	protected ElemResist bless;
 	protected ElemResist curse;
 	protected ElemResist[] elems = new ElemResist[10];
+	protected byte maxDamageDice;
+	protected byte damageDie;
 	protected String note;
-	protected boolean special;
-	protected boolean max;
-	protected boolean dlc;
-	protected boolean rare;
-	private static String _PERSONASEARCH = null;
-	private static String _PERSONAINSERT = null;
-	private static String _PERSONAUPDATE = null;
+
+	private static String _SHADOWSEARCH = null;
+	private static String _SHADOWINSERT = null;
+	private static String _SHADOWUPDATE = null;
 
 	/**
-	 * Produces a {@link FlatPersona} with the array stats and elems
+	 * Produces a {@link FlatShadow} with the array stats and elems
 	 * 
 	 * @param id
-	 *            The Unique id for this persona
+	 *            The Unique id for this shadow
+	 * @param personaId
+	 *            The Unique id for the persona this shadow is based on; -1 if there is no such persona
 	 * @param name
-	 *            The name of this persona
+	 *            The name of this shadow
 	 * @param arcana
-	 *            The arcana of this persona
+	 *            The arcana of this shadow
 	 * @param level
-	 *            The default starting level for this persona
+	 *            The absolute level of this shadow
 	 * @param stats
-	 *            The stats for this persona at the default level
+	 *            This shadow's stats
 	 * @param elems
-	 *            The elemental resistances and weaknesses for this persona as
-	 *            an array of {@link ElemResist}
-	 * @param note
-	 *            Any special notes about this persona
-	 * @param special
-	 *            If this persona can only be fused from a special fusion recipe
-	 * @param max
-	 *            If this persona requires the corresponding Arcana confidant to
-	 *            be maxed out before fusing to it
-	 * @param dlc
-	 *            If this is a dlc persona
-	 * @param rare
-	 *            If this persona cannot be produced by fusion and uses the rare
-	 *            fusion formula
+	 *            The elemResists of this shadow as an array of {@link ElemResist ElemResists}
+	 * @param maxDamageDice
+	 *            The maximum number of damage dice for this shadow's melee attack
+	 * @param damageDie
+	 *            The damage die for this shadow's melee attack
+ 	 * @param note
+	 *            Any special notes about this shadow
 	 */
-	public FlatPersona(int id, String name, Arcana arcana, byte level, Double[] stats, ElemResist[] elems, String note,
-			boolean special, boolean max, boolean dlc, boolean rare) {
+	public FlatShadow(int id, int personaId, String name, Arcana arcana, byte level, Double[] stats, ElemResist[] elems, byte maxDamageDice, byte damageDie, String note) {
 		this.id = id;
+		this.personaId = personaId;
 		this.name = name;
 		this.arcana = arcana;
 		this.level = level;
@@ -108,79 +103,74 @@ public class FlatPersona extends DatabaseObject {
 		this.nuke = elems[7];
 		this.bless = elems[8];
 		this.curse = elems[9];
+		this.maxDamageDice = maxDamageDice;
+		this.damageDie = damageDie;
 		this.note = note;
-		this.special = special;
-		this.max = max;
-		this.dlc = dlc;
-		this.rare = rare;
 	}
 
 	/**
-	 * 
-	 * Produces a {@link FlatPersona} with the enumerated stats and elems
+	 * Produces a {@link FlatShadow} with the enumerated stats and elems
 	 * 
 	 * @param id
-	 *            The Unique id for this persona
+	 *            The Unique id for this shadow
+	 * @param personaId
+	 *            The Unique id for the persona this shadow is based on; -1 if there is no such persona
 	 * @param name
-	 *            The name of this persona
+	 *            The name of this shadow
 	 * @param arcana
-	 *            The arcana of this persona
+	 *            The arcana of this shadow
 	 * @param level
-	 *            The default starting level for this persona
+	 *            This shadow's level
 	 * @param hp
-	 *            The starting HP for this persona
+	 *            The starting HP for this shadow
 	 * @param sp
-	 *            The starting SP for this persona
+	 *            The starting SP for this shadow
 	 * @param strength
-	 *            The starting strength for this persona
+	 *            The starting strength for this shadow
 	 * @param magic
-	 *            The starting magic for this persona
+	 *            The starting magic for this shadow
 	 * @param endurance
-	 *            The starting endurance for this persona
+	 *            The starting endurance for this shadow
 	 * @param agility
-	 *            The starting agility for this persona
+	 *            The starting agility for this shadow
 	 * @param luck
-	 *            The starting luck for this persona
+	 *            The starting luck for this shadow
 	 * @param phys
 	 *            The resistance or weakness to physical attacks for this
-	 *            persona
+	 *            shadow
 	 * @param gun
-	 *            The resistance or weakness to gun attacks for this persona
+	 *            The resistance or weakness to gun attacks for this shadow
 	 * @param fire
-	 *            The resistance or weakness to fire attacks for this persona
+	 *            The resistance or weakness to fire attacks for this shadow
 	 * @param ice
-	 *            The resistance or weakness to ice attacks for this persona
+	 *            The resistance or weakness to ice attacks for this shadow
 	 * @param elec
 	 *            The resistance or weakness to electric attacks for this
-	 *            persona
+	 *            shadow
 	 * @param wind
-	 *            The resistance or weakness to wind attacks for this persona
+	 *            The resistance or weakness to wind attacks for this shadow
 	 * @param psy
-	 *            The resistance or weakness to psychic attacks for this persona
+	 *            The resistance or weakness to psychic attacks for this shadow
 	 * @param nuke
-	 *            The resistance or weakness to nuclear attacks for this persona
+	 *            The resistance or weakness to nuclear attacks for this shadow
 	 * @param bless
-	 *            The resistance or weakness to bless attacks for this persona
+	 *            The resistance or weakness to bless attacks for this shadow
 	 * @param curse
-	 *            The resistance or weakness to curse attacks for this persona
+	 *            The resistance or weakness to curse attacks for this shadow
+	 * @param maxDamageDice
+	 *            The maximum number of damage dice for this shadow's melee attack
+	 * @param damageDie
+	 *            The damage die for this shadow's melee attack
 	 * @param note
-	 *            Any special notes about this persona
-	 * @param special
-	 *            If this persona can only be fused from a special fusion recipe
-	 * @param max
-	 *            If this persona requires the corresponding Arcana confidant to
-	 *            be maxed out before fusing to it
-	 * @param dlc
-	 *            If this is a dlc persona
-	 * @param rare
-	 *            If this persona cannot be produced by fusion and uses the rare
-	 *            fusion formula
+	 *            Any special notes about this shadow
 	 */
-	public FlatPersona(int id, String name, Arcana arcana, byte level, double hp, double sp, double strength,
+	public FlatShadow(int id, int personaId, String name, Arcana arcana, byte level, double hp, double sp, double strength,
 			double magic, double endurance, double agility, double luck, ElemResist phys, ElemResist gun,
 			ElemResist fire, ElemResist ice, ElemResist elec, ElemResist wind, ElemResist psy, ElemResist nuke,
-			ElemResist bless, ElemResist curse, String note, boolean special, boolean max, boolean dlc, boolean rare) {
+			ElemResist bless, ElemResist curse, byte maxDamageDice, byte damageDie, String note, boolean special,
+			boolean max, boolean dlc, boolean rare) {
 		this.id = id;
+		this.personaId = personaId;
 		this.name = name;
 		this.arcana = arcana;
 		this.level = level;
@@ -203,56 +193,61 @@ public class FlatPersona extends DatabaseObject {
 		this.bless = bless;
 		this.curse = curse;
 		this.elems = new ElemResist[] { phys, gun, fire, ice, elec, wind, psy, nuke, bless, curse };
+		this.maxDamageDice = maxDamageDice;
+		this.damageDie = damageDie;
 		this.note = note;
-		this.special = special;
-		this.max = max;
-		this.dlc = dlc;
-		this.rare = rare;
 	}
 
 	/**
 	 * The empty constructor used for loading from JSON
 	 */
-	public FlatPersona() {
+	public FlatShadow() {
 		initSUIDStrings();
 	}
 
 	/**
-	 * Reads a {@link FlatPersona} from the Database
+	 * Reads a {@link FlatShadow} from the Database
 	 * 
 	 * @param rs
 	 *            The {@link ResultSet} pointing to the row to make a
-	 *            FlatPersona out of
+	 *            FlatShadow out of
 	 */
-	public FlatPersona(ResultSet rs) {
-		fieldReader(rs, FlatPersona.class);
+	public FlatShadow(ResultSet rs) {
+		fieldReader(rs, FlatShadow.class);
 		this.stats = new Double[] { hp, sp, strength, magic, endurance, agility, luck };
 		this.elems = new ElemResist[] { phys, gun, fire, ice, elec, wind, psy, nuke, bless, curse };
 	}
 
 	/**
-	 * @return The Unique id for this persona
+	 * @return The Unique id for this shadow
 	 */
 	public int getId() {
 		return id;
 	}
 
+	/** 
+	 * @return The Unique id for the persona this shadow is based on; -1 if there is no such persona
+	 */
+	public int getPersonaId() {
+		return personaId;
+	}
+	
 	/**
-	 * @return The name of this persona
+	 * @return The name of this shadow
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return The arcana of this persona
+	 * @return The arcana of this shadow
 	 */
 	public Arcana getArcana() {
 		return arcana;
 	}
 
 	/**
-	 * @return The default starting level for this persona
+	 * @return The default starting level for this shadow
 	 */
 	public byte getLevel() {
 		return level;
@@ -260,133 +255,133 @@ public class FlatPersona extends DatabaseObject {
 
 	/**
 	 * 
-	 * @return The starting HP for this persona
+	 * @return The starting HP for this shadow
 	 */
 	public double getHP() {
 		return hp;
 	}
 
 	/**
-	 * @return The starting SP for this persona
+	 * @return The starting SP for this shadow
 	 */
 	public double getSP() {
 		return sp;
 	}
 
 	/**
-	 * @return The starting strength for this persona
+	 * @return The starting strength for this shadow
 	 */
 	public double getStrength() {
 		return strength;
 	}
 
 	/**
-	 * @return The starting magic for this persona
+	 * @return The starting magic for this shadow
 	 */
 	public double getMagic() {
 		return magic;
 	}
 
 	/**
-	 * @return The starting endurance for this persona
+	 * @return The starting endurance for this shadow
 	 */
 	public double getEndurance() {
 		return endurance;
 	}
 
 	/**
-	 * @return The starting agility for this persona
+	 * @return The starting agility for this shadow
 	 */
 	public double getAgility() {
 		return agility;
 	}
 
 	/**
-	 * @return The starting luck for this persona
+	 * @return The starting luck for this shadow
 	 */
 	public double getLuck() {
 		return luck;
 	}
 
 	/**
-	 * @return The stats for this persona at the default level
+	 * @return The stats for this shadow, at the default level
 	 */
 	public Double[] getStats() {
 		return stats;
 	}
 
 	/**
-	 * @return The resistance or weakness to physical attacks for this persona
+	 * @return The resistance or weakness to physical attacks for this shadow
 	 */
 	public ElemResist getPhys() {
 		return phys;
 	}
 
 	/**
-	 * @return The resistance or weakness to gun attacks for this persona
+	 * @return The resistance or weakness to gun attacks for this shadow
 	 */
 	public ElemResist getGun() {
 		return gun;
 	}
 
 	/**
-	 * @return The resistance or weakness to fire attacks for this persona
+	 * @return The resistance or weakness to fire attacks for this shadow
 	 */
 	public ElemResist getFire() {
 		return fire;
 	}
 
 	/**
-	 * @return The resistance or weakness to ice attacks for this persona
+	 * @return The resistance or weakness to ice attacks for this shadow
 	 */
 	public ElemResist getIce() {
 		return ice;
 	}
 
 	/**
-	 * @return The resistance or weakness to electric attacks for this persona
+	 * @return The resistance or weakness to electric attacks for this shadow
 	 */
 	public ElemResist getElec() {
 		return elec;
 	}
 
 	/**
-	 * @return The resistance or weakness to wind attacks for this persona
+	 * @return The resistance or weakness to wind attacks for this shadow
 	 */
 	public ElemResist getWind() {
 		return wind;
 	}
 
 	/**
-	 * @return The resistance or weakness to psychic attacks for this persona
+	 * @return The resistance or weakness to psychic attacks for this shadow
 	 */
 	public ElemResist getPsy() {
 		return psy;
 	}
 
 	/**
-	 * @return The resistance or weakness to nuclear attacks for this persona
+	 * @return The resistance or weakness to nuclear attacks for this shadow
 	 */
 	public ElemResist getNuke() {
 		return nuke;
 	}
 
 	/**
-	 * @return The resistance or weakness to bless attacks for this persona
+	 * @return The resistance or weakness to bless attacks for this shadow
 	 */
 	public ElemResist getBless() {
 		return bless;
 	}
 
 	/**
-	 * @return The resistance or weakness to curse attacks for this persona
+	 * @return The resistance or weakness to curse attacks for this shadow
 	 */
 	public ElemResist getCurse() {
 		return curse;
 	}
 
 	/**
-	 * @return The elemental resistances and weaknesses for this persona as an
+	 * @return The elemental resistances and weaknesses for this shadow, as an
 	 *         array of {@link ElemResist}
 	 */
 	public ElemResist[] getElems() {
@@ -394,42 +389,27 @@ public class FlatPersona extends DatabaseObject {
 	}
 
 	/**
-	 * @return Any special notes about this persona
+	 * @return maxDamageDice
+	 *            The maximum number of damage dice for this shadow's melee attack
+	 */
+	public byte getMaxDamageDice() {
+		return maxDamageDice;
+	}
+
+	/**
+	 * @return damageDic
+	 *            The damage die for this shadow's melee attack
+	 */
+	public byte getDamageDie() {
+		return damageDie;
+	}
+	
+	/**
+	 * @return Any special notes about this shadow
 	 */
 	public String getNote() {
 		return note;
 	}
-
-	/**
-	 * @return If this persona can only be fused from a special fusion recipe
-	 */
-	public boolean isSpecial() {
-		return special;
-	}
-
-	/**
-	 * @return If this persona requires the corresponding Arcana confidant to be
-	 *         maxed out before fusing to it
-	 */
-	public boolean isMax() {
-		return max;
-	}
-
-	/**
-	 * @return If this is a dlc persona
-	 */
-	public boolean isDlc() {
-		return dlc;
-	}
-
-	/**
-	 * @return If this persona cannot be produced by fusion and uses the rare
-	 *         fusion formula
-	 */
-	public boolean isRare() {
-		return rare;
-	}
-
 
 	/**
 	 * This method is an intentionally incomplete implementation of
@@ -451,7 +431,7 @@ public class FlatPersona extends DatabaseObject {
 	public void write(final JsonWriter out)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		out.beginObject();
-		write(out, FlatPersona.class);
+		write(out, FlatShadow.class);
 	}
 
 	/**
@@ -473,7 +453,7 @@ public class FlatPersona extends DatabaseObject {
 	@Override
 	public void read(final JsonReader in, final String name)
 			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
-		read(in, name, FlatPersona.class);
+		read(in, name, FlatShadow.class);
 	}
 	
 	/**
@@ -483,14 +463,14 @@ public class FlatPersona extends DatabaseObject {
 	 * {@link #isIgnoredField(String)} or {@link #isJsonOnly(String)} function
 	 */
 	private void initSUIDStrings() {
-		if (FlatPersona._PERSONASEARCH != null)
+		if (FlatShadow._SHADOWSEARCH != null)
 			return;
-		FlatPersona._PERSONASEARCH = "SELECT * FROM persona WHERE persona.id = ?";
-		String insertTemplate = "INSERT INTO persona(%s) VALUES(%s)";
-		String updateTemplate = "UPDATE persona SET %s WHERE id = ?";
-		String[] built = fieldBuilder(FlatPersona.class);
-		FlatPersona._PERSONAINSERT = String.format(insertTemplate, built[0], built[1]);
-		FlatPersona._PERSONAUPDATE = String.format(updateTemplate, built[2]);
+		FlatShadow._SHADOWSEARCH = "SELECT * FROM shadow WHERE shadow.id = ?";
+		String insertTemplate = "INSERT INTO shadow(%s) VALUES(%s)";
+		String updateTemplate = "UPDATE shadow SET %s WHERE id = ?";
+		String[] built = fieldBuilder(FlatShadow.class);
+		FlatShadow._SHADOWINSERT = String.format(insertTemplate, built[0], built[1]);
+		FlatShadow._SHADOWUPDATE = String.format(updateTemplate, built[2]);
 	}
 
 	/**
@@ -504,8 +484,8 @@ public class FlatPersona extends DatabaseObject {
 	 */
 	@Override
 	protected boolean isIgnoredField(String name) {
-		return name.equals("_PERSONAINSERT") || name.equals("_PERSONAUPDATE") || name.equals("_PERSONASEARCH")
-				|| name.equals("_PERSONADELETE");
+		return name.equals("_SHADOWINSERT") || name.equals("_SHADOWUPDATE") || name.equals("_SHADOWSEARCH")
+				|| name.equals("_SHADOWDELETE");
 	}
 
 	/**
@@ -558,24 +538,24 @@ public class FlatPersona extends DatabaseObject {
 	}
 	
 	/**
-	 * Searches the database for this {@link FlatPersona FlatPersona's} id
+	 * Searches the database for this {@link FlatShadow FlatShadow's} id
 	 * 
 	 * @param conn
 	 *            A connection to the Database
-	 * @return A {@link ResultSet} for a search in the persona table for this
-	 *         FlatPersona's id
+	 * @return A {@link ResultSet} for a search in the shadow table for this
+	 *         FlatShadow's id
 	 * @throws SQLException
 	 */
 	@Override
 	protected ResultSet databaseSelect(Connection conn) throws SQLException {
-		PreparedStatement search = conn.prepareStatement(FlatPersona._PERSONASEARCH);
+		PreparedStatement search = conn.prepareStatement(FlatShadow._SHADOWSEARCH);
 		search.setInt(1, this.id);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
 
 	/**
-	 * This method inserts {@code this} {@link FlatPersona} into the persona
+	 * This method inserts {@code this} {@link FlatShadow} into the shadow
 	 * table
 	 * 
 	 * @param conn
@@ -587,7 +567,7 @@ public class FlatPersona extends DatabaseObject {
 	protected boolean databaseInsert(Connection conn) {
 		PreparedStatement insert;
 		try {
-			insert = conn.prepareStatement(FlatPersona._PERSONAINSERT);
+			insert = conn.prepareStatement(FlatShadow._SHADOWINSERT);
 			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -596,8 +576,8 @@ public class FlatPersona extends DatabaseObject {
 	}
 
 	/**
-	 * This method updates {@code this} {@link FlatPersona FlatPersona's} entry
-	 * in the persona table.
+	 * This method updates {@code this} {@link FlatShadow FlatShadow's} entry
+	 * in the shadow table.
 	 * 
 	 * @param conn
 	 *            A connection to the Database
@@ -608,7 +588,7 @@ public class FlatPersona extends DatabaseObject {
 	protected boolean databaseUpdate(Connection conn) {
 		PreparedStatement update;
 		try {
-			update = conn.prepareStatement(FlatPersona._PERSONAUPDATE);
+			update = conn.prepareStatement(FlatShadow._SHADOWUPDATE);
 			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -624,7 +604,7 @@ public class FlatPersona extends DatabaseObject {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
-	 * @return True if the operation completed successfully, false if otherwise
+	 * @return True if the operation completed successfully, false if otherwise 
 	 * @throws SQLException
 	 */
 	@Override
@@ -634,33 +614,37 @@ public class FlatPersona extends DatabaseObject {
 			prep.setInt(1, this.getId());
 			bump = 1;
 		}
-		prep.setString(1 + bump, this.name);
-		prep.setByte(2 + bump, this.arcana.getValue());
-		prep.setByte(3 + bump, this.level);
-		prep.setDouble(4 + bump, this.hp);
-		prep.setDouble(5 + bump, this.sp);
-		prep.setDouble(6 + bump, this.strength);
-		prep.setDouble(7 + bump, this.magic);
-		prep.setDouble(8 + bump, this.endurance);
-		prep.setDouble(9 + bump, this.agility);
-		prep.setDouble(10 + bump, this.luck);
-		prep.setByte(11 + bump, this.phys.getValue());
-		prep.setByte(12 + bump, this.gun.getValue());
-		prep.setByte(13 + bump, this.fire.getValue());
-		prep.setByte(14 + bump, this.ice.getValue());
-		prep.setByte(15 + bump, this.elec.getValue());
-		prep.setByte(16 + bump, this.wind.getValue());
-		prep.setByte(17 + bump, this.psy.getValue());
-		prep.setByte(18 + bump, this.nuke.getValue());
-		prep.setByte(19 + bump, this.bless.getValue());
-		prep.setByte(20 + bump, this.curse.getValue());
-		prep.setString(21 + bump, this.note);
-		prep.setBoolean(22 + bump, this.special);
-		prep.setBoolean(23 + bump, this.max);
-		prep.setBoolean(24 + bump, this.dlc);
-		prep.setBoolean(25 + bump, this.rare);
+		if (this.personaId < 0) {
+			prep.setNull(1 + bump, java.sql.Types.INTEGER);	
+		}
+		else {
+			prep.setInt(1 + bump, this.personaId);
+		}
+		prep.setString(2 + bump, this.name);
+		prep.setByte(3 + bump, this.arcana.getValue());
+		prep.setByte(4 + bump, this.level);
+		prep.setDouble(5 + bump, this.hp);
+		prep.setDouble(6 + bump, this.sp);
+		prep.setDouble(7 + bump, this.strength);
+		prep.setDouble(8 + bump, this.magic);
+		prep.setDouble(9 + bump, this.endurance);
+		prep.setDouble(10 + bump, this.agility);
+		prep.setDouble(11 + bump, this.luck);
+		prep.setByte(12 + bump, this.phys.getValue());
+		prep.setByte(13 + bump, this.gun.getValue());
+		prep.setByte(14 + bump, this.fire.getValue());
+		prep.setByte(15 + bump, this.ice.getValue());
+		prep.setByte(16 + bump, this.elec.getValue());
+		prep.setByte(17 + bump, this.wind.getValue());
+		prep.setByte(18 + bump, this.psy.getValue());
+		prep.setByte(19 + bump, this.nuke.getValue());
+		prep.setByte(20 + bump, this.bless.getValue());
+		prep.setByte(21 + bump, this.curse.getValue());
+		prep.setByte(22 + bump, this.maxDamageDice);
+		prep.setByte(23 + bump, this.damageDie);
+		prep.setString(24 + bump, this.note);
 		if (!insert) {
-			prep.setInt(26, this.getId());
+			prep.setInt(25, this.getId());
 		}
 		int count = prep.executeUpdate();
 		prep.close();
@@ -668,7 +652,7 @@ public class FlatPersona extends DatabaseObject {
 	}
 
 	/**
-	 * Unimplemented function to delete persona table rows.
+	 * Unimplemented function to delete shadow table rows.
 	 * 
 	 * @param conn
 	 * @return 

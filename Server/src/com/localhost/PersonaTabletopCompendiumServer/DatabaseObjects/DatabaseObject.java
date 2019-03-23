@@ -144,15 +144,57 @@ public abstract class DatabaseObject {
 	 * @throws SecurityException 
 	 * @throws NoSuchMethodException 
 	 * @throws InvocationTargetException 
+	 * @throws InstantiationException 
 	 */
+	@SuppressWarnings("rawtypes")
 	private void fieldReader(final JsonReader in, Field field)
-			throws IllegalArgumentException, IllegalAccessException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException {
+			throws IllegalArgumentException, IllegalAccessException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException, InstantiationException {
 		Class<?> clazz = field.getType();
 		if (clazz.isArray()) {
 			in.beginArray();
-			// If you ever add a recursive array object
-			// You're on your own
-			arrayReader(in, field);
+			if (DatabaseObject.class.isAssignableFrom(clazz.getComponentType())) {
+				ArrayList<Object> array = new ArrayList<>();
+				while (in.hasNext()) { //Array has next
+					in.beginObject();
+					DatabaseObject instant = (DatabaseObject) clazz.getComponentType().newInstance();
+					while (in.hasNext()) { //Object has next
+						instant.read(in, in.nextName());
+					}
+					array.add(instant);
+					in.endObject();
+				}
+				Object temp = Array.newInstance(clazz.getComponentType(), array.size());
+				for (int i = 0; i < array.size(); i++) {
+					Array.set(temp, i, array.get(i));	
+				}
+				field.set(this, clazz.cast(temp));
+			} else if (ByteValueEnum.class.isAssignableFrom(clazz.getComponentType())) {
+				ArrayList<Object> array = new ArrayList<>();
+				while (in.hasNext()) { //Array has next
+					while (in.hasNext()) { //Object has next
+						array.add((ByteValueEnum) clazz.getComponentType().getMethod("fromIntStatic", int.class).invoke(null, in.nextInt()));
+					}
+				}
+				Object temp = Array.newInstance(clazz.getComponentType(), array.size());
+				for (int i = 0; i < array.size(); i++) {
+					Array.set(temp, i, array.get(i));	
+				}
+				field.set(this, clazz.cast(temp));
+			} else if (clazz.getComponentType() == Double.class) {
+				ArrayList<Double> array = new ArrayList<>();
+				while (in.hasNext()) { //Array has next
+					while (in.hasNext()) { //Object has next
+						array.add(in.nextDouble());
+					}
+				}
+				Double[] temp = new Double[array.size()];
+				array.toArray(temp);
+				field.set(this, temp);
+			} else {
+				// If you ever add a recursive array object
+				// You're on your own
+				arrayReader(in, field);	
+			}
 			in.endArray();
 		} else if (clazz.equals(byte.class)) {
 			field.setByte(this, (byte) in.nextInt());
@@ -440,7 +482,7 @@ public abstract class DatabaseObject {
 	
 	protected abstract boolean databaseUpdate(Connection conn);
 	
-	protected abstract void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException;
+	protected abstract boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException;
 	
-	public abstract void databaseDelete(Connection conn);
+	public abstract boolean databaseDelete(Connection conn);
 }

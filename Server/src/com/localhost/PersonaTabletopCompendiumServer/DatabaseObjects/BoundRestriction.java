@@ -238,12 +238,11 @@ public class BoundRestriction extends DatabaseObject {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(BoundRestriction._BOUNDRESTRICTIONINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -259,12 +258,11 @@ public class BoundRestriction extends DatabaseObject {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(BoundRestriction._BOUNDRESTRICTIONUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -275,10 +273,11 @@ public class BoundRestriction extends DatabaseObject {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
+	 * @return True if the operation succeeded, false otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		// This currently has no other fields other than those that
 		// compose the primary key, but it'll follow standard form for future proofing
 		@SuppressWarnings("unused")
@@ -296,20 +295,22 @@ public class BoundRestriction extends DatabaseObject {
 			prep.setByte(3, this.type.getValue());*/
 			prep.close();
 			System.err.println("Cannot update a bound restriction this is a duplicate entry");
-			return;
+			return false;
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return (count == 1);
 	}
 
 	/**
 	 * Unimplemented function to delete bound_restriction table rows.
 	 * 
 	 * @param conn
+	 * @return 
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-		
+	public boolean databaseDelete(Connection conn) {
+		return false;
 	}
 
 }

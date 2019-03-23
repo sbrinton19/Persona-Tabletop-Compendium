@@ -296,12 +296,11 @@ public class FlatArmor extends FlatItem {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(FlatArmor._ARMORINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -317,12 +316,11 @@ public class FlatArmor extends FlatItem {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(FlatArmor._ARMORUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -364,10 +362,11 @@ public class FlatArmor extends FlatItem {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
+	 * @return True if the operation completed successfully false if otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -393,18 +392,20 @@ public class FlatArmor extends FlatItem {
 		if (!insert) {
 			prep.setInt(6, this.getId());
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return count == 1;
 	}
 
 	/**
 	 * Unimplemented function to delete armor table rows.
 	 * 
 	 * @param conn
+	 * @return 
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-
+	public boolean databaseDelete(Connection conn) {
+		return false;
 	}
 
 }

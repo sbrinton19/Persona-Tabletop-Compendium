@@ -262,11 +262,12 @@ public class FlatAccessory extends FlatItem {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
+	 * @return True if completed successfully false otherwise
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.id);
@@ -275,8 +276,9 @@ public class FlatAccessory extends FlatItem {
 		if (!insert) {
 			prep.setInt(1, this.getId());
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return (count == 1);
 	}
 
 	/**
@@ -285,7 +287,7 @@ public class FlatAccessory extends FlatItem {
 	 * @param conn
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-
+	public boolean databaseDelete(Connection conn) {
+		return false;
 	}
 }

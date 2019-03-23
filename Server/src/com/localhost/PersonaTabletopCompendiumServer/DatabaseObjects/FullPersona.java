@@ -48,7 +48,7 @@ public class FullPersona extends FlatPersona {
 		for (LeveledSkill skill : this.skills) {
 			skill.level = skill.level == this.level ? 0 : skill.level;
 		}
-		DropReference[][] bothDrops = dbh.getBothDrops(this.id);
+		DropReference[][] bothDrops = dbh.getBothDrops(this.id, true);
 		this.drops = bothDrops[0];
 		this.negotiates = bothDrops[1];
 		this.transmutes = dbh.getTransmutes(this.id);

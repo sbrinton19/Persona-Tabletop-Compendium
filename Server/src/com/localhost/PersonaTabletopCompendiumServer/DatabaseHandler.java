@@ -1,10 +1,12 @@
 package com.localhost.PersonaTabletopCompendiumServer;
 
 import java.lang.reflect.Array;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -78,12 +80,19 @@ public class DatabaseHandler {
 			ds.setDatabaseName("persona_tabletop_compendium");
 			try {
 				this._conn = ds.getConnection();
+				initSprocs();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				this._conn = null;
 			}
 		}
 		scanner.close();
+	}
+	private CallableStatement _nextAvailableShadowId;
+	
+	private void initSprocs() throws SQLException {
+		_nextAvailableShadowId = _conn.prepareCall("{call next_available_shadow_id(?)}");
+		_nextAvailableShadowId.registerOutParameter(1, Types.INTEGER);
 	}
 
 	/**
@@ -315,7 +324,10 @@ public class DatabaseHandler {
 			idsToInClause(ids, sb);
 			sb.append(") ");
 		}
-		if (clazz == FlatWeapon.class) {
+		if (clazz == FlatItem.class) {
+			sb.append("item");
+		}
+		else if (clazz == FlatWeapon.class) {
 			if (ids.length == 0) {
 				sb.append(
 						"(SELECT * FROM weapon WHERE weapon.magSize IS NULL) unranged INNER JOIN item ON unranged.itemId=item.id");
@@ -465,7 +477,7 @@ public class DatabaseHandler {
 	/**
 	 * Add {@link FlatVendorItem} or any of its valid subclasses to the database
 	 * 
-	 * @param vendor
+	 * @param vendorItem
 	 *            The vendorItem to add to the database
 	 * @return True if the operation succeeds; false otherwise
 	 */
@@ -473,6 +485,56 @@ public class DatabaseHandler {
 		if (vendorItem == null)
 			return false;
 		return vendorItem.updateOrInsert(_conn);
+	}
+	
+	/**
+	 * Get the given ids as the given shadow's class
+	 * 
+	 * @param clazz
+	 *            The class of shadows to get
+	 * @param ids
+	 *            The ids of shadows to retrieve, if the array is null or empty
+	 *            retrieve all shadows of the given class
+	 * @return An array of the given shadow class
+	 */
+	public <T> T[] getShadows(Class<T> clazz, int[] ids) {
+		if (ids == null) {
+			ids = new int[0];
+		}
+		ArrayList<T> shadowList = new ArrayList<T>();
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM shadow");
+		if (ids.length != 0) {
+			sb.append(" WHERE shadow.id ");
+			idsToInClause(ids, sb);
+		}
+		try {
+			PreparedStatement search = _conn.prepareStatement(sb.toString());
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				shadowList.add(clazz.getConstructor(ResultSet.class).newInstance(rs));
+			}
+			@SuppressWarnings("unchecked")
+			T[] temp = (T[]) Array.newInstance(clazz, shadowList.size());
+			shadowList.toArray(temp);
+			return temp;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Add {@link FlatShadow} or any of its valid subclasses to the database
+	 * 
+	 * @param shadow 
+	 * 			The shadow to add to the database
+	 * @return True if the operation succeeds; false otherwise
+	 */
+	public boolean addShadow(FlatShadow shadow) {
+		if (shadow == null)
+			return false;
+		return shadow.updateOrInsert(_conn);
 	}
 	
 	/**
@@ -631,17 +693,17 @@ public class DatabaseHandler {
 	/**
 	 * Get the {@link LeveledSkill LevelSkills} for a specified persona
 	 * 
-	 * @param personaid
+	 * @param personaId
 	 *            The id of the persona to get LeveledSkills for
 	 * @return An array of LeveledSkills
 	 */
-	public LeveledSkill[] getLeveledSkills(int personaid) {
+	public LeveledSkill[] getLeveledSkills(int personaId) {
 		ArrayList<LeveledSkill> skillList = new ArrayList<LeveledSkill>();
 		try {
 			// Get the actual skills
 			PreparedStatement search = _conn.prepareStatement(
-					"SELECT persona_skill.skillId, persona_skill.level FROM persona_skill WHERE persona_skill.personaId = ? ORDER BY persona_skill.level ASC");
-			search.setInt(1, personaid);
+					"SELECT persona_skill.skillId, persona_skill.level FROM persona_skill WHERE persona_skill.sourceId = ? AND persona_skill.isPersona ORDER BY persona_skill.level ASC");
+			search.setInt(1, personaId);
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				int skillId = rs.getInt("skillId");
@@ -693,6 +755,69 @@ public class DatabaseHandler {
 	}
 	
 	/**
+	 * Get the {@link FlatSkill FlatSkills} for a specified shadow
+	 * 
+	 * @param shadowId
+	 *            The id of the shadow to get FlatSkills for
+	 * @return An array of FlatSkills
+	 */
+	public FlatSkill[] getShadowSkills(int shadowId) {
+		ArrayList<FlatSkill> skillList = new ArrayList<FlatSkill>();
+		try {
+			// Get the actual skills
+			PreparedStatement search = _conn.prepareStatement(
+					"SELECT persona_skill.skillId FROM persona_skill WHERE persona_skill.sourceId = ? AND persona_skill.isPersona = 0 ORDER BY persona_skill.level ASC");
+			search.setInt(1, shadowId);
+			ResultSet rs = search.executeQuery();
+			while (rs.next()) {
+				int skillId = rs.getInt("skillId");
+				// The class of a skill is ambiguous because of DamageSkill &
+				// DamageAilmentSkill
+				// But any skill with an ailment_skill entry that is not an
+				// ailment
+				// skill is a DamageAilmentSkill
+				// This removes the ambiguity and lets us get all of a skill's
+				// data correctly
+				PreparedStatement skillTypeSearch = _conn.prepareStatement(
+						"SELECT skill.element, ailment_skill.skillId FROM (SELECT skill.element FROM skill WHERE skill.id=?) skill LEFT JOIN ailment_skill ON ?=ailment_skill.skillId");
+				skillTypeSearch.setInt(1, skillId);
+				skillTypeSearch.setInt(2, skillId);
+				ResultSet skillTypeResult = skillTypeSearch.executeQuery();
+				if (skillTypeResult.isBeforeFirst()) {
+					skillTypeResult.next();
+					Element skillElement = Element.fromByteStatic(skillTypeResult.getByte("element"));
+					// The following two lines are interdependent wasNull checks the last value retrieved
+					skillTypeResult.getInt("skillId");
+					boolean hasAilment = !skillTypeResult.wasNull();
+					FlatSkill skill;
+					if (skillElement != Element.AILMENT && hasAilment) {
+						// DamageAilmentSkill
+						skill = getSkills(FlatDamageAilmentSkill.class, new int[] { skillId })[0];
+					} else if (skillElement == Element.SUPPORT) {
+						skill = getSkills(FlatSupportSkill.class, new int[] { skillId })[0];
+					} else if (skillElement == Element.AILMENT) {
+						skill = getSkills(FlatAilmentSkill.class, new int[] { skillId })[0];
+					} else if (skillElement == Element.PASSIVE) {
+						skill = getSkills(FlatPassiveSkill.class, new int[] { skillId })[0];
+					} else {
+						skill = getSkills(FlatDamageSkill.class, new int[] { skillId })[0];
+					}
+					skill.getCompiledDescription(true);
+					skillList.add(skill);
+				} else {
+					System.err.println(String.format("Unable to find a table entry for skill id %d", skillId));
+				}
+			}
+			FlatSkill[] temp = new FlatSkill[skillList.size()];
+			skillList.toArray(temp);
+			return temp;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
 	 * Add a {@link PersonaSkill} to the database
 	 * 
 	 * @param personaSkill
@@ -706,21 +831,24 @@ public class DatabaseHandler {
 	}
 	
 	/**
-	 * Get the drops and negotiates for a persona
+	 * Get the drops and negotiates for a persona/shadow
 	 * 
-	 * @param personaId
-	 *            The id of the persona to get drops and negotiates for
+	 * @param sourceId
+	 *            The id of the source to get drops and negotiates for
+	 * @param isPersona
+	 *            If the sourceId is a persona, shadow if not
 	 * @return A double-array, outer array index 0 is drops, outer array index 1
 	 *         is negotiates
 	 */
-	public DropReference[][] getBothDrops(int personaId) {
+	public DropReference[][] getBothDrops(int sourceId, boolean isPersona) {
 		DropReference[][] bothDrops = new DropReference[2][];
 		ArrayList<DropReference> dropList = new ArrayList<DropReference>();
 		ArrayList<DropReference> negotList = new ArrayList<DropReference>();
 		try {
 			PreparedStatement search = _conn.prepareStatement(
-					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.personaId=?) drop_table INNER JOIN item ON drop_table.itemId=item.id ORDER BY drop_table.low ASC");
-			search.setInt(1, personaId);
+					"SELECT item.id, item.name, drop_table.low, drop_table.high, drop_table.isDrop FROM (SELECT * FROM drop_table WHERE drop_table.sourceId=? AND drop_table.isPersona=?) drop_table INNER JOIN item ON drop_table.itemId=item.id ORDER BY drop_table.low ASC");
+			search.setInt(1, sourceId);
+			search.setBoolean(2, isPersona);
 			ResultSet rs = search.executeQuery();
 			while (rs.next()) {
 				boolean isDrop = rs.getBoolean("isDrop");
@@ -855,7 +983,7 @@ public class DatabaseHandler {
 				}
 				skill.getCompiledDescription(true);
 				PreparedStatement persona = _conn.prepareStatement(
-						"SELECT persona_skill.level, persona.id, persona.name, persona.arcana FROM (SELECT persona_skill.personaid, persona_skill.level FROM persona_skill WHERE persona_skill.skillId=?) persona_skill INNER JOIN persona ON persona_skill.personaid=persona.id");
+						"SELECT persona_skill.level, persona.id, persona.name, persona.arcana FROM (SELECT persona_skill.sourceid, persona_skill.level FROM persona_skill WHERE persona_skill.skillId=? AND persona_skill.isPersona) persona_skill INNER JOIN persona ON persona_skill.sourceid=persona.id");
 				persona.setInt(1, skillId);
 				ResultSet learningPersonae = persona.executeQuery();
 				ArrayList<PersonaReference> refs = new ArrayList<PersonaReference>();
@@ -941,7 +1069,7 @@ public class DatabaseHandler {
 					transmutePersonaRef = new PersonaReference(transmutePersona);
 				}
 				PreparedStatement persona = _conn.prepareStatement(
-						"SELECT drop_table.isDrop, persona.id, persona.name, persona.level, persona.arcana FROM (SELECT drop_table.personaId, drop_table.isDrop FROM drop_table WHERE drop_table.itemId=?) drop_table INNER JOIN persona ON drop_table.personaId=persona.id");
+						"SELECT drop_table.isDrop, persona.id, persona.name, persona.level, persona.arcana FROM (SELECT drop_table.sourceId, drop_table.isDrop FROM drop_table WHERE drop_table.itemId=? AND drop_table.isPersona) drop_table INNER JOIN persona ON drop_table.sourceId=persona.id");
 				persona.setInt(1, itemId);
 				ResultSet sourcePersonae = persona.executeQuery();
 				ArrayList<PersonaReference> dropRefs = new ArrayList<PersonaReference>();
@@ -1034,5 +1162,17 @@ public class DatabaseHandler {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	// SPROCS BELOW THIS LINE
+
+	public int getNextAvailableShadowId() {
+		try {
+			_nextAvailableShadowId.execute();
+			return _nextAvailableShadowId.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }

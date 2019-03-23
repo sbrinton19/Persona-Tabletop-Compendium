@@ -22,33 +22,39 @@ import com.google.gson.stream.JsonWriter;
  */
 public class Drop extends DatabaseObject {
 	protected int itemId;
-	protected int personaId;
+	protected int sourceId;
 	protected boolean isDrop;
+	protected boolean isPersona;
 	protected byte low;
 	protected byte high;
 	private static String _DROPSEARCH = null;
 	private static String _DROPINSERT = null;
 	private static String _DROPUPDATE = null;
+	private static String _DROPDELETE = null;
 
 	/**
 	 * Constructor for a complete {@link Drop}
 	 * 
 	 * @param itemId
 	 *            The unique id of the item for this drop
-	 * @param personaId
-	 *            The unique id of the persona for this drop
+	 * @param sourceId
+	 *            The unique id of the source for this drop
 	 * @param isDrop
-	 *            Is this a drop from defeating this persona; otherwise, it is
+	 *            Is this a drop from defeating this persona/shadow; otherwise, it is
 	 *            from negotiation
+	 * @param isPersona
+	 *            Is this drop from a persona, if not it is from a shadow
 	 * @param low
 	 *            The lower bound for rolling/drawing for this drop
 	 * @param high
 	 *            The upper bound for rolling/drawing for this drop
 	 */
-	public Drop(int itemId, int personaId, boolean isDrop, byte low, byte high) {
+	public Drop(int itemId, int sourceId, boolean isDrop, boolean isPersona, byte low, byte high) {
+		initSUIDStrings();
 		this.itemId = itemId;
-		this.personaId = personaId;
+		this.sourceId = sourceId;
 		this.isDrop = isDrop;
+		this.isPersona = isPersona;
 		this.low = low;
 		this.high = high;
 	}
@@ -68,6 +74,7 @@ public class Drop extends DatabaseObject {
 	 *            of
 	 */
 	public Drop(ResultSet rs) {
+		initSUIDStrings();
 		fieldReader(rs, Drop.class);
 	}
 	
@@ -79,18 +86,25 @@ public class Drop extends DatabaseObject {
 	}
 
 	/**
-	 * @return The unique id of the persona for this drop
+	 * @return The unique id of the source for this drop
 	 */
-	public int getPersonaId() {
-		return personaId;
+	public int getSourceId() {
+		return sourceId;
 	}
 
 	/**
-	 * @return Is this a drop from defeating this persona; otherwise, it is from
+	 * @return Is this a drop from defeating this persona/shadow; otherwise, it is from
 	 *         negotiation
 	 */
 	public boolean isDrop() {
 		return isDrop;
+	}
+
+	/**
+	 * @return Is this drop from a persona, if not it is from a shadow
+	 */
+	public boolean isPersona() {
+		return isPersona;
 	}
 
 	/**
@@ -161,9 +175,10 @@ public class Drop extends DatabaseObject {
 	private void initSUIDStrings() {
 		if (Drop._DROPSEARCH != null)
 			return;
-		Drop._DROPSEARCH = "SELECT * FROM drop_table WHERE drop_table.itemId = ? AND drop_table.personaId = ? AND drop_table.isDrop = ?";
+		Drop._DROPSEARCH = "SELECT * FROM drop_table WHERE drop_table.itemId = ? AND drop_table.sourceId = ? AND drop_table.isDrop = ? AND drop_table.isPersona = ?";
+		Drop._DROPDELETE = "DELETE FROM drop_table WHERE drop_table.itemId = ? AND drop_table.sourceId = ? AND drop_table.isDrop = ? AND drop_table.isPersona = ?";
 		String insertTemplate = "INSERT INTO drop_table(%s) VALUES(%s)";
-		String updateTemplate = "UPDATE drop_table SET %s WHERE itemId = ? AND personaId = ? AND isDrop = ?";
+		String updateTemplate = "UPDATE drop_table SET %s WHERE itemId = ? AND sourceId = ? AND isDrop = ? AND isPersona = ?";
 		String[] built = fieldBuilder(Drop.class);
 		Drop._DROPINSERT = String.format(insertTemplate, built[0], built[1]);
 		Drop._DROPUPDATE = String.format(updateTemplate, built[2]);
@@ -227,8 +242,8 @@ public class Drop extends DatabaseObject {
 	 */
 	@Override
 	protected boolean isIgnoredUpdateField(String name) {
-		// We search on itemId, personaId, and isDrop so we don't update them
-		return name.equals("itemId") || name.equals("personaId") || name.equals("isDrop");
+		// We search on itemId, sourceId, isDrop, and isPersona so we don't update them
+		return name.equals("itemId") || name.equals("sourceId") || name.equals("isDrop") || name.equals("isPersona") ;
 	}
 
 	/**
@@ -244,8 +259,9 @@ public class Drop extends DatabaseObject {
 	protected ResultSet databaseSelect(Connection conn) throws SQLException {
 		PreparedStatement search = conn.prepareStatement(Drop._DROPSEARCH);
 		search.setInt(1, this.itemId);
-		search.setInt(2, this.personaId);
+		search.setInt(2, this.sourceId);
 		search.setBoolean(3, this.isDrop);
+		search.setBoolean(4, this.isPersona);
 		ResultSet ret = search.executeQuery();
 		return ret;
 	}
@@ -263,12 +279,11 @@ public class Drop extends DatabaseObject {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(Drop._DROPINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -285,12 +300,11 @@ public class Drop extends DatabaseObject {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(Drop._DROPUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -301,35 +315,54 @@ public class Drop extends DatabaseObject {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are performing an insert or update
+	 * @return True if the operation completed successfully false if otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.itemId);
-			prep.setInt(2, this.personaId);
+			prep.setInt(2, this.sourceId);
 			prep.setBoolean(3, this.isDrop);
-			bump = 3;
+			prep.setBoolean(4, this.isPersona);
+			bump = 4;
 		}
 		prep.setByte(1 + bump, this.low);
 		prep.setByte(2 + bump, this.high);
 		if (!insert) {
 			prep.setInt(3, this.itemId);
-			prep.setInt(4, this.personaId);
+			prep.setInt(4, this.sourceId);
 			prep.setBoolean(5, this.isDrop);
+			prep.setBoolean(6, this.isPersona);
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return (count == 1);
 	}
 
 	/**
-	 * Unimplemented function to delete drop_table table rows.
+	 * Searches the database for this {@link Drop Drop's} id
+	 * and deletes that entry
 	 * 
 	 * @param conn
+	 *            A connection to the Database
+	 * @return True if the operation succeeded false otherwise
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-		
+	public boolean databaseDelete(Connection conn) {
+		PreparedStatement delete;
+		try {
+			delete = conn.prepareStatement(Drop._DROPDELETE);
+			delete.setInt(1, this.itemId);
+			delete.setInt(2, this.sourceId);
+			delete.setBoolean(3, this.isDrop);
+			delete.setBoolean(4, this.isPersona);
+			int count = delete.executeUpdate();
+			return count == 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

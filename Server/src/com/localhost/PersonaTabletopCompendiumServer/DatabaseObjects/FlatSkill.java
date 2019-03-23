@@ -32,6 +32,7 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	private static String _SKILLSEARCH = null;
 	private static String _SKILLINSERT = null;
 	private static String _SKILLUPDATE = null;
+	private static String _SKILLDELETE = null;
 
 	/**
 	 * Constructor for a complete {@link FlatSkill}
@@ -261,6 +262,7 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 		FlatSkill._SKILLSEARCH = "SELECT * FROM skill WHERE skill.id = ?";
 		String insertTemplate = "INSERT INTO skill(%s) VALUES(%s)";
 		String updateTemplate = "UPDATE skill SET %s WHERE id = ?";
+		FlatSkill._SKILLDELETE = "DELETE FROM skill WHERE skill.id = ?";
 		String[] built = fieldBuilder(FlatSkill.class);
 		FlatSkill._SKILLINSERT = String.format(insertTemplate, built[0], built[1]);
 		FlatSkill._SKILLUPDATE = String.format(updateTemplate, built[2]);
@@ -360,12 +362,11 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 		PreparedStatement insert;
 		try {
 			insert = conn.prepareStatement(FlatSkill._SKILLINSERT);
-			insertUpdate(insert, true);
+			return insertUpdate(insert, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -383,12 +384,11 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 		PreparedStatement update;
 		try {
 			update = conn.prepareStatement(FlatSkill._SKILLUPDATE);
-			insertUpdate(update, false);
+			return insertUpdate(update, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -399,10 +399,11 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 	 *            The {@link PreparedStatement} to parameterize and execute
 	 * @param insert
 	 *            Whether we are inserting or updating
+	 * @return True if the operation succeeded false otherwise
 	 * @throws SQLException
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
 		int bump = 0;
 		if (insert) {
 			prep.setInt(1, this.getId());
@@ -423,18 +424,31 @@ public class FlatSkill extends DatabaseObject implements Comparator<FlatSkill> {
 		if (!insert) {
 			prep.setInt(9, this.getId());
 		}
-		prep.executeUpdate();
+		int count = prep.executeUpdate();
 		prep.close();
+		return (count == 1);
 	}
 
 	/**
-	 * Unimplemented function to delete skill table rows.
+	 * Searches the database for this {@link FlatSkill FlatSkill's} id
+	 * and deletes that entry
 	 * 
 	 * @param conn
+	 *            A connection to the Database
+	 * @return True if the operation succeeded false otherwise
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {
-
+	public boolean databaseDelete(Connection conn) {
+		PreparedStatement delete;
+		try {
+			delete = conn.prepareStatement(FlatSkill._SKILLDELETE);
+			delete.setInt(1, this.id);
+			int count = delete.executeUpdate();
+			return count == 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

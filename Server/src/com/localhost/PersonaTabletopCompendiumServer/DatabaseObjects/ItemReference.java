@@ -1,6 +1,7 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,10 +13,9 @@ import com.google.gson.stream.JsonWriter;
 /**
  * The ItemReference class extends DatabaseObject to leverage the JSON
  * serialization. This class should not be used to perform any database
- * operations itself or to deserialize JSON. This also means this class
- * does not need a TypeAdapater as it it will be "seamlessly" handled
- * during the serialization of its parent since it extends
- * DatabaseObject
+ * operations itself. This also means this class does not need a TypeAdapater
+ * as it it will be "seamlessly" handled during the serialization/deserialization
+ * of its parent since it extends DatabaseObject
  * 
  * @author Stefan
  *
@@ -93,11 +93,25 @@ public class ItemReference extends DatabaseObject {
 	}
 
 	/**
-	 * Never call this method under any circumstances
+	 * This method is an implementation of
+	 * {@link DatabaseObject#read(JsonReader, String)} for JSON deserialization.
+	 * 
+	 * @param in
+	 *            A {@link JsonReader} for the JSON
+	 * @param name
+	 *            The name of the {@link Field} to read into this object
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
 	@Override
-	public void read(JsonReader in, String name) throws IOException, IllegalArgumentException, IllegalAccessException {
-		return;
+	public void read(final JsonReader in, final String name)
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+		read(in, name, ItemReference.class);
 	}
 	
 	/*
@@ -179,11 +193,15 @@ public class ItemReference extends DatabaseObject {
 	 * Never call this method under any circumstances
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {}
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+		return false;
+	}
 
 	/**
 	 * Never call this method under any circumstances
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {}
+	public boolean databaseDelete(Connection conn) {
+		return false;
+	}
 }

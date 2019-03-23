@@ -1,8 +1,10 @@
 package com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
@@ -89,5 +91,29 @@ public class DropReference extends ItemReference {
 			throws IOException, IllegalArgumentException, IllegalAccessException, InstantiationException {
 		super.write(out);
 		write(out, DropReference.class);
+	}
+	
+	/**
+	 * This method is an implementation of
+	 * {@link DatabaseObject#read(JsonReader, String)} for JSON deserialization.
+	 * 
+	 * @param in
+	 *            A {@link JsonReader} for the JSON
+	 * @param name
+	 *            The name of the {@link Field} to read into this object
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 */
+	@Override
+	public void read(final JsonReader in, final String name)
+			throws IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+		if (!read(in, name, DropReference.class)) {
+			super.read(in, name);	
+		}
 	}
 }

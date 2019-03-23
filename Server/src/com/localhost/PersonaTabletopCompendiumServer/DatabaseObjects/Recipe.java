@@ -176,11 +176,15 @@ public class Recipe extends DatabaseObject {
 	 * Never call this method under any circumstances
 	 */
 	@Override
-	protected void insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {}
+	protected boolean insertUpdate(PreparedStatement prep, boolean insert) throws SQLException {
+		return false;
+	}
 	
 	/**
 	 * Never call this method under any circumstances
 	 */
 	@Override
-	public void databaseDelete(Connection conn) {}
+	public boolean databaseDelete(Connection conn) {
+		return false;
+	}
 }
