@@ -11,17 +11,17 @@ import { DamageMultiplier } from '../Enums/DamageMultiplier';
   styleUrls: ['./skill.component.css']
 })
 export class SkillComponent implements OnInit, OnDestroy {
-  private skill: FullSkill;
+  skill: FullSkill;
   private subscription: ISubscription;
-  private readonly baseDetail: string[] = ['Minimum Level', 'Area of Effect'];
-  private readonly damageDetail: string[] = ['Max Damage Dice', 'Damage Multiplier', 'Damage Bonus', 'Damage Die'];
-  private readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
-  private standardDamage: number[] = [];
-  private readonly ailmentDetail: string[] = ['Ailment', 'Ailment Failure Value'];
-  private readonly supportDetail: string[] = ['Support Type', 'Support Details'];
-  private readonly passiveDetail: string[] = ['Passive Type', 'Passive Skill Type', 'Passive Value', 'Passive Second Value'];
-  private detailTableHeader: string[] = [];
-  private detailTableValues: any[] = [];
+  readonly baseDetail: string[] = ['Minimum Level', 'Area of Effect'];
+  readonly damageDetail: string[] = ['Max Damage Dice', 'Damage Multiplier', 'Damage Bonus', 'Damage Die'];
+  readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
+  standardDamage: number[] = [];
+  readonly ailmentDetail: string[] = ['Ailment', 'Ailment Failure Value'];
+  readonly supportDetail: string[] = ['Support Type', 'Support Details'];
+  readonly passiveDetail: string[] = ['Passive Type', 'Passive Skill Type', 'Passive Value', 'Passive Second Value'];
+  detailTableHeader: string[] = [];
+  detailTableValues: any[] = [];
   constructor(private route: ActivatedRoute, private skillService: SkillService) { }
 
   ngOnInit(): void {

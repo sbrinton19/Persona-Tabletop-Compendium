@@ -11,11 +11,11 @@ import { OriginType } from '../Enums/OriginType';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit, OnDestroy {
-  private item: FullItem;
+  item: FullItem;
   private subscription: SubscriptionLike;
-  private ItemType = ItemType;
-  private OriginType = OriginType;
-  private readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
+  ItemType = ItemType;
+  OriginType = OriginType;
+  readonly damageAnalysis: string[] = ['Modifier', 'Min Damage', 'Avg Damage', 'Max Damage'];
 
   constructor(private route: ActivatedRoute) { }
 

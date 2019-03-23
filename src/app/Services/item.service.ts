@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FlatArmor, FlatLoot, FlatAccessory, FlatConsumable, FlatWeapon, FlatSkillCard,
-  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem } from '../Classes/FlatItem';
+  FlatRangedWeapon, FlatStatBoostItem, FlatTraitBoostItem, FullItem, FlatItem } from '../Classes/FlatItem';
 import { Drop } from '../Classes/Drop';
 import { WebsocketService } from './websocket.service';
 import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
@@ -10,6 +10,7 @@ import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable()
 export class ItemService implements OnDestroy {
+  private flatItemList: Subject<FlatItem[]> = new Subject<FlatItem[]>();
   private flatWeaponList: Subject<FlatWeapon[]> = new Subject<FlatWeapon[]>();
   private flatRangedWeaponList: Subject<FlatRangedWeapon[]> = new Subject<FlatRangedWeapon[]>();
   private flatArmorList: Subject<FlatArmor[]> = new Subject<FlatArmor[]>();
@@ -42,6 +43,11 @@ export class ItemService implements OnDestroy {
     let payload: any[];
     const returnData: any[] = [];
     switch (reqResp.payloadType) {
+      case 'FlatItem[]':
+        payload = reqResp.payload as FlatItem[];
+        payload.forEach(item => returnData.push(FlatItem.copyConstructor(item)));
+        this.flatItemList.next(returnData);
+        break;
       case 'FlatWeapon[]':
         payload = reqResp.payload as FlatWeapon[];
         payload.forEach(weapon => returnData.push(FlatWeapon.copyConstructor(weapon)));
@@ -97,6 +103,11 @@ export class ItemService implements OnDestroy {
         this.fullItemMapSubject.next(this.fullItemMap);
         break;
     }
+  }
+
+  getFlatItemList(): Subject<FlatItem[]> {
+    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FlatItem.name, []).toString());
+    return this.flatItemList;
   }
 
   getFlatWeaponList(): Subject<FlatWeapon[]> {

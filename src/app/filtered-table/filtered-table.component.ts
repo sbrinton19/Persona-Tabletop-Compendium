@@ -33,6 +33,7 @@ export class FilteredTableComponent<T> implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.tableHeaders.forEach((header, index) => {
+      this.headerNames.push(header.fieldName);
       if (header.filterType !== FilterType.NoFilter) {
         this.filterNames.push(header.fieldName + 'Filter');
         if (header.filterType === FilterType.StringFilter) {
@@ -51,7 +52,6 @@ export class FilteredTableComponent<T> implements OnInit, OnDestroy {
           });
         }
       }
-      this.headerNames.push(header.fieldName);
     });
     this.dataSource.filterPredicate = this.tableFilter;
     this.dataSource.sort = this.sort;

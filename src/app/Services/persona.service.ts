@@ -63,7 +63,9 @@ export class PersonaService implements OnDestroy {
   }
 
   getFullPersona(personaId: number): Subject<Map<number, FullPersona>> {
-    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullPersona.name, [personaId]).toString());
+    if (personaId > -1) {
+      this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullPersona.name, [personaId]).toString());  
+    }
     return this.fullPersonaMapSubject;
   }
 }

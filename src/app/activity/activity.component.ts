@@ -17,12 +17,12 @@ import { TableHeader } from '../Classes/TableHeader';
 export class ActivityComponent implements OnInit, OnDestroy {
   @ContentChildren(PaginationComponent) pagers: QueryList<PaginationComponent<VendorItemReference>>;
 
-  private activity: FullActivity;
+  activity: FullActivity;
   private subscription: SubscriptionLike;
-  private sortOrder = false;
-  private readonly orderByPipe = new OrderByPipe();
-  private readonly ActivityType = ActivityType;
-  private readonly vendorHeaders = [
+  sortOrder = false;
+  readonly orderByPipe = new OrderByPipe();
+  readonly ActivityType = ActivityType;
+  readonly vendorHeaders = [
     new TableHeader(1, 2, 'ID', FilterType.NoFilter, 'id', '', false),
     new TableHeader(1, 1, 'Name', FilterType.StringFilter, 'name', '', false),
     new TableHeader(1, 2, 'Cost', FilterType.NoFilter, 'cost', '', false),
