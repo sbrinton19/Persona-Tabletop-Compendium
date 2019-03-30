@@ -56,6 +56,7 @@ public class DatabaseHandler {
 				ds.setDatabaseName("persona_tabletop_compendium");
 				try {
 					this._conn = ds.getConnection();
+					initSprocs();
 				} catch (SQLException e2) {
 					e2.printStackTrace();
 					this._conn = null;

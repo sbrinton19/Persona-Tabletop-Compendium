@@ -40,6 +40,7 @@ import { SplitableSingleRowTableComponent } from './splitable-single-row-table/s
 import { EditableTableComponent } from './editable-table/editable-table.component';
 import { LoadFromDialogComponent } from './load-from-dialog/load-from-dialog.component';
 import { AlertDialogComponent } from './alert-dialog/alert-dialog.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,10 +68,12 @@ import { AlertDialogComponent } from './alert-dialog/alert-dialog.component';
     EditableTableComponent,
     LoadFromDialogComponent,
     AlertDialogComponent,
+    ConfirmationDialogComponent,
   ],
   entryComponents: [
     LoadFromDialogComponent,
     AlertDialogComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,

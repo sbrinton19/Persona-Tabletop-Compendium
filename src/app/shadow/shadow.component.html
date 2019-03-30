@@ -4,7 +4,9 @@
   <button mat-button [disabled]='progress<100' [matMenuTriggerFor]='shadowOptions'>Options</button>
   <mat-menu #shadowOptions='matMenu'>
     <button mat-menu-item [disabled]='!isEdit' (click)='loadDialog()'>Load Shadow from Persona</button>
-    <button mat-menu-item [disabled]='!changesToSave()' (click)='saveDialog()'>Save Shadow</button>
+    <button mat-menu-item [disabled]='!changesToSave()' (click)='saveShadow(false)'>Save Shadow</button>
+    <button mat-menu-item [disabled]='shadow.id === -1' (click)='saveShadow(true)'>Save As New Shadow</button>
+    <button mat-menu-item [disabled]='shadow.id === -1' (click)='changeEditState()'>{{isEdit ? 'Finish Editing' : 'Edit Shadow'}}</button>
   </mat-menu>
 </mat-toolbar>
 <div id='shadowPage' *ngIf='shadow; else notFound' class='body-page'>
@@ -112,7 +114,8 @@
       [dataSource]='skillSource'
       [(boundArray)]='shadow.shadowSkills'
       [selectOptions]='selectOptions'
-      [typeConversion]='skillConversion'>
+      [typeConversion]='skillConversion'
+      [typeComparator]='skillComparator'>
       </app-editable-table>
     </mat-card>
     <mat-card id='negotiationCard'>
@@ -121,7 +124,7 @@
       </mat-card-title>
       <app-editable-table [hidden]='!isEdit' id='negotiationEditTable'
       [id]='"negotiation"'
-      [selectRows]='true'
+      [selectRows]='isEdit'
       [displayField]='"name"'
       [routerLinkValue]='"id"'
       [routerLinkClass]='"item"'
@@ -130,7 +133,8 @@
       [dataSource]='negotSource'
       [(boundArray)]='shadow.negotiates'
       [selectOptions]='selectOptions'
-      [typeConversion]='negotConversion'>
+      [typeConversion]='negotConversion'
+      [typeComparator]='dropComparator'>
       </app-editable-table>
       <app-filtered-table *ngIf='!isEdit' id='negotiationFilterTable'
       [tableId]='"negotiationTable"'
@@ -148,7 +152,7 @@
       </mat-card-title>
       <app-editable-table [hidden]='!isEdit' id='dropEditTable'
       [id]='"drop"'
-      [selectRows]='true'
+      [selectRows]='isEdit'
       [displayField]='"name"'
       [routerLinkValue]='"id"'
       [routerLinkClass]='"item"'
@@ -157,7 +161,8 @@
       [dataSource]='dropSource'
       [(boundArray)]='shadow.drops'
       [selectOptions]='selectOptions'
-      [typeConversion]='negotConversion'>
+      [typeConversion]='negotConversion'
+      [typeComparator]='dropComparator'>
       </app-editable-table>
       <app-filtered-table *ngIf='!isEdit' id='dropFilterTable'
       [tableId]='"dropTable"'

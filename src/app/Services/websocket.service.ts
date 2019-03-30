@@ -29,8 +29,10 @@ export class WebsocketService {
   }
 
   public close(): void {
-    this.sock.close();
-    this.sock = null;
+    if (this.sock !== null) {
+      this.sock.close();
+      this.sock = null;
+    }
   }
 
   private create(url: string): void {

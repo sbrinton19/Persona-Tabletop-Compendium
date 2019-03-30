@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export interface AlertDialogData {
   title: string,
   message: string,
+  loading: boolean,
 }
 
 
@@ -16,7 +17,7 @@ export class AlertDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData) {}
 
   ngOnInit() {
   }

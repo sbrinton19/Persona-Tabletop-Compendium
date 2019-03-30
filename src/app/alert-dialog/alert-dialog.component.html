@@ -2,6 +2,9 @@
 <div mat-dialog-content>
   <p>{{data.message}}</p>
 </div>
-<div mat-dialog-actions align='center'>
+<div *ngIf='!data.loading; else loading' mat-dialog-actions align='center'>
   <button mat-button [mat-dialog-close]='true' cdkFocusInitial>Okay</button>
 </div>
+<ng-template #loading>
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</ng-template>

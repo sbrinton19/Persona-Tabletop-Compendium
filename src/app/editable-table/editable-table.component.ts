@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
 import { EditTableHeader } from '../Classes/TableHeader';
@@ -10,8 +10,7 @@ import { SubscriptionLike } from 'rxjs';
   styleUrls: ['./editable-table.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditableTableComponent<T, U> implements OnInit, OnDestroy {
-
+export class EditableTableComponent<T, U> implements OnInit, OnDestroy, OnChanges {
   @Input() id = '';
   @Input() selectRows = false;
   @Input() displayField = 'name';
@@ -23,6 +22,7 @@ export class EditableTableComponent<T, U> implements OnInit, OnDestroy {
   @Input() selectOptions: Map<string, [string, any][]> = null;
   @Input() boundArray: U[] = [];
   @Input() typeConversion: (input: T[], oldValues: U[]) => U[];
+  @Input() typeComparator: (tType: T, uType: U) => boolean;
 
   headerNames: string[] = [];
   masterSelector: FormControl = new FormControl();
@@ -31,9 +31,12 @@ export class EditableTableComponent<T, U> implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
+    this.updateSelector();
     this.tableHeaders.forEach(header => this.headerNames.push(header.fieldName));
     this.subscription = this.masterSelector.valueChanges.subscribe(values => {
-      this.boundArray = this.typeConversion(values, this.boundArray);
+      const temp = this.typeConversion(values, this.boundArray);
+      this.boundArray.splice(0);
+      this.boundArray.push(...temp);
       this.dataSource.data = this.boundArray;
     });
   }
@@ -42,11 +45,25 @@ export class EditableTableComponent<T, U> implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.boundArray || changes.selectRows) {
+      this.updateSelector();
+    }
+  }
+
   getFieldByName(data: U, fieldName: string, asDisplay: boolean) {
     return (data as any).getFieldByName(fieldName, asDisplay);
   }
 
   getPath(item: U): string {
     return `/${this.routerLinkClass}/${this.getFieldByName(item, this.routerLinkValue, false)}`;
+  }
+
+  private updateSelector(): void {
+    const values = [];
+    this.boundArray.forEach(bound => {
+      values.push(this.masterList.find(mItem => this.typeComparator(mItem, bound)));
+    });
+    this.masterSelector.setValue(values);
   }
 }

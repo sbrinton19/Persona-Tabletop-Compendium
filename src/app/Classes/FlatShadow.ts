@@ -11,7 +11,7 @@ export class FlatShadow {
     public static STATNAMES: string[] =  ['HP', 'SP', 'Strength', 'Magic', 'Endurance', 'Agility', 'Luck'];
     public static ELEMNAMES: string[] = ['Phys', 'Gun', 'Fire', 'Ice', 'Elec', 'Wind', 'Psy', 'Nuke', 'Bless', 'Curse'];
 
-    readonly id: number;
+    id: number;
     personaId: number;
     name: string;
     arcana: Arcana;
@@ -180,7 +180,17 @@ export class FullShadow extends FlatShadow {
             drops.push(DropReference.copyConstructor(drop));
         });
 
-        return new FullShadow(source.id, source.personaId, source.name, source.arcana, source.level, source.stats, source.elems,
+        const stats: number[] = [];
+        source.stats.forEach(stat => {
+            stats.push(stat);
+        });
+
+        const elems: ElemResist[] = [];
+        source.elems.forEach(elem => {
+            elems.push(elem);
+        });
+
+        return new FullShadow(source.id, source.personaId, source.name, source.arcana, source.level, stats, elems,
             source.maxDamageDice, source.damageDie, source.note, skills, negotiates, drops);
     }
 

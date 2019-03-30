@@ -285,7 +285,7 @@ public class FullShadow extends FlatShadow {
 			}
 		}
 		for (DropReference negot : oldNegots) {
-			Drop temp = new Drop(negot.id, this.id, true, false, negot.low, negot.high);
+			Drop temp = new Drop(negot.id, this.id, false, false, negot.low, negot.high);
 			if (!temp.databaseDelete(conn)) {
 				System.err.printf("Failed to properly delete negot: %s (%d) from shadow: %s (%d)\n", negot.name, negot.id, this.name, this.id);
 			}		

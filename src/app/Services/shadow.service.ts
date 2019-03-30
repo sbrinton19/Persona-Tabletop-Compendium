@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { FlatShadow, FullShadow } from '../Classes/FlatShadow';
 import { WebsocketService } from './websocket.service';
 import { Globals } from '../Classes/Globals';
-import { ServerRequestResponse } from '../Classes/ServerRequestReponse';
+import { ServerRequestResponse, OperationResult } from '../Classes/ServerRequestReponse';
 import { ServerRequest, ServerRequestType } from '../Classes/ServerRequest';
 
 @Injectable({
@@ -13,6 +13,7 @@ export class ShadowService implements OnDestroy {
   private flatShadowList: Subject<FlatShadow[]> = new Subject<FlatShadow[]>();
   private fullShadowMap: Map<number, FullShadow> = new Map<number, FullShadow>();
   private fullShadowMapSubject: Subject<Map<number, FullShadow>> = new Subject<Map<number, FullShadow>>();
+  private addShadowResult: Subject<OperationResult> = new Subject<OperationResult>();
 
   constructor(private sockService: WebsocketService) {
     this.sockService.connect(Globals.PERSONASERVER, this, this.onMessage);
@@ -44,6 +45,10 @@ export class ShadowService implements OnDestroy {
         payload.forEach(shadow => this.fullShadowMap.set(shadow.id, FullShadow.copyConstructor(shadow)));
         this.fullShadowMapSubject.next(this.fullShadowMap);
         break;
+      case 'AddShadowResult':
+        const result = reqResp.payload as OperationResult;
+        this.addShadowResult.next(result);
+        break;
     }
   }
 
@@ -56,8 +61,11 @@ export class ShadowService implements OnDestroy {
     this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, flatShadow.constructor.name, flatShadow).toString());
   }
 
-  addFullShadow(fullShadow: FullShadow): void {
-    this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, fullShadow.constructor.name, fullShadow).toString());
+  addFullShadow(fullShadow: FullShadow): Subject<OperationResult> {
+    if (fullShadow) {
+      this.sockService.sendMessage(new ServerRequest(ServerRequestType.Add, fullShadow.constructor.name, fullShadow).toString());
+    }
+    return this.addShadowResult;
   }
 
   getFullShadow(id: number): Subject<Map<number, FullShadow>> {

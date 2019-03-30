@@ -1,5 +1,5 @@
 <mat-form-field *ngIf='selectRows' floatLebel='never'>
-  <mat-select id='{{id}}Select' [formControl]='masterSelector' multiple>
+  <mat-select id='{{id}}Select' [value]='boundArray' [formControl]='masterSelector' multiple>
     <mat-option *ngFor='let option of masterList' [value]='option'>
       {{getFieldByName(option, displayField, true)}}
     </mat-option>

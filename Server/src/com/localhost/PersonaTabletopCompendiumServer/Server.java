@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.localhost.PersonaTabletopCompendiumServer.Common.FusionCalculator;
 import com.localhost.PersonaTabletopCompendiumServer.DatabaseObjects.*;
 import com.localhost.PersonaTabletopCompendiumServer.JsonAdapters.*;
+import com.localhost.PersonaTabletopCompendiumServer.ProtocolObjects.OperationResult;
 import com.localhost.PersonaTabletopCompendiumServer.ProtocolObjects.ProtocolMessage;
 import com.localhost.PersonaTabletopCompendiumServer.ProtocolObjects.Enums.ProtocolCommand;
 
@@ -243,10 +244,9 @@ public class Server extends WebSocketServer {
 		} else if (FlatShadow.class.isAssignableFrom(pMess.getResolvedClass())) {
 			FlatShadow flatShadow = (FlatShadow) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
 			if (pMess.getCommand() == ProtocolCommand.ADD) {
-				logResponse("INBOUND SHADOW\n");
-				logResponse(pMess.getPayload());
-				logResponse("END SHADOW\n");
-				_dbh.addShadow(flatShadow);
+				boolean success = _dbh.addShadow(flatShadow);
+				OperationResult result = new OperationResult(success, flatShadow.getId());
+				sendResponseWithPayload(conn, "AddShadowResult", result.toJSON());
 			}
 		} else if (pMess.getResolvedClass() == Restriction.class) {
 			Restriction restriction = (Restriction) _gson.fromJson(pMess.getPayload(), pMess.getResolvedClass());
