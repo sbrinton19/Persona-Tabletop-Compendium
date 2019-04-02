@@ -104,7 +104,7 @@ export class DropReference extends ItemReference {
 
     public getRollWinDisplay(): string {
         if (this.id === 0 || this.high === 0 && this.low === 0) {
-            return 'All'
+            return 'All';
         } else {
             if (this.low === this.high) {
                 return `${this.high}`;

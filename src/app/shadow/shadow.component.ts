@@ -24,14 +24,14 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
   encapsulation: ViewEncapsulation.None
 })
 export class ShadowComponent implements OnInit, OnDestroy {
-  
+
   statSource: MatTableDataSource<number[]> = new MatTableDataSource([]);
   statTableHeaders: SingleRowTableHeader[] = [];
-  
+
   elemSource: MatTableDataSource<ElemResist[]> = new MatTableDataSource([]);
   elemTableHeaders: SingleRowTableHeader[] = [];
   elemSelectOptions: ElemResist[] = getDisplayElemResists();
-  
+
   skillList: FlatSkill[];
   skillSource: MatTableDataSource<FlatSkill> = new MatTableDataSource([]);
   skillTableHeaders: EditTableHeader[] = [
@@ -40,12 +40,6 @@ export class ShadowComponent implements OnInit, OnDestroy {
     new EditTableHeader('Effect', 'description', 'string', false),
     new EditTableHeader('Cost', 'cost', 'number', false),
   ];
-  skillConversion: (input: FlatSkill[]) => FlatSkill[] = function(input) {
-    return input;
-  }
-  skillComparator: (tType: FlatSkill, uType: FlatSkill) => boolean = function(tType, uType) {
-    return tType.id === uType.id;
-  }
 
   itemList: FlatItem[];
   negotSource: MatTableDataSource<DropReference> = new MatTableDataSource([]);
@@ -59,31 +53,18 @@ export class ShadowComponent implements OnInit, OnDestroy {
     new EditTableHeader('Win Difference', 'roll', 'string', false),
     new EditTableHeader('Item', 'name', 'string', false),
   ];
-  negotConversion: (input: FlatItem[], negotiates: DropReference[]) => DropReference[] = function(input, negotiates) {
-    const newNegots: DropReference[] = [];        
-    input.forEach(item => {
-      if (negotiates.some(negot => negot.id === item.id)) {
-        newNegots.push(negotiates.find(negot => negot.id === item.id));
-      } else {
-        newNegots.push(new DropReference(item.id, item.name, 0, 0))
-      }
-    });
-    return newNegots;
-  }
-  dropComparator: (tType: FlatItem, uType: DropReference) => boolean = function(tType, uType) {
-    return tType.id === uType.id;
-  }
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
-  
+
   readonly Arcana = getDisplayArcana();
   oldShadow: FullShadow;
   shadow: FullShadow;
   oldPersonaId = -1;
+  oldShadowId = -1;
   progress = 0;
   isEdit: boolean;
   private saveDialogRef: MatDialogRef<AlertDialogComponent, AlertDialogData>;
   private subscriptions: SubscriptionLike[] = [];
-  
+
   constructor(private route: ActivatedRoute, private skillService: SkillService,
     private itemService: ItemService, private personaService: PersonaService,
     private shadowService: ShadowService, public dialog: MatDialog) {
@@ -100,32 +81,57 @@ export class ShadowComponent implements OnInit, OnDestroy {
     });
   }
 
+  skillConversion: (input: FlatSkill[]) => FlatSkill[] = function(input) {
+    return input;
+  };
+  skillComparator: (tType: FlatSkill, uType: FlatSkill) => boolean = function(tType, uType) {
+    return tType.id === uType.id;
+  };
+  negotConversion: (input: FlatItem[], negotiates: DropReference[]) => DropReference[] = function(input, negotiates) {
+    const newNegots: DropReference[] = [];
+    input.forEach(item => {
+      if (negotiates.some(negot => negot.id === item.id)) {
+        newNegots.push(negotiates.find(negot => negot.id === item.id));
+      } else {
+        newNegots.push(new DropReference(item.id, item.name, 0, 0));
+      }
+    });
+    return newNegots;
+  };
+  dropComparator: (tType: FlatItem, uType: DropReference) => boolean = function(tType, uType) {
+    return tType.id === uType.id;
+  };
+
   ngOnInit() {
+    this.initShadow();
+    this.initEditLists();
+    this.registerLoadFromPersonaAction();
+    this.registerLoadFromShadowAction();
+    this.registerPostSaveAction();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  initShadow(): void {
     const val = this.route.snapshot.paramMap.get('id');
     if (this.isEdit && !val) {
-      this.shadow = FullShadow.emptyConstructor();
+      this.updateDataSources(FullShadow.emptyConstructor());
       this.oldShadow = this.shadow.clone();
-      this.statSource.data = [ this.shadow.stats ];
-      this.elemSource.data = [ this.shadow.elems ];
-      this.skillSource.data = this.shadow.shadowSkills;
-      this.negotSource.data = this.shadow.negotiates;
-      this.dropSource.data = this.shadow.drops;
-    }
-    else {
+    } else {
       this.progress = -100;
       this.subscriptions.push(
         this.route.data.subscribe(({ shadowData }) => {
-          this.shadow = shadowData.get(+this.route.snapshot.paramMap.get('id'));
+          this.updateDataSources(shadowData.get(+this.route.snapshot.paramMap.get('id')));
           this.oldShadow = this.shadow.clone();
-          this.statSource.data = [ this.shadow.stats ];
-          this.elemSource.data = [ this.shadow.elems ];
-          this.skillSource.data = this.shadow.shadowSkills;
-          this.negotSource.data = this.shadow.negotiates;
-          this.dropSource.data = this.shadow.drops;
           this.progress += 100;
         })
       );
     }
+  }
+
+  initEditLists(): void {
     this.subscriptions.push(
       this.skillService.getFlatSkillList().subscribe(skills => {
         this.skillList = skills;
@@ -138,15 +144,15 @@ export class ShadowComponent implements OnInit, OnDestroy {
         this.progress += 50;
       })
     );
+  }
+
+  registerLoadFromPersonaAction(): void {
     this.subscriptions.push(this.personaService.getFullPersona(-1).subscribe(fullPersona => {
       if (fullPersona.get(this.shadow.personaId)) {
         const loaded = FullShadow.fromFullPersona(fullPersona.get(this.shadow.personaId));
         if (loaded) {
           loaded.id = this.shadow.id;
-          this.shadow = loaded;
-          this.skillSource.data = this.shadow.shadowSkills;
-          this.negotSource.data = this.shadow.negotiates;
-          this.dropSource.data = this.shadow.drops;
+          this.updateDataSources(loaded);
           this.oldPersonaId = this.shadow.personaId;
         }
       } else {
@@ -158,6 +164,29 @@ export class ShadowComponent implements OnInit, OnDestroy {
       }
       this.progress = 100;
     }));
+  }
+
+  registerLoadFromShadowAction(): void {
+    this.subscriptions.push(this.shadowService.getFullShadow(-1).subscribe(fullShadow => {
+      if (fullShadow.get(this.shadow.id)) {
+        const loaded = FullShadow.copyConstructor(fullShadow.get(this.shadow.id));
+        if (loaded) {
+          loaded.id = this.oldShadowId;
+          this.updateDataSources(loaded);
+          this.oldShadowId = this.shadow.id;
+        }
+      } else {
+        this.shadow.id = this.oldShadowId;
+        this.dialog.open(AlertDialogComponent, {
+          width: '20vw',
+          data: {title: 'No Shadow Found', message: 'No Shadow was found for the given ID'}
+        });
+      }
+      this.progress = 100;
+    }));
+  }
+
+  registerPostSaveAction(): void {
     this.subscriptions.push(this.shadowService.addFullShadow(undefined).subscribe(result => {
       if (this.saveDialogRef) {
         this.saveDialogRef.close();
@@ -166,17 +195,14 @@ export class ShadowComponent implements OnInit, OnDestroy {
       let title: string;
       let message: string;
       if (result.result) {
+        title = 'Saved Shadow';
         if (this.shadow.id === -1) {
-          title = 'Saved Shadow';
           message = `Successfully Saved as id number ${result.id}`;
-          this.shadow.id = result.id;
-          this.oldShadow.id = this.shadow.id;
         } else {
-          title = 'Saved Shadow';
           message = `Successfully Overwrote shadow with id number ${result.id}`;
-          this.shadow.id = result.id;
-          this.oldShadow.id = this.shadow.id;
         }
+        this.shadow.id = result.id;
+        this.oldShadow.id = this.shadow.id;
       } else {
         title = 'Failure';
         message = 'The shadow failed to be saved';
@@ -188,24 +214,50 @@ export class ShadowComponent implements OnInit, OnDestroy {
     }));
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+  updateDataSources(fullShadow: FullShadow): void {
+    this.shadow = fullShadow;
+    this.statSource.data = [ this.shadow.stats ];
+    this.elemSource.data = [ this.shadow.elems ];
+    this.skillSource.data = this.shadow.shadowSkills;
+    this.negotSource.data = this.shadow.negotiates;
+    this.dropSource.data = this.shadow.drops;
   }
 
   getArcanaName(arcana: Arcana): string {
     return getArcanaName(arcana);
   }
 
-  loadDialog(): void {
+  loadDialog(isShadowId: boolean): void {
+    let sourceType: string;
+    let id: number;
+    let setIdGetFull: (result: number) => void;
+    if (isShadowId) {
+      sourceType = 'Shadow';
+      id = this.shadow.id;
+      setIdGetFull = (result: number) => {
+        this.oldShadowId = this.shadow.id;
+        this.shadow.id = result;
+        this.shadowService.getFullShadow(result);
+      };
+    } else {
+      sourceType = 'Persona';
+      id = this.shadow.personaId;
+      setIdGetFull = (result: number) => {
+        this.oldPersonaId = this.shadow.personaId;
+        this.shadow.personaId = result;
+        this.personaService.getFullPersona(result);
+      };
+    }
     const loadDialogRef = this.dialog.open(LoadFromDialogComponent, {
       width: '20vw',
-      data: {sourceType: 'Persona', id: this.shadow.personaId}
+      data: {sourceType: sourceType, id: id}
     });
     loadDialogRef.afterClosed().subscribe(result => {
+      if (result === undefined) {
+        return;
+      }
       this.progress = 0;
-      this.oldPersonaId = this.shadow.personaId;
-      this.shadow.personaId = result;
-      this.personaService.getFullPersona(result);
+      setIdGetFull(result);
     });
   }
 
@@ -223,36 +275,40 @@ export class ShadowComponent implements OnInit, OnDestroy {
     }
     if (this.shadow.id === -1) {
       this.savingDialog();
-    } else if (asNew) {
-      this.dialog.open(ConfirmationDialogComponent, {
-        width: '20vw',
-        data: {
-          title: 'Save As New',
-          message: `This will save the current shadow as a new Shadow. 
-          If successful, further editing will affect the new shadow and not this original shadow
-          Do you wish to continue?`,
-          negativeButton: 'No',
-          positiveButton: 'Yes'
-        }
-      }).afterClosed().subscribe(result => {
-        if (result) {
-          this.shadow.id = -1;
-          this.savingDialog();
-        }
-      });
     } else {
+      let title: string;
+      let message: string;
+      let afterClose: (result: boolean) => void;
+      if (asNew) {
+        title = 'Save As New';
+        message = `This will save the current shadow as a new Shadow.
+        If successful, further editing will affect the new shadow and not this original shadow
+        Do you wish to continue?`;
+        afterClose = (result) => {
+          if (result) {
+            this.shadow.id = -1;
+            this.savingDialog();
+          }
+        };
+      } else {
+        title = 'Overwrite Shadow?';
+        message = 'This will overwrite the data for this shadow with the current data. Do you wish to proceed?';
+        afterClose = (result) => {
+          if (result) {
+            this.savingDialog();
+          }
+        };
+      }
       this.dialog.open(ConfirmationDialogComponent, {
         width: '20vw',
         data: {
-          title: 'Overwrite Shadow?',
-          message: 'This will overwrite the data for this shadow with the current data. Do you wish to proceed?',
+          title: title,
+          message: message,
           negativeButton: 'No',
           positiveButton: 'Yes'
         }
       }).afterClosed().subscribe(result => {
-        if (result) {
-          this.savingDialog();
-        }
+        afterClose(result);
       });
     }
   }
@@ -278,20 +334,12 @@ export class ShadowComponent implements OnInit, OnDestroy {
         }
       }).afterClosed().subscribe(result => {
         if (result) {
-          this.shadow = this.oldShadow.clone();
-          this.skillSource.data = this.shadow.shadowSkills;
-          this.negotSource.data = this.shadow.negotiates;
-          this.dropSource.data = this.shadow.drops;
+          this.updateDataSources(this.oldShadow.clone());
           this.isEdit = !this.isEdit;
         }
       });
     } else {
       this.isEdit = !this.isEdit;
     }
-  }
-
-  valChecker(): void {
-    console.log(this.shadow);
-    this.isEdit = !this.isEdit;
   }
 }

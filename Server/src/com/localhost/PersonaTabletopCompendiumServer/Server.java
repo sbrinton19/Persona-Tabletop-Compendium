@@ -58,6 +58,7 @@ public class Server extends WebSocketServer {
 			.registerTypeAdapter(FlatActivity.class, new FlatActivityTypeAdapter())
 			.registerTypeAdapter(FlatVendor.class, new FlatVendorTypeAdapter())
 			.registerTypeAdapter(FlatVendorItem.class, new FlatVendorItemTypeAdapter())
+			.registerTypeAdapter(FlatShadow.class, new FlatShadowTypeAdapter())
 			.registerTypeAdapter(Restriction.class, new RestrictionTypeAdapter())
 			.registerTypeAdapter(BoundRestriction.class, new BoundRestrictionTypeAdapter())
 			.registerTypeAdapter(FullPersona.class, new FullPersonaTypeAdapter())

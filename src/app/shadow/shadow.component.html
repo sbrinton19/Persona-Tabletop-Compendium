@@ -3,7 +3,8 @@
   <span class='fill-toolbar'></span>
   <button mat-button [disabled]='progress<100' [matMenuTriggerFor]='shadowOptions'>Options</button>
   <mat-menu #shadowOptions='matMenu'>
-    <button mat-menu-item [disabled]='!isEdit' (click)='loadDialog()'>Load Shadow from Persona</button>
+    <button mat-menu-item [disabled]='!isEdit' (click)='loadDialog(false)'>Load Shadow from Persona</button>
+    <button mat-menu-item [disabled]='!isEdit || shadow.id !== -1' (click)='loadDialog(true)'>Load Shadow from Existing Shadow</button>
     <button mat-menu-item [disabled]='!changesToSave()' (click)='saveShadow(false)'>Save Shadow</button>
     <button mat-menu-item [disabled]='shadow.id === -1' (click)='saveShadow(true)'>Save As New Shadow</button>
     <button mat-menu-item [disabled]='shadow.id === -1' (click)='changeEditState()'>{{isEdit ? 'Finish Editing' : 'Edit Shadow'}}</button>

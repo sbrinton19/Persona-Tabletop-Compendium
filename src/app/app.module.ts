@@ -3,7 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatPaginatorModule, MatProgressSpinnerModule,
-  MatSortModule, MatTableModule, MatCardModule, MatButtonModule, MatSelectModule, MatTooltipModule, MatProgressBarModule, MatToolbarModule, MatMenuModule, MatDialogModule } from '@angular/material';
+  MatSortModule, MatTableModule, MatCardModule, MatButtonModule, MatSelectModule,
+  MatTooltipModule, MatProgressBarModule, MatToolbarModule, MatMenuModule,
+  MatDialogModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { PersonaeComponent } from './personae/personae.component';

@@ -30,7 +30,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   private flatTraitBoostItems: FlatTraitBoostItem[] = [];
   private flatStatBoostItems: FlatStatBoostItem[] = [];
   private subscriptions: SubscriptionLike[] = [];
-  
+
   constructor(private itemService: ItemService) {
     const originsMap: [string, any][] = [['Any Origin', -1]];
     getDisplayOriginTypes().forEach(origin => originsMap.push([getOriginName(origin), origin]));
@@ -75,7 +75,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   getFlatTraitBoostItems(): void {
     this.subscriptions.push(
       this.itemService.getFlatTraitBoostItemList().subscribe(flatTraitBoostItems => {
-        this.flatTraitBoostItems = flatTraitBoostItems
+        this.flatTraitBoostItems = flatTraitBoostItems;
         this.reloadDataSource();
       })
     );

@@ -30,12 +30,11 @@ export class SplitableSingleRowTableComponent<T> implements OnInit {
   }
 
   getHalfLength(): number {
-    return Math.ceil(this.tableHeaders.length/2);
+    return Math.ceil(this.tableHeaders.length / 2);
   }
 
   getFullContext() {
-    let ctx = 
-    {
+    const ctx = {
       tableId: `full${this.tableId}Table`,
       visibility: this.desktopVisibility,
       start: 0,
@@ -45,8 +44,7 @@ export class SplitableSingleRowTableComponent<T> implements OnInit {
   }
 
   getSplit1Context() {
-    let ctx = 
-    {
+    const ctx = {
       tableId: `split${this.tableId}1`,
       visibility: this.mobileVisibility,
       start: 0,
@@ -56,8 +54,7 @@ export class SplitableSingleRowTableComponent<T> implements OnInit {
   }
 
   getSplit2Context() {
-    let ctx = 
-    {
+    const ctx = {
       tableId: `split${this.tableId}2`,
       visibility: this.mobileVisibility,
       start: this.getHalfLength(),

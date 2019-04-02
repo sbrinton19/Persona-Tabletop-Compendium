@@ -69,6 +69,9 @@ export class ShadowService implements OnDestroy {
   }
 
   getFullShadow(id: number): Subject<Map<number, FullShadow>> {
+    if (id === -1) {
+      return this.fullShadowMapSubject;
+    }
     this.sockService.sendMessage(new ServerRequest(ServerRequestType.Get, FullShadow.name, [id]).toString());
     return this.fullShadowMapSubject;
   }

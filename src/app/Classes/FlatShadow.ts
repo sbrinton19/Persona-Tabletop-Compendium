@@ -32,7 +32,7 @@ export class FlatShadow {
         this.stats = stats;
         this.elems = elems;
         this.maxDamageDice = maxDamageDice;
-        this.damageDie = damageDie
+        this.damageDie = damageDie;
         this.note = note;
     }
 
@@ -91,7 +91,7 @@ export class FlatShadow {
             fieldName = split[0];
             const index = +split[1].charAt(0);
             const val = this[fieldName][index];
-            return getElemShort(val);
+            return getElemFull(val);
         }
         return '';
     }
@@ -136,7 +136,7 @@ export class FlatShadow {
         }
 
         return (this.id === other.id && this.personaId === other.personaId && this.name === other.name && this.arcana === other.arcana &&
-            this.level === other.level && this.maxDamageDice == other.maxDamageDice && this.damageDie === other.damageDie && this.note === other.note);
+            this.level === other.level && this.maxDamageDice === other.maxDamageDice && this.damageDie === other.damageDie && this.note === other.note);
     }
 }
 

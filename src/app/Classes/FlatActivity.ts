@@ -49,7 +49,7 @@ export class FlatActivity {
                 return this.getAvailableTimesDisplayString();
             } else if (fieldName === 'availableWeekDays') {
                 return this.getAvailableWeekDaysDisplayString();
-            } 
+            }
         }
         return val;
     }
