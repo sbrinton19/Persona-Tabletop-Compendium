@@ -20,6 +20,7 @@ export class PersonaeComponent implements OnInit, OnDestroy {
     new TableHeader(1, 1, 'Arcana', FilterType.SelectFilter, 'arcana', '', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = true;
   private subscription: SubscriptionLike;
 
   constructor(private personaService: PersonaService) {
@@ -42,6 +43,9 @@ export class PersonaeComponent implements OnInit, OnDestroy {
 
   getFlatPersonae(): void {
     this.subscription =
-      this.personaService.getFlatPersonaList().subscribe(flatPersonae => this.dataSource.data = flatPersonae);
+      this.personaService.getFlatPersonaList().subscribe(flatPersonae => {
+        this.dataSource.data = flatPersonae;
+        this.loading = false;
+      });
   }
 }

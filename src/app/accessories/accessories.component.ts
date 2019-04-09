@@ -21,6 +21,7 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
     new TableHeader(1, 2, 'Special', FilterType.NoFilter, 'special', '', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = true;
   private subscription: SubscriptionLike;
 
   constructor(private itemService: ItemService) {
@@ -39,6 +40,9 @@ export class AccessoriesComponent implements OnInit, OnDestroy {
 
   private getFlatAccessories(): void {
     this.subscription =
-      this.itemService.getFlatAccessoryList().subscribe(flatAccessories => this.dataSource.data = flatAccessories);
+      this.itemService.getFlatAccessoryList().subscribe(flatAccessories => {
+        this.dataSource.data = flatAccessories;
+        this.loading = false;
+      });
   }
 }

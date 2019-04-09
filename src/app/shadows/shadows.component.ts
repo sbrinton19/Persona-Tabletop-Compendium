@@ -21,6 +21,7 @@ export class ShadowsComponent implements OnInit, OnDestroy {
     new TableHeader(1, 1, 'Arcana', FilterType.SelectFilter, 'arcana', '', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = true;
   subscription: SubscriptionLike;
 
   constructor(private shadowService: ShadowService, private router: Router) {
@@ -43,7 +44,10 @@ export class ShadowsComponent implements OnInit, OnDestroy {
 
   getFlatShadows(): void {
     this.subscription =
-      this.shadowService.getFlatShadowList().subscribe(flatShadows => this.dataSource.data = flatShadows);
+      this.shadowService.getFlatShadowList().subscribe(flatShadows => {
+        this.dataSource.data = flatShadows;
+        this.loading = false;
+      });
   }
 
   editShadow(): void {

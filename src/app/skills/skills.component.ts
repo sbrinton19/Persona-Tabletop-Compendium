@@ -21,6 +21,7 @@ export class SkillsComponent implements OnInit, OnDestroy {
     new TableHeader(1, 2, 'Skill Description', FilterType.NoFilter, 'description', '', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = true;
   private subscription: SubscriptionLike;
 
   constructor(private skillService: SkillService) {
@@ -39,6 +40,9 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   getFlatSkills(): void {
     this.subscription =
-      this.skillService.getFlatSkillList().subscribe(flatSkills => this.dataSource.data = flatSkills);
+      this.skillService.getFlatSkillList().subscribe(flatSkills => {
+        this.dataSource.data = flatSkills;
+        this.loading = false;
+      });
   }
 }

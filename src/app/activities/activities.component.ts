@@ -26,6 +26,7 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
     new TableHeader(1, 1, 'Activity Type', FilterType.SelectFilter, 'type', 'mobile-hidden-1', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = true;
   private subscription: SubscriptionLike;
 
   constructor(private activityService: ActivityService, private restrictionService: RestrictionService) {
@@ -53,6 +54,9 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
 
   private getFlatActivities(): void {
     this.subscription =
-      this.activityService.getFlatActivityList().subscribe(flatActivities => this.dataSource.data = flatActivities);
+      this.activityService.getFlatActivityList().subscribe(flatActivities => {
+        this.dataSource.data = flatActivities;
+        this.loading = false;
+      });
   }
 }

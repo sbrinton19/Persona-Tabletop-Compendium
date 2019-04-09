@@ -25,6 +25,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
     new TableHeader(1, 2, 'Special', FilterType.NoFilter, 'special', '', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = 0;
   private flatConsumables: FlatConsumable[] = [];
   private flatLoots: FlatLoot[] = [];
   private flatTraitBoostItems: FlatTraitBoostItem[] = [];
@@ -59,6 +60,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatConsumableList().subscribe(flatConsumables => {
         this.flatConsumables = flatConsumables;
         this.reloadDataSource();
+        this.loading += 25;
       })
     );
   }
@@ -68,6 +70,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatLootList().subscribe(flatLoots => {
         this.flatLoots = flatLoots;
         this.reloadDataSource();
+        this.loading += 25;
       })
     );
   }
@@ -77,6 +80,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatTraitBoostItemList().subscribe(flatTraitBoostItems => {
         this.flatTraitBoostItems = flatTraitBoostItems;
         this.reloadDataSource();
+        this.loading += 25;
       })
     );
   }
@@ -86,6 +90,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatStatBoostItemList().subscribe(flatStatBoostItems => {
         this.flatStatBoostItems = flatStatBoostItems;
         this.reloadDataSource();
+        this.loading += 25;
       })
     );
   }

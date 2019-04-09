@@ -27,7 +27,7 @@ export class ArmorsComponent implements OnInit, OnDestroy {
     new TableHeader(1, 2, 'Special', FilterType.NoFilter, 'special', 'mobile-hidden-3', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
-  displayList: Array<[FlatArmor, boolean]> = [];
+  loading = true;
   private subscription: SubscriptionLike;
 
   constructor(private itemService: ItemService) {
@@ -49,8 +49,8 @@ export class ArmorsComponent implements OnInit, OnDestroy {
 
   getFlatArmors(): void {
     this.subscription = this.itemService.getFlatArmorList().subscribe(flatArmors => {
-      flatArmors.forEach(armor => this.displayList.push([armor, true]));
       this.dataSource.data = flatArmors;
+      this.loading = false;
     });
   }
 }

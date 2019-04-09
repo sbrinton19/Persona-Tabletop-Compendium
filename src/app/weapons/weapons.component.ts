@@ -28,6 +28,7 @@ export class WeaponsComponent implements OnInit, OnDestroy {
     new TableHeader(1, 2, 'Special', FilterType.NoFilter, 'special', 'mobile-hidden-1', true),
   ];
   selectOptions: Map<string, [string, any][]> = new Map<string, [string, any][]>();
+  loading = 0;
   private subscriptions: SubscriptionLike[] = [];
   private flatWeapons: FlatWeapon[] = [];
   private flatRangedWeapons: FlatRangedWeapon[] = [];
@@ -52,6 +53,7 @@ export class WeaponsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatWeaponList().subscribe(flatWeapons => {
         this.flatWeapons = flatWeapons;
         this.dataSource.data = this.flatWeapons.concat(this.flatRangedWeapons);
+        this.loading += 50;
       })
     );
   }
@@ -61,6 +63,7 @@ export class WeaponsComponent implements OnInit, OnDestroy {
       this.itemService.getFlatRangedWeaponList().subscribe(flatRangedWeapons => {
         this.flatRangedWeapons = flatRangedWeapons;
         this.dataSource.data = this.flatWeapons.concat(this.flatRangedWeapons);
+        this.loading += 50;
       })
     );
   }
